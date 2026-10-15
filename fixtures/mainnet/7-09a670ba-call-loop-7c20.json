@@ -48,7 +48,8 @@
     "0x0"
    ],
    "gasPrice": "0xba43b7402",
-   "sender": "0x5DFCe602A9a93Eb39d08E5ffF78f085D21CE5538"
+   "sender": "0x5DFCe602A9a93Eb39d08E5ffF78f085D21CE5538",
+   "secretKey": "0x0000000000000000000000000000000000000000000000000000000000000000"
   },
   "post": {
    "Homestead": [

@@ -102,7 +102,8 @@
    "accessLists": [
     []
    ],
-   "sender": "0xaDaB9c78e6ffB65b4E4827Fe83aBA9d84260b2E5"
+   "sender": "0xaDaB9c78e6ffB65b4E4827Fe83aBA9d84260b2E5",
+   "secretKey": "0x0000000000000000000000000000000000000000000000000000000000000000"
   },
   "post": {
    "Osaka": [

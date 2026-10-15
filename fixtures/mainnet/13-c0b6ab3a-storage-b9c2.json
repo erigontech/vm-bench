@@ -65,7 +65,8 @@
     "0x0"
    ],
    "gasPrice": "0x435a6e80",
-   "sender": "0x04A0a60BB99aF08fA389f5D75cEa5F5249Af696b"
+   "sender": "0x04A0a60BB99aF08fA389f5D75cEa5F5249Af696b",
+   "secretKey": "0x0000000000000000000000000000000000000000000000000000000000000000"
   },
   "post": {
    "Byzantium": [

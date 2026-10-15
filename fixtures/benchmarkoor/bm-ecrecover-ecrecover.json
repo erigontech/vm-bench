@@ -57,7 +57,8 @@
     "0x0"
    ],
    "gasPrice": "0x5995f5c0",
-   "sender": "0x8e8D8be2e75AfECa7613Fb6fe12B61E45C9fCab0"
+   "sender": "0x8e8D8be2e75AfECa7613Fb6fe12B61E45C9fCab0",
+   "secretKey": "0x0000000000000000000000000000000000000000000000000000000000000000"
   },
   "post": {
    "Amsterdam": [
@@ -68,8 +69,7 @@
       "value": 0
      },
      "hash": "0x275c6be6acbe75d79e42c6d33d14938c596e4395867678903503ee05fab5cae2",
-     "logs": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
-     "txbytes": ""
+     "logs": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347"
     }
    ]
   }

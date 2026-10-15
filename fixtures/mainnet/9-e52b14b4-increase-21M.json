@@ -57,7 +57,8 @@
    "accessLists": [
     []
    ],
-   "sender": "0x2e9d969F8095c2eF4F4EDD4214f8aDd97dAA94b0"
+   "sender": "0x2e9d969F8095c2eF4F4EDD4214f8aDd97dAA94b0",
+   "secretKey": "0x0000000000000000000000000000000000000000000000000000000000000000"
   },
   "post": {
    "Paris": [

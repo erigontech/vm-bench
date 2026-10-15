@@ -182,7 +182,8 @@
     "0x0"
    ],
    "gasPrice": "0xfcd338a",
-   "sender": "0xb8cd31A380d7EBef142A73cf6e64A4e6Ba9CF735"
+   "sender": "0xb8cd31A380d7EBef142A73cf6e64A4e6Ba9CF735",
+   "secretKey": "0x0000000000000000000000000000000000000000000000000000000000000000"
   },
   "post": {
    "Osaka": [

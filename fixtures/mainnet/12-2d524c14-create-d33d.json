@@ -104,7 +104,8 @@
     "0x0"
    ],
    "gasPrice": "0x327b4309e",
-   "sender": "0x06ca51Ab3c82C4A834872EbFF806A9a78E2aea47"
+   "sender": "0x06ca51Ab3c82C4A834872EbFF806A9a78E2aea47",
+   "secretKey": "0x0000000000000000000000000000000000000000000000000000000000000000"
   },
   "post": {
    "Istanbul": [

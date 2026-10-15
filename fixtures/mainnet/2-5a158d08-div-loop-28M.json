@@ -101,7 +101,8 @@
    "accessLists": [
     []
    ],
-   "sender": "0x9A97F4AfD52deDAFB3Cf701977024E48Ad235d04"
+   "sender": "0x9A97F4AfD52deDAFB3Cf701977024E48Ad235d04",
+   "secretKey": "0x0000000000000000000000000000000000000000000000000000000000000000"
   },
   "post": {
    "Prague": [

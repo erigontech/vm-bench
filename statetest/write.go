@@ -68,6 +68,7 @@ type Transaction struct {
 	AccessLists          []types.AccessList `json:"accessLists,omitempty"`
 	AuthorizationList    []Authorization    `json:"authorizationList,omitempty"`
 	Sender               string             `json:"sender"`
+	SecretKey            string             `json:"secretKey"`
 }
 
 type Authorization struct {
@@ -83,7 +84,7 @@ type PostState struct {
 	Indexes Indexes `json:"indexes"`
 	Hash    string  `json:"hash"`
 	Logs    string  `json:"logs"`
-	TxBytes string  `json:"txbytes"`
+	TxBytes string  `json:"txbytes,omitempty"`
 }
 
 type Indexes struct {
@@ -115,6 +116,9 @@ type hexOrDecimal string
 
 func (h *hexOrDecimal) UnmarshalJSON(b []byte) error {
 	s := strings.Trim(string(b), `"`)
+	if s == "" {
+		s = "0x0"
+	}
 	if strings.HasPrefix(s, "0x") {
 		*h = hexOrDecimal(s)
 		return nil
@@ -126,6 +130,9 @@ func (h *hexOrDecimal) UnmarshalJSON(b []byte) error {
 	*h = hexOrDecimal(v.Hex())
 	return nil
 }
+
+// revme refuses a transaction without secretKey even when sender is given; every runner here uses sender.
+const placeholderSecretKey = "0x0000000000000000000000000000000000000000000000000000000000000000"
 
 const mainnetMergeBlock = 15537394
 
@@ -248,11 +255,12 @@ func Write(dir, name string, fx *Fixture) error {
 // that build the message from the fields instead of txbytes.
 func transactionFields(txn types.Transaction, sender common.Address) Transaction {
 	tx := Transaction{
-		Nonce:    hexutil.EncodeUint64(txn.GetNonce()),
-		GasLimit: []string{hexutil.EncodeUint64(txn.GetGasLimit())},
-		Data:     []string{hexutil.Encode(txn.GetData())},
-		Value:    []string{txn.GetValue().Hex()},
-		Sender:   sender.Hex(),
+		Nonce:     hexutil.EncodeUint64(txn.GetNonce()),
+		GasLimit:  []string{hexutil.EncodeUint64(txn.GetGasLimit())},
+		Data:      []string{hexutil.Encode(txn.GetData())},
+		Value:     []string{txn.GetValue().Hex()},
+		Sender:    sender.Hex(),
+		SecretKey: placeholderSecretKey,
 	}
 	if to := txn.GetTo(); to != nil {
 		tx.To = to.Hex()
