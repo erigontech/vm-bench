@@ -1,0 +1,75 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>vm-bench</title>
+<style>
+body{font:14px system-ui,sans-serif;margin:20px;color:#222}
+h1{font-size:20px}h2{font-size:16px;margin-top:28px}
+table{border-collapse:collapse;font-variant-numeric:tabular-nums}
+td,th{padding:2px 8px;text-align:right;border-bottom:1px solid #eee}
+td:first-child,th:first-child{text-align:left}
+tr:hover{background:#f6f6f6;cursor:pointer}
+.up{color:#1a7f37}.down{color:#b42318}
+svg{background:#fafafa;border:1px solid #eee}
+.legend span{display:inline-block;margin-right:14px}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:4px}
+small{color:#666}
+</style>
+<h1>vm-bench <small id="when"></small></h1>
+<p><small>Mgas/s per transaction. Ratio = erigon / client, above 1 means erigon is faster. evmone and nethermind are process wall time, the others execution only.</small></p>
+<h2>Over time: geometric mean of Mgas/s</h2>
+<div id="charts"></div>
+<h2 id="latest-title">Latest run</h2>
+<div id="latest"></div>
+<h2 id="series-title"></h2>
+<div id="series"></div>
+<script>
+const data = /*DATA*/;
+const colors = {erigon:"#1f77b4", geth:"#2ca02c", revme:"#d62728", evmone:"#ff7f0e", nethermind:"#9467bd"};
+const color = c => colors[c] || "#" + (Math.abs([...c].reduce((h, ch) => h * 31 + ch.charCodeAt(0), 7)) % 0xffffff).toString(16).padStart(6, "0");
+const mgas = (run, fixture, client) => data.gas[fixture] / run.ns[fixture][client] * 1e3;
+const runs = data.runs, last = runs[runs.length - 1];
+const clients = [...new Set(runs.flatMap(r => Object.values(r.ns).flatMap(Object.keys)))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || a.localeCompare(b));
+const fixtures = Object.keys(data.gas).sort();
+const groups = [...new Set(fixtures.map(f => f.split("/")[0]))];
+document.getElementById("when").textContent = last.date + " " + Object.entries(last.versions).map(([c, v]) => c + " " + v).join(", ");
+
+function geomean(xs) { return xs.length ? Math.exp(xs.reduce((s, x) => s + Math.log(x), 0) / xs.length) : NaN; }
+function chart(title, series) {
+  const w = 720, h = 220, pl = 60, pb = 40, pt = 24, pr = 12;
+  const n = Math.max(2, runs.length);
+  const ys = series.flatMap(s => s.values).filter(v => v > 0);
+  const ymax = Math.max(...ys) * 1.05, ymin = Math.min(...ys) * 0.95;
+  const x = i => pl + i * (w - pl - pr) / (n - 1), y = v => pt + (h - pt - pb) * (1 - (v - ymin) / (ymax - ymin));
+  let svg = `<svg width="${w}" height="${h}"><text x="${pl}" y="16" font-weight="bold">${title}</text>`;
+  for (let k = 0; k <= 4; k++) { const v = ymin + (ymax - ymin) * k / 4; svg += `<line x1="${pl}" x2="${w - pr}" y1="${y(v)}" y2="${y(v)}" stroke="#eee"/><text x="${pl - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${v.toFixed(0)}</text>`; }
+  runs.forEach((r, i) => svg += `<text x="${x(i)}" y="${h - 8}" text-anchor="middle" font-size="11">${r.date}</text>`);
+  for (const s of series) {
+    const pts = s.values.map((v, i) => v > 0 ? [x(i), y(v)] : null);
+    svg += `<polyline fill="none" stroke="${color(s.name)}" stroke-width="2" points="${pts.filter(Boolean).map(p => p.join(",")).join(" ")}"/>`;
+    pts.forEach(p => p && (svg += `<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${color(s.name)}"/>`));
+  }
+  const legend = series.map(s => `<span><i style="background:${color(s.name)}"></i>${s.name}</span>`).join("");
+  return `<div><div class="legend">${legend}</div>${svg}</svg></div>`;
+}
+document.getElementById("charts").innerHTML = groups.map(g => chart(g, clients.map(c => ({
+  name: c, values: runs.map(r => geomean(fixtures.filter(f => f.startsWith(g + "/") && r.ns[f] && r.ns[f][c]).map(f => mgas(r, f, c))))
+})).filter(s => s.values.some(v => v > 0)))).join("");
+
+function table(run) {
+  const base = clients.find(c => c.startsWith("erigon"));
+  let html = `<table><tr><th>fixture</th>${clients.map(c => `<th>${c}</th>`).join("")}${clients.filter(c => c !== base).map(c => `<th>${base}/${c}</th>`).join("")}</tr>`;
+  for (const f of fixtures.filter(f => run.ns[f])) {
+    const v = c => run.ns[f][c] ? mgas(run, f, c) : NaN;
+    html += `<tr data-f="${f}"><td>${f}</td>${clients.map(c => `<td>${isNaN(v(c)) ? "-" : v(c).toFixed(1)}</td>`).join("")}`;
+    html += clients.filter(c => c !== base).map(c => { const r = v(base) / v(c); return `<td class="${r > 1.02 ? "up" : r < 0.98 ? "down" : ""}">${isNaN(r) ? "-" : r.toFixed(2)}</td>`; }).join("") + "</tr>";
+  }
+  return html + "</table>";
+}
+document.getElementById("latest").innerHTML = table(last);
+document.getElementById("latest").onclick = e => {
+  const f = e.target.closest("tr")?.dataset.f; if (!f) return;
+  document.getElementById("series-title").textContent = f + ", Mgas/s over time";
+  document.getElementById("series").innerHTML = chart(f, clients.map(c => ({ name: c, values: runs.map(r => r.ns[f] && r.ns[f][c] ? mgas(r, f, c) : 0) })).filter(s => s.values.some(v => v > 0)));
+  document.getElementById("series").scrollIntoView();
+};
+</script>
