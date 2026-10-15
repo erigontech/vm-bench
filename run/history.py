@@ -6,10 +6,13 @@ from pathlib import Path
 root = Path(__file__).resolve().parent.parent
 runs = []
 for d in sorted(p for p in (root / "history").iterdir() if p.is_dir()):
-    run = {"date": d.name, "versions": {}, "ns": {}}
+    run = {"date": d.name, "versions": {}, "ns": {}, "rpc": []}
     for f in d.glob("*.csv"):
         if f.name == "versions.csv":
             run["versions"] = dict(csv.reader(open(f)))
+            continue
+        if f.name == "rpc.csv":
+            run["rpc"] = [dict(zip(("scenario", "client", "rps", "p50", "p99"), (r[0], r[1], *map(float, r[2:])))) for r in csv.reader(open(f))]
             continue
         for fixture, client, ns in csv.reader(open(f)):
             run["ns"].setdefault(fixture, {})[client] = int(ns)

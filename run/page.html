@@ -22,28 +22,33 @@ small{color:#666}
 <div id="latest"></div>
 <h2 id="series-title"></h2>
 <div id="series"></div>
+<h2>RPC on n0 <small id="rpc-when"></small></h2>
+<p><small>Requests per second of a corpus of 33 recorded mainnet requests per method, 16 connections, same datadir every run; the erigon column is the commit measured. Chart: rps relative to the first point of each scenario.</small></p>
+<div id="rpc-chart"></div>
+<div id="rpc"></div>
 <script>
 const data = /*DATA*/;
 const colors = {erigon:"#1f77b4", geth:"#2ca02c", revme:"#d62728", evmone:"#ff7f0e", nethermind:"#9467bd"};
 const color = c => colors[c] || "#" + (Math.abs([...c].reduce((h, ch) => h * 31 + ch.charCodeAt(0), 7)) % 0xffffff).toString(16).padStart(6, "0");
 const mgas = (run, fixture, client) => data.gas[fixture] / run.ns[fixture][client] * 1e3;
-const runs = data.runs, last = runs[runs.length - 1];
+const runs = data.runs.filter(r => Object.keys(r.ns).length), last = runs[runs.length - 1];
+const rpcRuns = data.runs.filter(r => r.rpc.length);
 const clients = [...new Set(runs.flatMap(r => Object.values(r.ns).flatMap(Object.keys)))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || a.localeCompare(b));
 const fixtures = Object.keys(data.gas).sort();
 const groups = [...new Set(fixtures.map(f => f.split("/")[0]))];
 document.getElementById("when").textContent = last.date + " " + Object.entries(last.versions).map(([c, v]) => c + " " + v).join(", ");
 
 function geomean(xs) { return xs.length ? Math.exp(xs.reduce((s, x) => s + Math.log(x), 0) / xs.length) : NaN; }
-function chart(title, series) {
+function chart(title, series, dates = runs.map(r => r.date), unit = "Mgas/s") {
   const w = 720, h = 220, pl = 60, pb = 40, pt = 24, pr = 12;
-  const n = Math.max(2, runs.length);
+  const n = Math.max(2, dates.length);
   const ys = series.flatMap(s => s.values).filter(v => v > 0);
   const ymax = Math.max(...ys) * 1.05, ymin = Math.min(...ys) * 0.95;
   const x = i => pl + i * (w - pl - pr) / (n - 1), y = v => pt + (h - pt - pb) * (1 - (v - ymin) / (ymax - ymin));
   let svg = `<svg width="${w}" height="${h}"><text x="${pl}" y="16" font-weight="bold">${title}</text>`;
   for (let k = 0; k <= 4; k++) { const v = ymin + (ymax - ymin) * k / 4; svg += `<line x1="${pl}" x2="${w - pr}" y1="${y(v)}" y2="${y(v)}" stroke="#eee"/><text x="${pl - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${v.toFixed(0)}</text>`; }
-  svg += `<text x="${w - pr}" y="16" text-anchor="end" font-size="11">Mgas/s</text>`;
-  runs.forEach((r, i) => svg += `<text x="${x(i)}" y="${h - 8}" text-anchor="middle" font-size="11">${r.date}</text>`);
+  svg += `<text x="${w - pr}" y="16" text-anchor="end" font-size="11">${unit}</text>`;
+  dates.forEach((d, i) => svg += `<text x="${x(i)}" y="${h - 8}" text-anchor="middle" font-size="11">${d}</text>`);
   for (const s of series) {
     const pts = s.values.map((v, i) => v > 0 ? [x(i), y(v)] : null);
     svg += `<polyline fill="none" stroke="${color(s.name)}" stroke-width="2" points="${pts.filter(Boolean).map(p => p.join(",")).join(" ")}"/>`;
@@ -73,4 +78,17 @@ document.getElementById("latest").onclick = e => {
   document.getElementById("series").innerHTML = chart(f, clients.map(c => ({ name: c, values: runs.map(r => r.ns[f] && r.ns[f][c] ? mgas(r, f, c) : 0) })).filter(s => s.values.some(v => v > 0)));
   document.getElementById("series").scrollIntoView();
 };
+
+// RPC: latest value per scenario across snapshots, and rps indexed to each scenario's first point.
+const rpcLatest = {};
+for (const r of rpcRuns) for (const row of r.rpc) rpcLatest[row.scenario] = {...row, date: r.date};
+const scenarios = Object.keys(rpcLatest).sort();
+if (scenarios.length) {
+  document.getElementById("rpc-when").textContent = rpcRuns[rpcRuns.length - 1].date;
+  document.getElementById("rpc").innerHTML = `<table><tr><th>scenario</th><th>erigon</th><th>rps</th><th>p50 ms</th><th>p99 ms</th><th>measured</th></tr>` +
+    scenarios.map(s => { const r = rpcLatest[s]; return `<tr><td>${s}</td><td>${r.client}</td><td>${r.rps.toFixed(0)}</td><td>${r.p50.toFixed(2)}</td><td>${r.p99.toFixed(2)}</td><td>${r.date}</td></tr>`; }).join("") + "</table>";
+  const first = {};
+  const series = scenarios.map(s => ({ name: s, values: rpcRuns.map(r => { const row = r.rpc.find(x => x.scenario === s); if (!row) return 0; first[s] ??= row.rps; return 100 * row.rps / first[s]; }) }));
+  document.getElementById("rpc-chart").innerHTML = chart("rps, first point = 100", series, rpcRuns.map(r => r.date), "%");
+}
 </script>
