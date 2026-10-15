@@ -1,0 +1,125 @@
+{
+ "bm-p256verify_uncachable-p256verify": {
+  "_info": {
+   "source": "benchmarkoor compute suite, first transaction of the benchmark block",
+   "txHash": "0x8d4927b605910a3600b42f2aab8164194de94efc3b51d24a25f8b09efa06d4a2",
+   "gasUsed": "0xffcbc1"
+  },
+  "config": {
+   "chainid": "0x1"
+  },
+  "env": {
+   "currentCoinbase": "0x2ADC25665018Aa1FE0E6BC666DaC8Fc2697fF9bA",
+   "currentDifficulty": "0x0",
+   "currentRandom": "0x0000000000000000000000000000000000000000000000000000000000000000",
+   "currentGasLimit": "0x3bc78941",
+   "currentNumber": "0x3",
+   "currentTimestamp": "0x19",
+   "currentBaseFee": "0x27f3ba0f",
+   "currentExcessBlobGas": "0x0"
+  },
+  "pre": {
+   "0x2ADC25665018Aa1FE0E6BC666DaC8Fc2697fF9bA": {
+    "balance": "0x50c86a1b5caf0",
+    "code": "0x",
+    "nonce": "0x0",
+    "storage": {}
+   },
+   "0x5FbDB2315678afecb367f032d93F642f64180aa3": {
+    "balance": "0x0",
+    "code": "0x3660006000375b6020363660006101005afa60005101600052630000369a5a11630000001f580357",
+    "nonce": "0x1",
+    "storage": {}
+   },
+   "0x601298DB2509F350B2eEa844551Af09820a76250": {
+    "balance": "0x5995f5c0000000",
+    "code": "0x",
+    "nonce": "0x0",
+    "storage": {}
+   },
+   "0x628C68592039258EeDA38454B1f65268D2a43020": {
+    "balance": "0x5995f5c0000000",
+    "code": "0x",
+    "nonce": "0x0",
+    "storage": {}
+   },
+   "0x7cbAEA748e703e22f3ecC5A4ab394b9FdD2B4871": {
+    "balance": "0x1ee03209a34000",
+    "code": "0x",
+    "nonce": "0x0",
+    "storage": {}
+   },
+   "0x909Dc2B62c0E167550C08D1e9748FB041F91509D": {
+    "balance": "0x5995f5c0000000",
+    "code": "0x",
+    "nonce": "0x0",
+    "storage": {}
+   },
+   "0x9c91Acab7CD31B3489fd81c8696680E7a7b59a1B": {
+    "balance": "0x5995f5c0000000",
+    "code": "0x",
+    "nonce": "0x0",
+    "storage": {}
+   },
+   "0xC88146230fC4E56C179B53e73CD8462E0700B510": {
+    "balance": "0x5995f5c0000000",
+    "code": "0x",
+    "nonce": "0x0",
+    "storage": {}
+   },
+   "0xa9cC7180Ac5c9f311B605a7a96c391A766B5c36F": {
+    "balance": "0x5995f5c0000000",
+    "code": "0x",
+    "nonce": "0x0",
+    "storage": {}
+   },
+   "0xe8aB2035D24e6d7A70A2792A489eF25F0A05D85b": {
+    "balance": "0x5995f5c0000000",
+    "code": "0x",
+    "nonce": "0x0",
+    "storage": {}
+   },
+   "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266": {
+    "balance": "0xc9f2c9cd0437f137828f04680",
+    "code": "0x",
+    "nonce": "0xa",
+    "storage": {}
+   },
+   "0xf7983d94686c7feF85F8ac57528526aC76f69bE0": {
+    "balance": "0xc9f2c9cd046ce83e000000000",
+    "code": "0x",
+    "nonce": "0x0",
+    "storage": {}
+   }
+  },
+  "transaction": {
+   "nonce": "0x0",
+   "gasLimit": [
+    "0x1000000"
+   ],
+   "to": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+   "data": [
+    "0xbb5a52f42f9c9261ed4361f59422a1e30036e7c32b270c8807a419feca6050232ba3a8be6b94d5ec80a6d9d1190a436effe50d85a1eee859b8cc6af9bd5c2e184cd60b855d442f5b3c7b11eb6c4e0ae7525fe710fab9aa7c77a67f79e6fadd762927b10512bae3eddcfe467828128bad2903269919f7086069c8c4df6c732838c7787964eaac00e5921fb1498a60f4606766b3d9685001558d1a974e7341513e"
+   ],
+   "value": [
+    "0x0"
+   ],
+   "gasPrice": "0x5995f5c0",
+   "sender": "0xf7983d94686c7feF85F8ac57528526aC76f69bE0"
+  },
+  "post": {
+   "Amsterdam": [
+    {
+     "indexes": {
+      "data": 0,
+      "gas": 0,
+      "value": 0
+     },
+     "hash": "0x569d9fb0bd3a29f5519c03284be4dd145e12837f5f30e9682cd285b56d038c41",
+     "logs": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
+     "txbytes": ""
+    }
+   ]
+  }
+ }
+}

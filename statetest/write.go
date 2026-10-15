@@ -15,13 +15,17 @@ import (
 	"github.com/erigontech/erigon/common/hexutil"
 	"github.com/erigontech/erigon/execution/chain"
 	chainspec "github.com/erigontech/erigon/execution/chain/spec"
+	"github.com/erigontech/erigon/execution/tests/testutil"
 	"github.com/erigontech/erigon/execution/types"
 )
+
+func forkConfig(fork string) (*chain.Config, []int, error) { return testutil.GetChainConfig(fork) }
 
 // Fixture is one EEST state test: one transaction over its prestate, with the expected
 // post-state root per fork. The sender comes with txbytes, so no secret key is needed.
 type Fixture struct {
 	Info        Info                   `json:"_info"`
+	Config      Config                 `json:"config"`
 	Env         Env                    `json:"env"`
 	Pre         map[string]Account     `json:"pre"`
 	Transaction Transaction            `json:"transaction"`
@@ -213,12 +217,42 @@ func FromTxReplay(path string) (name string, fx *Fixture, fork string, err error
 		env.ExcessBlobGas = hexutil.EncodeUint64(*src.Block.ExcessBlobGas)
 	}
 
+	tx := transactionFields(txn, meta.From)
+
+	var txBytes bytes.Buffer
+	if err := txn.MarshalBinary(&txBytes); err != nil {
+		return "", nil, "", err
+	}
+	name = strings.TrimSuffix(filepath.Base(path), ".json")
+	fx = &Fixture{
+		Info:        Info{Source: fmt.Sprintf("mainnet block %d", num), TxHash: meta.Hash.Hex(), GasUsed: hexutil.EncodeUint64(uint64(src.Receipt.GasUsed))},
+		Config:      Config{ChainID: "0x1"},
+		Env:         env,
+		Pre:         pre,
+		Transaction: tx,
+		Post:        map[string][]PostState{fork: {{Hash: common.Hash{}.Hex(), Logs: common.Hash{}.Hex(), TxBytes: hexutil.Encode(txBytes.Bytes())}}},
+	}
+	return name, fx, fork, nil
+}
+
+// Write stores the fixture under its name, as EEST does: one test per file.
+func Write(dir, name string, fx *Fixture) error {
+	out, err := json.MarshalIndent(map[string]*Fixture{name: fx}, "", " ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(filepath.Join(dir, name+".json"), append(out, '\n'), 0o644)
+}
+
+// transactionFields describes a signed transaction the way a state test does, for runners
+// that build the message from the fields instead of txbytes.
+func transactionFields(txn types.Transaction, sender common.Address) Transaction {
 	tx := Transaction{
 		Nonce:    hexutil.EncodeUint64(txn.GetNonce()),
 		GasLimit: []string{hexutil.EncodeUint64(txn.GetGasLimit())},
 		Data:     []string{hexutil.Encode(txn.GetData())},
 		Value:    []string{txn.GetValue().Hex()},
-		Sender:   meta.From.Hex(),
+		Sender:   sender.Hex(),
 	}
 	if to := txn.GetTo(); to != nil {
 		tx.To = to.Hex()
@@ -246,27 +280,10 @@ func FromTxReplay(path string) (name string, fx *Fixture, fork string, err error
 			S:       a.S.Hex(),
 		})
 	}
-
-	var txBytes bytes.Buffer
-	if err := txn.MarshalBinary(&txBytes); err != nil {
-		return "", nil, "", err
-	}
-	name = strings.TrimSuffix(filepath.Base(path), ".json")
-	fx = &Fixture{
-		Info:        Info{Source: fmt.Sprintf("mainnet block %d", num), TxHash: meta.Hash.Hex(), GasUsed: hexutil.EncodeUint64(uint64(src.Receipt.GasUsed))},
-		Env:         env,
-		Pre:         pre,
-		Transaction: tx,
-		Post:        map[string][]PostState{fork: {{Hash: common.Hash{}.Hex(), Logs: common.Hash{}.Hex(), TxBytes: hexutil.Encode(txBytes.Bytes())}}},
-	}
-	return name, fx, fork, nil
+	return tx
 }
 
-// Write stores the fixture under its name, as EEST does: one test per file.
-func Write(dir, name string, fx *Fixture) error {
-	out, err := json.MarshalIndent(map[string]*Fixture{name: fx}, "", " ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(filepath.Join(dir, name+".json"), append(out, '\n'), 0o644)
+// Config names the chain the transactions are signed for.
+type Config struct {
+	ChainID string `json:"chainid"`
 }

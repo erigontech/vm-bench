@@ -5,16 +5,11 @@
 package fill
 
 import (
-	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/erigontech/erigon/common/hexutil"
-	"github.com/erigontech/erigon/db/datadir"
-	"github.com/erigontech/erigon/db/kv/temporal/temporaltest"
-	"github.com/erigontech/erigon/execution/tests/testutil"
-	"github.com/erigontech/erigon/execution/vm"
 	"github.com/stretchr/testify/require"
 
 	"github.com/erigontech/vm-bench/statetest"
@@ -36,28 +31,15 @@ func TestFill(t *testing.T) {
 		require.NoError(t, err, path)
 		t.Run(name, func(t *testing.T) {
 			require.NoError(t, statetest.Write(out, name, fx))
-			st := load(t, filepath.Join(out, name+".json"), name)
-
-			db := temporaltest.NewTestDB(t, datadir.New(t.TempDir()))
-			tx, domains := temporaltest.NewTestTxSD(t, db)
-			ibs, root, gasUsed, err := st.RunNoVerify(domains, tx, testutil.StateSubtest{Fork: fork, Index: 0}, vm.Config{})
+			_, loaded, loadedFork, err := statetest.Load(filepath.Join(out, name+".json"))
 			require.NoError(t, err)
+			require.Equal(t, fork, loadedFork)
+			root, logs, gasUsed := Fill(t, loaded, fork)
 			require.Equal(t, fx.Info.GasUsed, hexutil.EncodeUint64(gasUsed), "gas used must match the mainnet receipt")
 
 			fx.Post[fork][0].Hash = root.Hex()
-			fx.Post[fork][0].Logs = ibs.LogsRlpHash().Hex()
+			fx.Post[fork][0].Logs = logs.Hex()
 			require.NoError(t, statetest.Write(out, name, fx))
 		})
 	}
-}
-
-func load(t *testing.T, path, name string) *testutil.StateTest {
-	t.Helper()
-	raw, err := os.ReadFile(path)
-	require.NoError(t, err)
-	var tests map[string]testutil.StateTest
-	require.NoError(t, json.Unmarshal(raw, &tests))
-	st, ok := tests[name]
-	require.True(t, ok, "fixture %s not found in %s", name, path)
-	return &st
 }

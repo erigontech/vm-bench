@@ -5,6 +5,9 @@
    "txHash": "0x4fd6d5c7be8d8dd4342d7096c7219d424a322b157932e8112698b4536a9df0ee",
    "gasUsed": "0xf730"
   },
+  "config": {
+   "chainid": "0x1"
+  },
   "env": {
    "currentCoinbase": "0xA42AF2C70d316684E57AEfcC6E393fecb1c7e84E",
    "currentDifficulty": "0x480624b00cbf",
@@ -1981,7 +1984,7 @@
       "gas": 0,
       "value": 0
      },
-     "hash": "0xbbb2fdca2530be38cc7164cd15dba95cacad9689c80c3e4d7b5bd148f9a59354",
+     "hash": "0xba24f9390a6f87768c9973f07eb063001f87beaac9b368d434e0f14762c340a3",
      "logs": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
      "txbytes": "0xf88782010585174876e80183015f90947c20218efc2e07c8fe2532ff860d4a5d8287cb3180a01edee47e94d397e234908fc3d9e33e5c53d71a4bd945b2577edc73c3ba3019821ba0881d800b36dff092dea546c43db99011188837d37e4ee599ea6074c4f4f3a4e2a01e5dd2f523d19f03e1ca9c98b69fd10e771ed034bd3f8eb328b522d229de2791"
     }

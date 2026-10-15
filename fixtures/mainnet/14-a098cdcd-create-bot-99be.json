@@ -5,6 +5,9 @@
    "txHash": "0xa098cdcd814896a810055daf9590b2481379f2d7b89eadf57be31b49f97910cd",
    "gasUsed": "0xe5380"
   },
+  "config": {
+   "chainid": "0x1"
+  },
   "env": {
    "currentCoinbase": "0xEEa5B82B61424dF8020f5feDD81767f2d0D25Bfb",
    "currentDifficulty": "0x8e990e97cb166",
