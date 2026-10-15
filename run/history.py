@@ -18,4 +18,5 @@ gas = {p.parent.name + "/" + p.stem: int(next(iter(json.load(open(p)).values()))
        for p in (root / "fixtures").glob("*/*.json")}
 html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "gas": gas}))
 (root / "docs").mkdir(exist_ok=True)
+(root / "docs" / ".nojekyll").touch()
 (root / "docs" / "index.html").write_text(html)
