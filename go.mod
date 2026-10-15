@@ -1,6 +1,6 @@
 module github.com/erigontech/vm-bench
 
-go 1.27.2
+go 1.26.0
 
 require (
 	github.com/erigontech/erigon v1.9.7-0.20261015024125-21130d34c5b8
