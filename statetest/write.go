@@ -177,16 +177,22 @@ func FromTxReplay(path string) (name string, fx *Fixture, fork string, err error
 	if err := json.Unmarshal(raw, &src); err != nil {
 		return "", nil, "", err
 	}
+	name = strings.TrimSuffix(filepath.Base(path), ".json")
+	fx, fork, err = fromTxReplay(name, &src)
+	return name, fx, fork, err
+}
+
+func fromTxReplay(name string, src *txReplay) (fx *Fixture, fork string, err error) {
 	txn, err := types.UnmarshalTransactionFromJSON(src.Tx)
 	if err != nil {
-		return "", nil, "", err
+		return nil, "", err
 	}
 	var meta struct {
 		From common.Address `json:"from"`
 		Hash common.Hash    `json:"hash"`
 	}
 	if err := json.Unmarshal(src.Tx, &meta); err != nil {
-		return "", nil, "", err
+		return nil, "", err
 	}
 	cfg := chainspec.Mainnet.Config
 	num, time := src.Block.Number.Uint64(), src.Block.Time
@@ -196,7 +202,7 @@ func FromTxReplay(path string) (name string, fx *Fixture, fork string, err error
 	for addr, acc := range src.Prestate {
 		var a rawAccount
 		if err := json.Unmarshal(acc, &a); err != nil {
-			return "", nil, "", fmt.Errorf("%s prestate %s: %w", path, addr, err)
+			return nil, "", fmt.Errorf("%s prestate %s: %w", name, addr, err)
 		}
 		if a.Code == "" {
 			a.Code = "0x"
@@ -228,9 +234,8 @@ func FromTxReplay(path string) (name string, fx *Fixture, fork string, err error
 
 	var txBytes bytes.Buffer
 	if err := txn.MarshalBinary(&txBytes); err != nil {
-		return "", nil, "", err
+		return nil, "", err
 	}
-	name = strings.TrimSuffix(filepath.Base(path), ".json")
 	fx = &Fixture{
 		Info:        Info{Source: fmt.Sprintf("mainnet block %d", num), TxHash: meta.Hash.Hex(), GasUsed: hexutil.EncodeUint64(uint64(src.Receipt.GasUsed))},
 		Config:      Config{ChainID: "0x1"},
@@ -239,7 +244,7 @@ func FromTxReplay(path string) (name string, fx *Fixture, fork string, err error
 		Transaction: tx,
 		Post:        map[string][]PostState{fork: {{Hash: common.Hash{}.Hex(), Logs: common.Hash{}.Hex(), TxBytes: hexutil.Encode(txBytes.Bytes())}}},
 	}
-	return name, fx, fork, nil
+	return fx, fork, nil
 }
 
 // Write stores the fixture under its name, as EEST does: one test per file.

@@ -1,5 +1,10 @@
 # fill: rebuild fixtures/mainnet from erigon BenchmarkTxReplay fixtures (TXREPLAY=<dir>)
-# # refill: recompute hash/logs of every fixture after a format change
+# # fetch: add mainnet transactions from an archive node (TX=0xhash[=label],... RPC=<url>)
+RPC ?= https://eth.drpc.org
+fetch:
+	VMBENCH_FETCH=$(TX) VMBENCH_RPC=$(RPC) go test ./fill -run TestFetch -count=1
+
+# refill: recompute hash/logs of every fixture after a format change
 refill:
 	VMBENCH_REFILL=1 go test ./fill -run TestRefill -count=1
 

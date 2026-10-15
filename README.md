@@ -7,10 +7,12 @@ Real mainnet transactions as [EEST state tests](https://github.com/ethereum/exec
 ```
 make bench                      # erigon, every fixture, go benchmark output
 make bench ARGS='-bench Mainnet/4-'   # one fixture
+make fetch TX=0xhash=label,...  # add mainnet transactions from an archive node (RPC=<url>, default drpc)
 make fill TXREPLAY=<dir>        # rebuild fixtures/mainnet from erigon TxReplay fixtures
 make fill-benchmarkoor PAYLOADS=<dir>   # rebuild fixtures/benchmarkoor from the benchmarkoor compute payloads
 make refill                     # recompute every fixture's post state after a format change
 run/all.sh                      # every installed runner, then the Mgas/s table
+ERIGON=<sha|branch|dir> run/erigon.sh   # another erigon as column erigon-<ref>, compared against go.mod's
 ```
 
 ## Other clients
