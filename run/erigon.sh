@@ -5,13 +5,14 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 client=erigon
 modflag=()
+export GONOSUMDB=github.com/erigontech/erigon
 if [ -n "${ERIGON:-}" ]; then
 	mod=$(mktemp -d)/go.mod
 	cp go.mod "$mod"; cp go.sum "${mod%.mod}.sum"
 	if [ -d "$ERIGON" ]; then
 		go mod edit -modfile="$mod" -replace "github.com/erigontech/erigon=$ERIGON"
 	else
-		go get -modfile="$mod" "github.com/erigontech/erigon@$ERIGON" >/dev/null 2>&1
+		go get -modfile="$mod" "github.com/erigontech/erigon@$ERIGON" 2>&1 | grep -v '^go: downloading' >&2 || true
 	fi
 	modflag=(-modfile="$mod")
 	client=erigon-${ERIGON##*/}
