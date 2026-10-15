@@ -12,6 +12,6 @@ s=$(now); printf '\n' | "$NETHTEST" --stateTest -n -j -x >/dev/null 2>&1; e=$(no
 for f in fixtures/*/*.json; do
 	key=${f#fixtures/}; key=${key%.json}
 	"$NETHTEST" --stateTest -n -j -i "$f" 2>/dev/null | jq -e '.[0].pass' >/dev/null || { echo "nethermind: $key failed" >&2; continue; }
-	s=$(now); { yes "$f" | head -n "${REPEAT:-3}"; echo; } | "$NETHTEST" --stateTest -n -j -x >/dev/null 2>&1; e=$(now)
+	s=$(now); { for _ in $(seq "${REPEAT:-3}"); do echo "$f"; done; echo; } | "$NETHTEST" --stateTest -n -j -x >/dev/null 2>&1; e=$(now)
 	echo "$key,nethermind,$(( (e - s - startup) / ${REPEAT:-3} ))"
 done

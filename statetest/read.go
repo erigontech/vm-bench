@@ -45,7 +45,10 @@ func parseU256(s string) (*uint256.Int, error) {
 	if s == "" {
 		return nil, nil
 	}
-	v, err := uint256.FromHex(s)
+	v, err := uint256.FromHex("0x" + strings.TrimLeft(strings.TrimPrefix(s, "0x"), "0"))
+	if strings.Trim(s, "0x") == "" {
+		return new(uint256.Int), nil
+	}
 	if err != nil {
 		return nil, fmt.Errorf("%q: %w", s, err)
 	}
