@@ -16,7 +16,7 @@ small{color:#666}
 </style>
 <h1>vm-bench <small id="when"></small></h1>
 <p><small>Mgas/s per transaction. Ratio = erigon / client, above 1 means erigon is faster. evmone and nethermind are process wall time, the others execution only.</small></p>
-<h2>Over time: geometric mean of Mgas/s</h2>
+<h2>Over time: geometric mean of Mgas/s per group</h2>
 <div id="charts"></div>
 <h2 id="latest-title">Latest run</h2>
 <div id="latest"></div>
@@ -42,6 +42,7 @@ function chart(title, series) {
   const x = i => pl + i * (w - pl - pr) / (n - 1), y = v => pt + (h - pt - pb) * (1 - (v - ymin) / (ymax - ymin));
   let svg = `<svg width="${w}" height="${h}"><text x="${pl}" y="16" font-weight="bold">${title}</text>`;
   for (let k = 0; k <= 4; k++) { const v = ymin + (ymax - ymin) * k / 4; svg += `<line x1="${pl}" x2="${w - pr}" y1="${y(v)}" y2="${y(v)}" stroke="#eee"/><text x="${pl - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${v.toFixed(0)}</text>`; }
+  svg += `<text x="${w - pr}" y="16" text-anchor="end" font-size="11">Mgas/s</text>`;
   runs.forEach((r, i) => svg += `<text x="${x(i)}" y="${h - 8}" text-anchor="middle" font-size="11">${r.date}</text>`);
   for (const s of series) {
     const pts = s.values.map((v, i) => v > 0 ? [x(i), y(v)] : null);
@@ -57,10 +58,10 @@ document.getElementById("charts").innerHTML = groups.map(g => chart(g, clients.m
 
 function table(run) {
   const base = clients.find(c => c.startsWith("erigon"));
-  let html = `<table><tr><th>fixture</th>${clients.map(c => `<th>${c}</th>`).join("")}${clients.filter(c => c !== base).map(c => `<th>${base}/${c}</th>`).join("")}</tr>`;
+  let html = `<table><tr><th>fixture</th><th>gas</th>${clients.map(c => `<th>${c}<br>Mgas/s</th>`).join("")}${clients.filter(c => c !== base).map(c => `<th>${base}/${c}</th>`).join("")}</tr>`;
   for (const f of fixtures.filter(f => run.ns[f])) {
     const v = c => run.ns[f][c] ? mgas(run, f, c) : NaN;
-    html += `<tr data-f="${f}"><td>${f}</td>${clients.map(c => `<td>${isNaN(v(c)) ? "-" : v(c).toFixed(1)}</td>`).join("")}`;
+    html += `<tr data-f="${f}"><td>${f}</td><td>${(data.gas[f] / 1e6).toFixed(2)}M</td>${clients.map(c => `<td>${isNaN(v(c)) ? "-" : v(c).toFixed(1)}</td>`).join("")}`;
     html += clients.filter(c => c !== base).map(c => { const r = v(base) / v(c); return `<td class="${r > 1.02 ? "up" : r < 0.98 ? "down" : ""}">${isNaN(r) ? "-" : r.toFixed(2)}</td>`; }).join("") + "</tr>";
   }
   return html + "</table>";
