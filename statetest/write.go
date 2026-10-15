@@ -300,6 +300,9 @@ type Config struct {
 // normalize drops accounts that do not exist on chain and pads storage to 32-byte hex,
 // which is what evmone's loader and the other runners agree on.
 func (fx *Fixture) normalize() {
+	if len(fx.Env.Difficulty)%2 == 1 {
+		fx.Env.Difficulty = "0x0" + strings.TrimPrefix(fx.Env.Difficulty, "0x")
+	}
 	for addr, a := range fx.Pre {
 		if a.Balance == "0x0" && a.Nonce == "0x0" && a.Code == "0x" && len(a.Storage) == 0 {
 			delete(fx.Pre, addr)

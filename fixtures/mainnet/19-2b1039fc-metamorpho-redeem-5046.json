@@ -10,7 +10,7 @@
   },
   "env": {
    "currentCoinbase": "0xdadB0d80178819F2319190D340ce9A924f783711",
-   "currentDifficulty": "0x0",
+   "currentDifficulty": "0x00",
    "currentRandom": "0xa54d5b5af834f0f5dd072932c35cef91c5d0e41559e7129260959da1863b3f24",
    "currentGasLimit": "0x3938700",
    "currentNumber": "0x18db1cb",

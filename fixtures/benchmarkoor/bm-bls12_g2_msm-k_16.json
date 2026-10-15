@@ -10,7 +10,7 @@
   },
   "env": {
    "currentCoinbase": "0x2ADC25665018Aa1FE0E6BC666DaC8Fc2697fF9bA",
-   "currentDifficulty": "0x0",
+   "currentDifficulty": "0x00",
    "currentRandom": "0x0000000000000000000000000000000000000000000000000000000000000000",
    "currentGasLimit": "0x3bc78941",
    "currentNumber": "0x3",
@@ -31,7 +31,7 @@
     "nonce": "0x1",
     "storage": {}
    },
-   "0x6781eDAA807Be8e2156Eb29B7aD33c0d75dC8a6F": {
+   "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b": {
     "balance": "0xc9f2c9cd04b0bab6ee16e4000",
     "code": "0x",
     "nonce": "0x0",
@@ -57,8 +57,8 @@
     "0x0"
    ],
    "gasPrice": "0x5995f5c0",
-   "sender": "0x6781eDAA807Be8e2156Eb29B7aD33c0d75dC8a6F",
-   "secretKey": "0x0000000000000000000000000000000000000000000000000000000000000000"
+   "sender": "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b",
+   "secretKey": "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8"
   },
   "post": {
    "Amsterdam": [
@@ -68,7 +68,7 @@
       "gas": 0,
       "value": 0
      },
-     "hash": "0x109b5fbedee7b14ea32a1abf9832c198cd0266c96f9b391ada84b28e270cb3c2",
+     "hash": "0x4fdfbb0fef26e01fd89e72c2db328bd5b4a794826426727f206ca2c34f047cd6",
      "logs": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347"
     }
    ]

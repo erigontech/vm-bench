@@ -10,7 +10,7 @@
   },
   "env": {
    "currentCoinbase": "0x2ADC25665018Aa1FE0E6BC666DaC8Fc2697fF9bA",
-   "currentDifficulty": "0x0",
+   "currentDifficulty": "0x00",
    "currentRandom": "0x0000000000000000000000000000000000000000000000000000000000000000",
    "currentGasLimit": "0x3bc78941",
    "currentNumber": "0x3",
@@ -21,12 +21,6 @@
   "pre": {
    "0x2ADC25665018Aa1FE0E6BC666DaC8Fc2697fF9bA": {
     "balance": "0x50b8573265080",
-    "code": "0x",
-    "nonce": "0x0",
-    "storage": {}
-   },
-   "0x2CFf956703A8d8d04b9013D24EcDa75951a47F98": {
-    "balance": "0xc9f2c9cd046ce83e000000000",
     "code": "0x",
     "nonce": "0x0",
     "storage": {}
@@ -73,6 +67,12 @@
     "nonce": "0x0",
     "storage": {}
    },
+   "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b": {
+    "balance": "0xc9f2c9cd046ce83e000000000",
+    "code": "0x",
+    "nonce": "0x0",
+    "storage": {}
+   },
    "0xf269F1c20Bd59867AD1398Bd53Eb4C995a55A022": {
     "balance": "0x5995f5c0000000",
     "code": "0x",
@@ -105,8 +105,8 @@
     "0x0"
    ],
    "gasPrice": "0x5995f5c0",
-   "sender": "0x2CFf956703A8d8d04b9013D24EcDa75951a47F98",
-   "secretKey": "0x0000000000000000000000000000000000000000000000000000000000000000"
+   "sender": "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b",
+   "secretKey": "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8"
   },
   "post": {
    "Amsterdam": [
@@ -116,7 +116,7 @@
       "gas": 0,
       "value": 0
      },
-     "hash": "0x64f51710d6b6dc7ba17a8257dd9fb86fda3868bb793275a74968c6dad487dea0",
+     "hash": "0x65cfd0b3f3f1405fa448833ec6668e647ab12a17ed6212bf097666679220337d",
      "logs": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347"
     }
    ]

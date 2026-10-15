@@ -15,6 +15,8 @@ import (
 	"github.com/erigontech/vm-bench/statetest"
 )
 
+var preSpuriousDragon = map[string]bool{"Frontier": true, "Homestead": true, "EIP150": true}
+
 func TestFill(t *testing.T) {
 	src := os.Getenv("VMBENCH_TXREPLAY")
 	if src == "" {
@@ -29,6 +31,10 @@ func TestFill(t *testing.T) {
 	for _, path := range paths {
 		name, fx, fork, err := statetest.FromTxReplay(path)
 		require.NoError(t, err, path)
+		if preSpuriousDragon[fork] {
+			t.Logf("skip %s: erigon's commitment cannot hold the empty accounts %s persists", name, fork)
+			continue
+		}
 		t.Run(name, func(t *testing.T) {
 			require.NoError(t, statetest.Write(out, name, fx))
 			_, loaded, loadedFork, err := statetest.Load(filepath.Join(out, name+".json"))

@@ -92,6 +92,10 @@ func FixtureName(id string) string {
 }
 
 // FromPayload builds the state test of the benchmark payload's first transaction over pre.
+const BenchSecretKey = "0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8"
+
+var BenchSender = common.HexToAddress("0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b")
+
 func FromPayload(p *Payload, txn types.Transaction, sender common.Address, pre map[string]Account, fork string) *Fixture {
 	env := Env{
 		Coinbase:   p.FeeRecipient.Hex(),
@@ -105,12 +109,18 @@ func FromPayload(p *Payload, txn types.Transaction, sender common.Address, pre m
 	if p.ExcessBlobGas != nil {
 		env.ExcessBlobGas = hexutil.EncodeUint64(uint64(*p.ExcessBlobGas))
 	}
+	tx := transactionFields(txn, sender)
+	// The benchmark sender holds no role in the contracts, so it can be the EEST test account:
+	// nethtest ignores the sender field and derives it from secretKey.
+	pre[BenchSender.Hex()] = pre[sender.Hex()]
+	delete(pre, sender.Hex())
+	tx.Sender, tx.SecretKey = BenchSender.Hex(), BenchSecretKey
 	return &Fixture{
 		Info:        Info{Source: "benchmarkoor compute suite, first transaction of the benchmark block", TxHash: txn.Hash().Hex()},
 		Config:      Config{ChainID: "0x1"},
 		Env:         env,
 		Pre:         pre,
-		Transaction: transactionFields(txn, sender),
+		Transaction: tx,
 		Post:        map[string][]PostState{fork: {{Hash: common.Hash{}.Hex(), Logs: common.Hash{}.Hex()}}},
 	}
 }
