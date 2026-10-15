@@ -43,3 +43,26 @@ func TestFill(t *testing.T) {
 		})
 	}
 }
+
+// TestRefill recomputes the post state of every fixture after a format change:
+//
+//	VMBENCH_REFILL=1 go test ./fill -run TestRefill
+func TestRefill(t *testing.T) {
+	if os.Getenv("VMBENCH_REFILL") == "" {
+		t.Skip("set VMBENCH_REFILL=1 to rewrite fixtures/*/*.json")
+	}
+	paths, err := filepath.Glob(filepath.Join("..", "fixtures", "*", "*.json"))
+	require.NoError(t, err)
+	require.NotEmpty(t, paths)
+	for _, path := range paths {
+		name, fx, fork, err := statetest.Load(path)
+		require.NoError(t, err, path)
+		t.Run(name, func(t *testing.T) {
+			root, logs, gasUsed := Fill(t, fx, fork)
+			require.Equal(t, fx.Info.GasUsed, hexutil.EncodeUint64(gasUsed), "gas used must match the recorded receipt")
+			fx.Post[fork][0].Hash = root.Hex()
+			fx.Post[fork][0].Logs = logs.Hex()
+			require.NoError(t, statetest.Write(filepath.Dir(path), name, fx))
+		})
+	}
+}

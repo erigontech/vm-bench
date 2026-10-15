@@ -1,5 +1,9 @@
 # fill: rebuild fixtures/mainnet from erigon BenchmarkTxReplay fixtures (TXREPLAY=<dir>)
-# bench: run every fixture on erigon's EVM
+# # refill: recompute hash/logs of every fixture after a format change
+refill:
+	VMBENCH_REFILL=1 go test ./fill -run TestRefill -count=1
+
+bench: run every fixture on erigon's EVM
 TXREPLAY ?= testdata/txreplay
 
 fill:

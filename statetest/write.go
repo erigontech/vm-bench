@@ -244,6 +244,7 @@ func FromTxReplay(path string) (name string, fx *Fixture, fork string, err error
 
 // Write stores the fixture under its name, as EEST does: one test per file.
 func Write(dir, name string, fx *Fixture) error {
+	fx.normalize()
 	out, err := json.MarshalIndent(map[string]*Fixture{name: fx}, "", " ")
 	if err != nil {
 		return err
@@ -294,4 +295,25 @@ func transactionFields(txn types.Transaction, sender common.Address) Transaction
 // Config names the chain the transactions are signed for.
 type Config struct {
 	ChainID string `json:"chainid"`
+}
+
+// normalize drops accounts that do not exist on chain and pads storage to 32-byte hex,
+// which is what evmone's loader and the other runners agree on.
+func (fx *Fixture) normalize() {
+	for addr, a := range fx.Pre {
+		if a.Balance == "0x0" && a.Nonce == "0x0" && a.Code == "0x" && len(a.Storage) == 0 {
+			delete(fx.Pre, addr)
+			continue
+		}
+		storage := make(map[string]string, len(a.Storage))
+		for k, v := range a.Storage {
+			storage[pad32(k)] = pad32(v)
+		}
+		a.Storage = storage
+		fx.Pre[addr] = a
+	}
+}
+
+func pad32(hex string) string {
+	return fmt.Sprintf("0x%064s", strings.TrimPrefix(hex, "0x"))
 }
