@@ -167,7 +167,7 @@ function ratioCell(k) {
   return `<td class="ratio"><span class="rb">${bar}</span><span class="n ${cls(k)}">${k.toFixed(2)}</span></td>`;
 }
 const others = clients.filter(c => c !== base);
-let html = `<table><thead><tr><th>fixture</th><th>gas</th>${clients.map(c => `<th>${c}</th>`).join("")}${others.map(c => `<th>vs ${c}</th>`).join("")}</tr></thead><tbody>`;
+let html = `<table><thead><tr><th>fixture</th><th>gas</th>${clients.map(c => `<th>${c}</th>`).join("")}${others.map(c => `<th>e/${c.replace(/^revme$/, "revm")}</th>`).join("")}</tr></thead><tbody>`;
 for (const g of groups) {
   html += `<tr class="group"><td colspan="${2 + clients.length + others.length}">${g}</td></tr>`;
   for (const f of fixtures.filter(f => f.startsWith(g + "/") && last.ns[f])) {

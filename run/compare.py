@@ -20,7 +20,7 @@ def mgas(fixture, client):
     return gas / ns[fixture][client] * 1e3
 
 width = max(map(len, ns)) + 2
-print("fixture".ljust(width) + "".join(f"{c:>12}" for c in clients) + "".join(f"{base + '/' + c:>14}" for c in clients if c != base))
+print("fixture".ljust(width) + "".join(f"{c:>12}" for c in clients) + "".join(f"{'e/' + c.replace('revme', 'revm'):>14}" for c in clients if c != base))
 for fixture in sorted(ns):
     row = {c: mgas(fixture, c) for c in clients if c in ns[fixture]}
     cells = "".join(f"{row[c]:>12.1f}" if c in row else f"{'-':>12}" for c in clients)
