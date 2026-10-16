@@ -4,6 +4,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 export PATH=$HOME/go/bin:$HOME/.cargo/bin:$PATH
+export DOTNET_ROOT=${DOTNET_ROOT:-$HOME/.dotnet}
 export EVMONE=${EVMONE:-$HOME/evmone/bin/evmone} NETHTEST=${NETHTEST:-$HOME/nethtest/nethtest}
 export LD_LIBRARY_PATH=$HOME/evmone/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 mkdir -p results
