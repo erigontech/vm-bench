@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # Blockchain-test fixtures through each client's own test runner, wall time minus the no-block twin.
 # usage: run/blocktest.sh <client>   client = erigon | geth | revme | nethermind | evmone
-# Pinned to one core (CORE=n): nethtest and revme run the tests of a file in parallel, the EVM is
-# single-threaded in every client, so one core measures the same thing everywhere.
+# One block per process (see eest-select.py), no CPU pinning: a client may use its background threads as in production.
 # prints file,client,gas,ms,twin_ms  (ms = best of REPEAT runs of the whole file)
 set -uo pipefail
 cd "$(dirname "$0")/.."
@@ -16,7 +15,7 @@ case $client in
 	*) echo "unknown client $client" >&2; exit 2 ;;
 esac
 now() { perl -MTime::HiRes=time -e 'printf "%.0f", time * 1e3'; }
-best() { local b=; for _ in $(seq "${REPEAT:-3}"); do s=$(now); taskset -c "${CORE:-3}" "${cmd[@]}" "$1" >/dev/null 2>&1 || return 1; e=$(now); [ -z "$b" ] || [ $((e - s)) -lt "$b" ] && b=$((e - s)); done; echo "$b"; }
+best() { local b=; for _ in $(seq "${REPEAT:-3}"); do s=$(now); "${cmd[@]}" "$1" >/dev/null 2>&1 || return 1; e=$(now); [ -z "$b" ] || [ $((e - s)) -lt "$b" ] && b=$((e - s)); done; echo "$b"; }
 for f in blocktests/eest/${FILTER:-*}.json; do
 	name=$(basename "$f" .json)
 	gas=$(python3 -c 'import json,sys; print(sum(int(b["blockHeader"]["gasUsed"],16) for t in json.load(open(sys.argv[1])).values() for b in t["blocks"]))' "$f")

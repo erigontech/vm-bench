@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Pick one gas variant of the EEST benchmark blockchain tests into blocktests/eest/<name>.json and write the
-no-block twin of each file into blocktests/eest-twin/<name>.json (same genesis, no blocks, post = pre).
+"""One block per file: the first test of the chosen gas variant from every EEST benchmark blockchain-test file goes to
+blocktests/eest/<name>.json, its no-block twin (same genesis, no blocks, post = pre) to blocktests/eest-twin/<name>.json.
+One test per process keeps runners that execute a file's tests in parallel honest.
 usage: run/eest-select.py <fixtures dir of benchmark@vX> [gas variant, default 150M]"""
 import json, sys
 from pathlib import Path
@@ -12,7 +13,7 @@ out.mkdir(parents=True, exist_ok=True); twin.mkdir(parents=True, exist_ok=True)
 files = tests = 0
 for p in sorted((src / "blockchain_tests").rglob("*.json")):
     d = json.load(open(p))
-    keep = {k: v for k, v in d.items() if f"gas-value_{variant}" in k}
+    keep = dict(sorted((k, v) for k, v in d.items() if f"gas-value_{variant}" in k)[:1])
     if not keep: continue
     name = p.stem
     json.dump(keep, open(out / f"{name}.json", "w"), separators=(",", ":"))
