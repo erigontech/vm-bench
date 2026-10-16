@@ -3,6 +3,8 @@
 # print the comparison.
 set -uo pipefail
 cd "$(dirname "$0")/.."
+# The box lock every benchmark script on the box takes, so nothing else measures or builds meanwhile.
+exec 9>"${BENCH_LOCK:-/tmp/n5bench.lock}"; flock 9
 export PATH=$HOME/go/bin:$HOME/.cargo/bin:$PATH
 export DOTNET_ROOT=${DOTNET_ROOT:-$HOME/.dotnet}
 export EVMONE=${EVMONE:-$HOME/evmone/bin/evmone} NETHTEST=${NETHTEST:-$HOME/nethtest/nethtest}
