@@ -33,7 +33,8 @@ marked `*` and must never be quoted as an EVM comparison.
 - **Same work for every client.** One test per file, eight sequential copies of its 150M-gas block
   (`run/eest-select.py <fixtures> 150M 8`), so runners that parallelise a file's tests (nethtest, revme) cannot.
   nethtest runs with `--parallelExecution false` (no BAL parallel execution). nethtest's ~3 s dotnet start-up is
-  cancelled by timing the file and the twin in one process after a warm pass.
+  cancelled by timing the file and the twin in one process after a warm pass; so its twin/T is always high and only
+  the 100 ms floor greys its cells.
 - **Precompile groups compare caches.** EEST precompile tests repeat one input and geth and nethermind cache precompile
   results, so precompile rows stay in the tables but never in a hero.
 - **Reproducibility is part of the result.** Rerun the same binaries: the EVM tier reproduces within 0.4%, the node
