@@ -13,7 +13,7 @@ for client in ${CLIENTS:-erigon geth revme evmone nethermind}; do
 done
 if [ -d blocktests/eest ]; then
 	: > results/blocktest.csv
-	for client in ${CLIENTS:-erigon geth revme evmone nethermind}; do run/blocktest.sh $client >> results/blocktest.csv; done
+	for client in ${CLIENTS:-erigon geth revme evmone nethermind}; do REPEAT=${REPEAT:-2} run/blocktest.sh $client >> results/blocktest.csv; done
 fi
 snap=history/$(date -u +%Y-%m-%dT%H%M)
 mkdir -p "$snap"
