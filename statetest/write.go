@@ -207,6 +207,12 @@ func fromTxReplay(name string, src *txReplay) (fx *Fixture, fork string, err err
 		if a.Code == "" {
 			a.Code = "0x"
 		}
+		if a.Nonce == "" {
+			a.Nonce = "0x0"
+		}
+		if a.Balance == "" {
+			a.Balance = "0x0"
+		}
 		if a.Storage == nil {
 			a.Storage = map[string]string{}
 		}
