@@ -1,4 +1,11 @@
-<!doctype html>
+for (const r of data.runs) for (const [f, byClient] of Object.entries(r.calls || {})) callsLatest[f] = byClient;
+const callsCell = f => {
+  const by = callsLatest[f] || {}, ek = Object.keys(by).find(c => c.startsWith("erigon")), rk = Object.keys(by).find(c => c.startsWith("reth"));
+  const tip = Object.entries(by).map(([c, x]) => `${c}: ${x.rps.toFixed(0)} rps, p50 ${x.p50} ms, p99 ${x.p99} ms${x.err ? ", " + x.err + " errors" : ""}`).join("\n");
+  if (!ek) return `<td class="gas">–</td><td class="gas">–</td><td class="ratio"><span class="n even">–</span></td>`;
+  const e = by[ek];
+  return `<td class="gas" title="${tip}">${e.rps.toFixed(0)}${e.err ? " !" : ""}</td><td title="${tip}">${(e.rps * data.gas[f] / 1e6).toFixed(1)}</td>` + (rk ? ratioCell(e.rps / by[rk].rps).replace("<td ", `<td title="${tip}" `) : `<td class="ratio"><span class="n even">–</span></td>`);
+};<!doctype html>
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -97,7 +104,7 @@ td.ratio .win{color:var(--win);font-weight:600}td.ratio .loss{color:var(--loss);
 <div class="charts" id="charts"></div>
 
 <h2>Every fixture, latest run</h2>
-<p class="note">Mgas/s per client and the ratio erigon / client. The bar extends right when erigon is faster, left when slower, from the 1.0 line. eth_call rps and Mgas/s: the same transaction as an eth_call against a mainnet node, 16 connections, Mgas/s = rps × gas; hover for p50/p99. Click a row for its history. * geth times the pre-state setup with the execution, evmone and neth are process wall time, so their columns are not comparable; erigon and revm are execution only.</p>
+<p class="note">Mgas/s per client and the ratio erigon / client. The bar extends right when erigon is faster, left when slower, from the 1.0 line. eth_call rps and Mgas/s: the same transaction as an eth_call against erigon on one mainnet node, 16 connections, Mgas/s = rps × gas; e/reth call = erigon rps / reth rps on the same box and datadir window; hover for p50/p99 of both. Click a row for its history. * geth times the pre-state setup with the execution, evmone and neth are process wall time, so their columns are not comparable; erigon and revm are execution only.</p>
 <div class="wrap" id="latest"></div>
 <div class="series-head" id="series-head" hidden><h3 id="series-title"></h3><button id="series-close">Close</button></div>
 <div id="series"></div>
@@ -180,9 +187,9 @@ function ratioCell(k) {
   return `<td class="ratio"><span class="rb">${bar}</span><span class="n ${cls(k)}">${k.toFixed(2)}</span></td>`;
 }
 const others = clients.filter(c => c !== base && execOnly(c));
-let html = `<table><thead><tr><th>fixture</th><th>gas</th><th>eth_call rps</th><th>eth_call Mgas/s</th>${clients.map(c => `<th>${name(c)}${execOnly(c) ? "" : "*"}</th>`).join("")}${others.map(c => `<th>e/${name(c)}${execOnly(c) ? "" : "*"}</th>`).join("")}</tr></thead><tbody>`;
+let html = `<table><thead><tr><th>fixture</th><th>gas</th><th>eth_call rps</th><th>eth_call Mgas/s</th><th>e/reth call</th>${clients.map(c => `<th>${name(c)}${execOnly(c) ? "" : "*"}</th>`).join("")}${others.map(c => `<th>e/${name(c)}${execOnly(c) ? "" : "*"}</th>`).join("")}</tr></thead><tbody>`;
 for (const g of groups) {
-  html += `<tr class="group"><td colspan="${4 + clients.length + others.length}">${title(g)}</td></tr>`;
+  html += `<tr class="group"><td colspan="${5 + clients.length + others.length}">${title(g)}</td></tr>`;
   for (const f of fixtures.filter(f => f.startsWith(g + "/") && last.ns[f])) {
     const v = c => mgas(last, f, c);
     html += `<tr data-f="${f}" tabindex="0"><td class="f" title="${f}">${f.slice(g.length + 1)}</td><td class="gas">${(data.gas[f] / 1e6).toFixed(2)}M</td>${callsCell(f)}` +
