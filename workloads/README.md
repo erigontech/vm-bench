@@ -44,3 +44,7 @@ run/rpc-regen.sh <url> <rpc-tests checkout>   # qa-mixed@<head> and qa-getlogs@<
 `workloads/qa-mixed@<head>/` and `workloads/qa-getlogs@<head>/` directories; the existing ones stay. Point it at a node
 that does not advance (no consensus client attached): its head becomes the pinned block, and the script stops if the
 head moves during generation.
+
+## What reproduces
+
+Two independent runs of the same binaries on the same node: served rps equals the rate on every rung below the knee, and the knee (highest rung served in full without errors) is the same rung in both runs. p50 and p99 reproduce within a few percent on single-method workloads; on the mixed corpora a short rung has too few samples for p99, so each rung lasts until it has sent 20000 requests (at most 120 s). Near the knee latency is not reproducible (open loop flips between keeping up and queueing): compare clients on the knee rung and on latency one rung below it.

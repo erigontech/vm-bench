@@ -18,7 +18,9 @@ if [ "$bad" -gt 5 ]; then echo "$wl: $client answers errors to $bad of the first
 attack() { vegeta attack -format=json -targets="$tmp/targets" -rate="$1" -duration="$2" -timeout=30s -max-body=0 -workers=16; }
 for rate in $(cat "workloads/$wl/rates"); do
 	attack "$rate" 5s > /dev/null
-	attack "$rate" "${SECS:-20}s" | vegeta report -type=json |
+	# p99 needs samples: at least 20000 requests per rung, between SECS and 120 s.
+	secs=$(( 20000 / rate )); [ "$secs" -lt "${SECS:-20}" ] && secs=${SECS:-20}; [ "$secs" -gt 120 ] && secs=120
+	attack "$rate" "${secs}s" | vegeta report -type=json |
 		jq -r --arg w "$wl" --arg c "$client" --arg r "$rate" '[$w, $c, $r, (.throughput | floor), (.latencies["50th"] / 1e4 | round / 100), (.latencies["95th"] / 1e4 | round / 100), (.latencies["99th"] / 1e4 | round / 100), (.requests - (.requests * .success | round))] | @csv' | tr -d '"'
 done
 rm -r "$tmp"
