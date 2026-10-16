@@ -37,7 +37,7 @@ marked `*` and must never be quoted as an EVM comparison.
   the 100 ms floor greys its cells.
 - **Precompile groups compare caches.** EEST precompile tests repeat one input and geth and nethermind cache precompile
   results, so precompile rows stay in the tables but never in a hero.
-- **Reproducibility is part of the result.** Rerun the same binaries: the EVM tier reproduces within 0.4%, the node
+- **Reproducibility is part of the result.** Rerun the same binaries: the EVM tier reproduces within 0.4% (nethermind ±4%: quote its geomean with that, never one cell), the node
   tier within 1.3% pass to pass. RPC: compare on the knee rung (highest rate served in full without errors) and on
   latency one rung below it; latency at the knee is not reproducible (open loop). Each rung sends ≥ 20000 requests.
 - **Pin everything.** Client versions go to `history/<t>/versions.csv`; RPC corpora pin `latest` to a block number;
