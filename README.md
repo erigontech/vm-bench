@@ -79,3 +79,5 @@ the method shares and the blocks a node must hold. `run/rpc.sh <workload> <url> 
 and prints `workload,client,rate,rps,p50_ms,p95_ms,p99_ms,err`; `run/rpc-workload.py` builds a new workload from a
 vegeta targets file or a file of JSON-RPC bodies. Results from different machines compare on latency at equal rate and
 on the knee rate, not on peak rps.
+[`workloads/README.md`](workloads/README.md) lists the node flags each client needs, which workloads each client can
+serve, and how to regenerate the QA workloads at a new block.
