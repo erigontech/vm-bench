@@ -1,7 +1,3 @@
-if [ -d blocktests/eest ]; then
-	: > results/blocktest.csv
-	for client in ${CLIENTS:-erigon geth revme evmone nethermind}; do run/blocktest.sh $client >> results/blocktest.csv; done
-fi
 #!/usr/bin/env bash
 # Run every runner (CLIENTS=... for a subset, other results/ stay), keep the run under history/<time>/, rebuild docs/index.html,
 # print the comparison.
@@ -15,6 +11,10 @@ mkdir -p results
 for client in ${CLIENTS:-erigon geth revme evmone nethermind}; do
 	run/$client.sh > results/$client.csv || echo "$client: runner failed" >&2
 done
+if [ -d blocktests/eest ]; then
+	: > results/blocktest.csv
+	for client in ${CLIENTS:-erigon geth revme evmone nethermind}; do run/blocktest.sh $client >> results/blocktest.csv; done
+fi
 snap=history/$(date -u +%Y-%m-%dT%H%M)
 mkdir -p "$snap"
 for f in results/*.csv; do [ -s "$f" ] && cp "$f" "$snap/"; done
