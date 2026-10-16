@@ -15,6 +15,9 @@ case $client in
 	*) echo "unknown client $client" >&2; exit 2 ;;
 esac
 now() { perl -MTime::HiRes=time -e 'printf "%.0f", time * 1e3'; }
+if [ "$client" = nethermind ]; then
+	exec run/nethtest-stream.py "${NETHTEST:-$HOME/nethtest/nethtest}" "${REPEAT:-3}" blocktests/eest/*/${FILTER:-*}.json
+fi
 best() { local b=; for _ in $(seq "${REPEAT:-3}"); do s=$(now); "${cmd[@]}" "$1" >/dev/null 2>&1 || return 1; e=$(now); [ -z "$b" ] || [ $((e - s)) -lt "$b" ] && b=$((e - s)); done; echo "$b"; }
 for f in blocktests/eest/*/${FILTER:-*}.json; do
 	name=${f#blocktests/eest/}; name=${name%.json}

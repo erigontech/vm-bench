@@ -88,7 +88,7 @@ td.ratio .win{color:var(--win);font-weight:600}td.ratio .loss{color:var(--loss);
 <section class="race" id="race"></section>
 
 <h2 id="bt-title" hidden>EVM: EEST benchmark blocks</h2>
-<p class="note" id="bt-note" hidden>One 150M-gas block per test, run through each client's own blockchain-test tool (geth and erigon <code>evm blocktest</code>, revme <code>blockchaintest</code>, nethtest <code>-b</code>, <code>evmone test</code>), one block per process. Mgas/s = gas / (wall time of the file − wall time of the same file with no blocks), best of 3. Every client parses the fixture, executes the block and checks the state root, so the number is comparable across clients. Grey = the no-block twin is more than 30% of the run, setup-dominated. The precompile tests repeat one input, and geth and neth serve repeated precompile calls from a result cache, so that group compares caches, not precompiles; the hero uses instruction and scenario only. Fixtures: <a href="https://github.com/ethereum/execution-spec-tests/releases/tag/benchmark%40v0.0.7">EEST benchmark@v0.0.7</a>, 150M variant.</p>
+<p class="note" id="bt-note" hidden>One 150M-gas block per test, run through each client's own blockchain-test tool (geth and erigon <code>evm blocktest</code>, revme <code>blockchaintest</code>, nethtest <code>-b</code>, <code>evmone test</code>), one block per process. Mgas/s = gas / (wall time of the file − wall time of the same file with no blocks), best of 3. Every client parses the fixture, executes the block and checks the state root, so the number is comparable across clients. Grey = the no-block twin is more than 30% of the run or the net time is under 100 ms: setup-dominated or too short for a wall clock. The precompile tests repeat one input, and geth and neth serve repeated precompile calls from a result cache, so that group compares caches, not precompiles; the hero uses instruction and scenario only. Fixtures: <a href="https://github.com/ethereum/execution-spec-tests/releases/tag/benchmark%40v0.0.7">EEST benchmark@v0.0.7</a>, 150M variant.</p>
 <section class="race" id="bt-race" hidden></section>
 <div class="wrap" id="bt" hidden></div>
 
@@ -220,7 +220,7 @@ if (btRun) {
   const files = Object.keys(btRun.bt).sort();
   const btClients = [...new Set(files.flatMap(f => Object.keys(btRun.bt[f])))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || a.localeCompare(b));
   const btMgas = (f, c) => { const x = btRun.bt[f]?.[c]; return x && x.ms > x.twin ? x.gas / (x.ms - x.twin) / 1e3 : NaN; };
-  const btGrey = (f, c) => { const x = btRun.bt[f]?.[c]; return x && x.twin / x.ms > 0.3; };
+  const btGrey = (f, c) => { const x = btRun.bt[f]?.[c]; return x && (x.twin / x.ms > 0.3 || x.ms - x.twin < 100); };
   const btBase = btClients.find(c => c.startsWith("erigon"));
   const heroFiles = files.filter(f => !f.startsWith("precompile/"));
   const means = btClients.map(c => ({ c, v: geomean(heroFiles.map(f => btGrey(f, c) ? NaN : btMgas(f, c))) })).filter(r => !isNaN(r.v));
