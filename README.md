@@ -33,3 +33,12 @@ Wall-time numbers are only meaningful on the benchmarkoor fixtures (100 ms and u
 `fixtures/benchmarkoor/` holds the compute-suite tests erigon runs slowest, listed in `fill/benchmarkoor_tests.txt`: the setup payloads of each test run on an empty state with funded senders, the state they leave is the prestate, and the first transaction of the benchmark block is the test. The payloads are signed for the devnet's chain id, so these fixtures carry the sender and no `txbytes`.
 
 The erigon runner links erigon, which is LGPL-3.0; this repository is Apache-2.0.
+
+## EEST benchmark blocks
+
+The comparable cross-client number. `run/eest-select.py <fixtures dir> 150M` picks the 150M-gas variant of the
+[EEST benchmark](https://github.com/ethereum/execution-spec-tests/releases/tag/benchmark%40v0.0.7) blockchain tests
+into `blocktests/eest/` and writes a no-block twin of every file; `run/blocktest.sh <client>` runs each file through the
+client's own blockchain-test tool and prints `file,client,gas,ms,twin_ms`. Mgas/s = gas / (ms − twin_ms): every client
+parses the fixture, executes a 150M-gas block and checks the state root, and the twin removes process start and
+genesis setup. `run/all.sh` includes it when `blocktests/eest/` exists.
