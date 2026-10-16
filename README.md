@@ -34,14 +34,40 @@ Wall-time numbers are only meaningful on the benchmarkoor fixtures (100 ms and u
 
 The erigon runner links erigon, which is LGPL-3.0; this repository is Apache-2.0.
 
-## EEST benchmark blocks
+## Fair cross-client numbers: EEST benchmark blocks
 
-The comparable cross-client number. `run/eest-select.py <fixtures dir> 150M` picks the 150M-gas variant of the
-[EEST benchmark](https://github.com/ethereum/execution-spec-tests/releases/tag/benchmark%40v0.0.7) blockchain tests
-into `blocktests/eest/` and writes a no-block twin of every file; `run/blocktest.sh <client>` runs each file through the
-client's own blockchain-test tool and prints `file,client,gas,ms,twin_ms`. Mgas/s = gas / (ms − twin_ms): every client
-parses the fixture, executes a 150M-gas block and checks the state root, and the twin removes process start and
-genesis setup. `run/all.sh` includes it when `blocktests/eest/` exists.
+The comparable number on the page. Each client runs the same blockchain-test fixture through its own spec-test tool,
+so nobody has to accept a benchmark patch and any team can rerun it from the public fixture tarball plus the binaries:
+
+```
+geth, erigon   evm blocktest <file>
+revm           revme blockchaintest <file>
+nethermind     nethtest -b --parallelExecution false -i <file>
+evmone         evmone test <file>
+```
+
+Why it is fair:
+
+- The unit is big. A file is eight copies of one 150M-gas block from `benchmark@v0.0.7`, run one after another in one
+  process; setup is O(pre-state), execution is O(gas). A state-test harness fails on exactly this: a 50k-gas transaction
+  against 50 ms of harness.
+- Setup is subtracted, not estimated. Every file has a twin with the same genesis and no blocks; Mgas/s = gas /
+  (T(file) − T(twin)), best of REPEAT runs. The twin time is kept in the CSV so the harness cost of each client stays
+  visible. A result is grey when the twin is more than 30% of the run or the net time is under 100 ms.
+- Everyone does the same work: parse the fixture, execute the block, compute the state root, check it. Runners that
+  would execute a file's tests in parallel (nethtest, revme) see one block at a time; nethermind's BAL parallel
+  execution is off.
+- Same inputs as the EF's benchmarkoor and gas-repricing work, so the table can be cross-checked against their results.
+
+What the groups mean: `instruction` and `scenario` are the EVM comparison. `precompile` repeats one input per block,
+and geth and nethermind serve repeated precompile calls from a result cache, so that group compares caches, not
+precompiles; it is shown but kept out of the hero.
+
+`run/eest-select.py <fixtures dir> 150M 8` builds `blocktests/eest/` and the twins from the tarball;
+`run/blocktest.sh <client>` prints `file,client,gas,ms,twin_ms`; `run/all.sh` includes it when `blocktests/eest/`
+exists. The other two tiers on the page are honest about what they measure: the node tier is benchmarkoor
+newPayload Mgas/s (erigon, reth, geth, nethermind, no evmone), the RPC tier is eth_call rps on one mainnet node,
+erigon and reth only, as a regression tracker.
 
 ## RPC workloads
 
