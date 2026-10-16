@@ -1,8 +1,9 @@
-# fill: rebuild fixtures/mainnet from erigon BenchmarkTxReplay fixtures (TXREPLAY=<dir>)
-# # fetch: add mainnet transactions from an archive node (TX=0xhash[=label],... RPC=<url>)
+# fill: rebuild fixtures/mainnet-edge-cases from erigon BenchmarkTxReplay fixtures (TXREPLAY=<dir>)
+# fetch: add mainnet transactions from an archive node (TX=0xhash[=label],... GROUP=<fixtures dir> RPC=<url>)
 RPC ?= https://eth.drpc.org
+GROUP ?= mainnet-edge-cases
 fetch:
-	VMBENCH_FETCH=$(TX) VMBENCH_RPC=$(RPC) go test ./fill -run TestFetch -count=1
+	VMBENCH_FETCH=$(TX) VMBENCH_GROUP=$(GROUP) VMBENCH_RPC=$(RPC) go test ./fill -run TestFetch -count=1
 
 # refill: recompute hash/logs of every fixture after a format change
 refill:

@@ -27,7 +27,7 @@ func TestFill(t *testing.T) {
 	paths, err := filepath.Glob(filepath.Join(src, "*.json"))
 	require.NoError(t, err)
 	require.NotEmpty(t, paths)
-	out := filepath.Join("..", "fixtures", "mainnet")
+	out := filepath.Join("..", "fixtures", "mainnet-edge-cases")
 	require.NoError(t, os.MkdirAll(out, 0o755))
 
 	for _, path := range paths {
@@ -53,7 +53,12 @@ func TestFetch(t *testing.T) {
 	if url == "" {
 		url = "https://eth.drpc.org"
 	}
-	out := filepath.Join("..", "fixtures", "mainnet")
+	group := os.Getenv("VMBENCH_GROUP")
+	if group == "" {
+		group = "mainnet-edge-cases"
+	}
+	out := filepath.Join("..", "fixtures", group)
+	require.NoError(t, os.MkdirAll(out, 0o755))
 	for _, item := range strings.Split(txs, ",") {
 		hash, label, _ := strings.Cut(item, "=")
 		name := hash[2:10]

@@ -2,13 +2,13 @@
 
 Real mainnet transactions as [EEST state tests](https://github.com/ethereum/execution-spec-tests), to compare EVM implementations on the same work.
 
-`fixtures/mainnet/` holds one state test per mainnet transaction: the prestate the transaction touched, the block environment, the signed transaction (`txbytes`, so no secret key) and the post-state root and logs hash. Every runner that reads the EEST state-test format can time them; this repository ships the erigon runner.
+`fixtures/mainnet-edge-cases/` and `fixtures/mainnet-popular/` hold one state test per mainnet transaction: the prestate the transaction touched, the block environment, the signed transaction (`txbytes`, so no secret key) and the post-state root and logs hash. Every runner that reads the EEST state-test format can time them; this repository ships the erigon runner.
 
 ```
 make bench                      # erigon, every fixture, go benchmark output
 make bench ARGS='-bench Mainnet/4-'   # one fixture
-make fetch TX=0xhash=label,...  # add mainnet transactions from an archive node (RPC=<url>, default drpc)
-make fill TXREPLAY=<dir>        # rebuild fixtures/mainnet from erigon TxReplay fixtures
+make fetch TX=0xhash=label,... GROUP=mainnet-popular  # add mainnet transactions from an archive node (RPC=<url>, default drpc)
+make fill TXREPLAY=<dir>        # rebuild fixtures/mainnet-edge-cases from erigon TxReplay fixtures
 make fill-benchmarkoor PAYLOADS=<dir>   # rebuild fixtures/benchmarkoor from the benchmarkoor compute payloads
 make refill                     # recompute every fixture's post state after a format change
 run/all.sh                      # every installed runner, then the Mgas/s table
