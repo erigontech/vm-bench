@@ -42,3 +42,12 @@ into `blocktests/eest/` and writes a no-block twin of every file; `run/blocktest
 client's own blockchain-test tool and prints `file,client,gas,ms,twin_ms`. Mgas/s = gas / (ms − twin_ms): every client
 parses the fixture, executes a 150M-gas block and checks the state root, and the twin removes process start and
 genesis setup. `run/all.sh` includes it when `blocktests/eest/` exists.
+
+## RPC workloads
+
+`workloads/<name>/` is a request corpus anyone can replay against their own mainnet node: `requests.jsonl.gz` (one
+JSON-RPC body per line, block tags pinned to a block number), `rates` (the open-loop rate ladder) and a `README` with
+the method shares and the blocks a node must hold. `run/rpc.sh <workload> <url> <client>` runs the ladder with vegeta
+and prints `workload,client,rate,rps,p50_ms,p95_ms,p99_ms,err`; `run/rpc-workload.py` builds a new workload from a
+vegeta targets file or a file of JSON-RPC bodies. Results from different machines compare on latency at equal rate and
+on the knee rate, not on peak rps.

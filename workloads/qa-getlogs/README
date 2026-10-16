@@ -1,0 +1,7 @@
+qa-getlogs: 200000 requests, 1 methods
+QA eth_getLogs profile, regenerated with erigon-qa rpc_pattern_gen (--counts 200000) against a mainnet node at block 26065472
+pinned block for "latest": 26065472
+blocks referenced: 26065115..26065472  (a node must hold their state and history)
+rates (open loop, requests per second): 100 1000 3000 5000 10000
+
+eth_getLogs                      100.0%

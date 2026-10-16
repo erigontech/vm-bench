@@ -1,0 +1,7 @@
+trace-block-33: 33 requests, 1 methods
+33 recorded trace_block requests
+pinned block for "latest": 26065472
+blocks referenced: 25981481..25981513  (a node must hold their state and history)
+rates (open loop, requests per second): 10 50 200
+
+debug_traceBlockByNumber         100.0%

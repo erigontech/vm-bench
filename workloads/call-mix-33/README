@@ -1,0 +1,7 @@
+call-mix-33: 33 requests, 1 methods
+33 recorded mainnet eth_call requests, one per contract type
+pinned block for "latest": 26065472
+blocks referenced: 26065472..26065472  (a node must hold their state and history)
+rates (open loop, requests per second): 100 1000 3000 6000
+
+eth_call                         100.0%

@@ -1,0 +1,7 @@
+trace-tx-33: 33 requests, 1 methods
+33 recorded debug_traceTransaction requests
+pinned block for "latest": 26065472
+blocks referenced: 26065472..26065472  (a node must hold their state and history)
+rates (open loop, requests per second): 10 50 200
+
+debug_traceCall                  100.0%

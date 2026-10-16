@@ -1,0 +1,7 @@
+block-receipts: 3000 requests, 1 methods
+3000 eth_getBlockReceipts requests over recent blocks
+pinned block for "latest": 26065472
+blocks referenced: 26062472..26065471  (a node must hold their state and history)
+rates (open loop, requests per second): 100 300 1000
+
+eth_getBlockReceipts             100.0%

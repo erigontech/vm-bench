@@ -1,0 +1,7 @@
+getlogs-1block: 3000 requests, 1 methods
+3000 eth_getLogs requests, one block each
+pinned block for "latest": 26065472
+blocks referenced: 26062472..26065471  (a node must hold their state and history)
+rates (open loop, requests per second): 100 1000 3000
+
+eth_getLogs                      100.0%
