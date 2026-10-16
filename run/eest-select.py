@@ -20,7 +20,8 @@ for p in sorted((src / "blockchain_tests").rglob("*.json")):
     name = p.relative_to(src / "blockchain_tests" / "benchmark" / "compute").parts[0] + "/" + p.stem
     (out / name).parent.mkdir(parents=True, exist_ok=True); (twin / name).parent.mkdir(parents=True, exist_ok=True)
     json.dump(keep, open(out / f"{name}.json", "w"), separators=(",", ":"))
-    json.dump({k: {**v, "blocks": [], "lastblockhash": v["genesisBlockHeader"]["hash"], "postState": v["pre"]} for k, v in keep.items()},
-              open(twin / f"{name}.json", "w"), separators=(",", ":"))
+    twins = {k: {**v, "blocks": [], "lastblockhash": v["genesisBlockHeader"]["hash"], "postState": v["pre"]} for k, v in keep.items()}
+    for t in twins.values(): t.pop("postStateHash", None)  # the original post root; nethtest checks it instead of postState
+    json.dump(twins, open(twin / f"{name}.json", "w"), separators=(",", ":"))
     files += 1; tests += len(keep)
 print(f"{files} files, {tests} blocks, variant {variant}, {copies} copies per file")
