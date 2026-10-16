@@ -40,6 +40,8 @@ marked `*` and must never be quoted as an EVM comparison.
 - **Reproducibility is part of the result.** Rerun the same binaries: the EVM tier reproduces within 0.4% (nethermind ±4%: quote its geomean with that, never one cell), the node
   tier within 1.3% pass to pass. RPC: compare on the knee rung (highest rate served in full without errors) and on
   latency one rung below it; latency at the knee is not reproducible (open loop). Each rung sends ≥ 20000 requests.
+- **Node tier: one execution per test per container.** Sending the same test again in one container measures nothing:
+  erigon answers a block it already has with VALID in under a millisecond. Take more samples with more fresh containers.
 - **Pin everything.** Client versions go to `history/<t>/versions.csv`; RPC corpora pin `latest` to a block number;
   node-tier images are pinned by digest in the run log.
 
