@@ -71,7 +71,7 @@ erigon and reth only, as a regression tracker.
 
 ## RPC workloads
 
-`workloads/<name>/` is a request corpus anyone can replay against their own mainnet node: `requests.jsonl.gz` (one
+`workloads/<name>/` is a request corpus anyone can replay against their own mainnet node: `requests.jsonl` (one
 JSON-RPC body per line, block tags pinned to a block number), `rates` (the open-loop rate ladder) and a `README` with
 the method shares and the blocks a node must hold. `run/rpc.sh <workload> <url> <client>` runs the ladder with vegeta
 and prints `workload,client,rate,rps,p50_ms,p95_ms,p99_ms,err`; `run/rpc-workload.py` builds a new workload from a

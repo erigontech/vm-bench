@@ -7,13 +7,13 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 wl=$1 url=$2 client=$3
 tmp=$(mktemp -d)
-gzip -dc "workloads/$wl/requests.jsonl.gz" | python3 -c '
+python3 -c '
 import base64, json, sys
 for line in sys.stdin:
-    print(json.dumps({"method": "POST", "url": sys.argv[1], "body": base64.b64encode(line.strip().encode()).decode(), "header": {"Content-Type": ["application/json"]}}))' "$url" > "$tmp/targets"
+    print(json.dumps({"method": "POST", "url": sys.argv[1], "body": base64.b64encode(line.strip().encode()).decode(), "header": {"Content-Type": ["application/json"]}}))' "$url" < "workloads/$wl/requests.jsonl" > "$tmp/targets"
 # A node that cannot serve the workload (pruned blocks, missing API) answers errors inside HTTP 200, which vegeta cannot
 # see with -max-body=0: probe the first 100 bodies once and refuse the workload when more than 5% of them fail.
-bad=$(gzip -dc "workloads/$wl/requests.jsonl.gz" | head -100 | while read -r body; do curl -s -m 60 -H 'Content-Type: application/json' --data-binary "$body" "$url" | head -c 200 | grep -c '"error"' || true; done | awk '{s += $1} END {print s + 0}')
+bad=$(head -100 "workloads/$wl/requests.jsonl" | while read -r body; do curl -s -m 60 -H 'Content-Type: application/json' --data-binary "$body" "$url" | head -c 200 | grep -c '"error"' || true; done | awk '{s += $1} END {print s + 0}')
 if [ "$bad" -gt 5 ]; then echo "$wl: $client answers errors to $bad of the first 100 requests, skipped" >&2; rm -r "$tmp"; exit 0; fi
 attack() { vegeta attack -format=json -targets="$tmp/targets" -rate="$1" -duration="$2" -timeout=30s -max-body=0 -workers=16; }
 for rate in $(cat "workloads/$wl/rates"); do

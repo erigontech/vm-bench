@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build workloads/<name>/ from a request corpus: requests.jsonl.gz (one JSON-RPC body per line), rates, README.
+"""Build workloads/<name>/ from a request corpus: requests.jsonl (one JSON-RPC body per line), rates, README.
 Input: a vegeta targets file (JSON lines with a base64 body) or a file with one JSON-RPC body per line.
 A "latest" block tag is pinned to BLOCK so every node serves the same state.
 usage: run/rpc-workload.py <name> <corpus file> <pinned block number> <rates...>  (env NOTE=<one line of provenance>)"""
-import base64, collections, gzip, json, os, re, sys
+import base64, collections, json, os, re, sys
 from pathlib import Path
 
 name, src, block = sys.argv[1], sys.argv[2], int(sys.argv[3])
@@ -12,7 +12,7 @@ out = Path(__file__).resolve().parent.parent / "workloads" / name
 out.mkdir(parents=True, exist_ok=True)
 methods, blocks, n = collections.Counter(), [], 0
 pin = hex(block)
-with gzip.open(out / "requests.jsonl.gz", "wt") as w:
+with open(out / "requests.jsonl", "w") as w:
     for line in open(src):
         line = line.strip()
         if not line: continue
