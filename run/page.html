@@ -116,11 +116,12 @@ const mgas = (run, f, c) => run.ns[f] && run.ns[f][c] ? data.gas[f] / run.ns[f][
 const geomean = xs => { xs = xs.filter(x => x > 0); return xs.length ? Math.exp(xs.reduce((s, x) => s + Math.log(x), 0) / xs.length) : NaN; };
 const groupMean = (run, g, c) => geomean(fixtures.filter(f => f.startsWith(g + "/")).map(f => mgas(run, f, c)));
 const cls = r => r > 1.02 ? "win" : r < 0.98 ? "loss" : "even";
+const name = c => ({ revme: "revm", nethermind: "neth" })[c] || c;
 const fmt = (v, d = 1) => isNaN(v) ? "–" : v.toFixed(d);
 const short = d => d.slice(5, 10);
 
 document.getElementById("when").textContent = "Latest run " + last.date.replace("T", " ") + " UTC. " +
-  Object.entries(last.versions).map(([c, v]) => c + " " + v.replace(/^v\d+\.\d+\.\d+-\d+\.\d{14}-/, "").replace(/\+.*/, "")).join(", ") + ".";
+  Object.entries(last.versions).map(([c, v]) => name(c) + " " + v.replace(/^v\d+\.\d+\.\d+-\d+\.\d{14}-/, "").replace(/\+.*/, "")).join(", ") + ".";
 
 // hero
 document.getElementById("race").innerHTML = groups.map(g => {
@@ -129,7 +130,7 @@ document.getElementById("race").innerHTML = groups.map(g => {
   if (!ref) return "";
   const max = Math.max(...rows.map(r => r.v));
   return `<div><h3>${title(g)}: ${fixtures.filter(f => f.startsWith(g + "/")).length} fixtures, geometric mean Mgas/s</h3><div class="bars">` +
-    rows.map(r => { const k = ref / r.v; return `<div class="c">${r.c}</div><div class="b ${r.c === base ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div>` +
+    rows.map(r => { const k = ref / r.v; return `<div class="c">${name(r.c)}</div><div class="b ${r.c === base ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div>` +
       `<div class="v">${fmt(r.v)}</div><div class="r ${r.c === base ? "" : cls(k)}">${r.c === base ? "" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>";
 }).join("");
 
@@ -155,7 +156,7 @@ function chart(series, dates, unit) {
     const e = pts[pts.length - 1]; ends.push({ name: sr.name, k, y: e[1], v: sr.values[e[2]] });
   }
   ends.sort((a, b) => a.y - b.y); for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 13) ends[i].y = ends[i - 1].y + 13;
-  for (const e of ends) s += `<text class="end ${e.k}" x="${w - pr + 8}" y="${e.y + 4}">${e.name} ${fmt(e.v)}</text>`;
+  for (const e of ends) s += `<text class="end ${e.k}" x="${w - pr + 8}" y="${e.y + 4}">${name(e.name)} ${fmt(e.v)}</text>`;
   return s + "</svg>";
 }
 const dates = runs.map(r => r.date);
@@ -170,7 +171,7 @@ function ratioCell(k) {
   return `<td class="ratio"><span class="rb">${bar}</span><span class="n ${cls(k)}">${k.toFixed(2)}</span></td>`;
 }
 const others = clients.filter(c => c !== base);
-let html = `<table><thead><tr><th>fixture</th><th>gas</th>${clients.map(c => `<th>${c}</th>`).join("")}${others.map(c => `<th>e/${c.replace(/^revme$/, "revm")}</th>`).join("")}</tr></thead><tbody>`;
+let html = `<table><thead><tr><th>fixture</th><th>gas</th>${clients.map(c => `<th>${name(c)}</th>`).join("")}${others.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>`;
 for (const g of groups) {
   html += `<tr class="group"><td colspan="${2 + clients.length + others.length}">${title(g)}</td></tr>`;
   for (const f of fixtures.filter(f => f.startsWith(g + "/") && last.ns[f])) {

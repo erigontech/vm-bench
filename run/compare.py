@@ -19,8 +19,9 @@ def mgas(fixture, client):
     gas = int(next(iter(json.load(open(root / "fixtures" / (fixture + ".json"))).values()))["_info"]["gasUsed"], 16)
     return gas / ns[fixture][client] * 1e3
 
+short = lambda c: {"revme": "revm", "nethermind": "neth"}.get(c, c)
 width = max(map(len, ns)) + 2
-print("fixture".ljust(width) + "".join(f"{c:>12}" for c in clients) + "".join(f"{'e/' + c.replace('revme', 'revm'):>14}" for c in clients if c != base))
+print("fixture".ljust(width) + "".join(f"{short(c):>12}" for c in clients) + "".join(f"{'e/' + short(c):>14}" for c in clients if c != base))
 for fixture in sorted(ns):
     row = {c: mgas(fixture, c) for c in clients if c in ns[fixture]}
     cells = "".join(f"{row[c]:>12.1f}" if c in row else f"{'-':>12}" for c in clients)
