@@ -13,7 +13,7 @@
 }
 *{box-sizing:border-box}
 html{background:var(--paper);color:var(--ink);font:15px/1.45 "Instrument Sans",system-ui,sans-serif;font-variant-numeric:tabular-nums}
-body{margin:0;padding:48px clamp(20px,5vw,72px) 96px;max-width:1180px}
+body{margin:0;padding:48px clamp(20px,5vw,72px) 96px;max-width:1320px}
 h1{font-size:34px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px}
 h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:64px 0 4px;padding-top:18px;border-top:2px solid var(--ink)}
 .lede,.note{color:var(--ink-2);max-width:68ch;margin:0 0 18px}
@@ -48,11 +48,11 @@ a{color:inherit}
 .chart .dot{r:2.5;fill:#9aa5b8}.chart .dot.erigon{fill:var(--erigon)}
 
 /* fixture table */
-.wrap{overflow-x:auto;margin-top:14px}
+.wrap{overflow-x:auto;margin-top:14px;scrollbar-width:thin;padding-bottom:6px}
 table{border-collapse:collapse;width:100%;font-size:13px}
 th{font-weight:500;color:var(--ink-2);text-align:right;padding:6px 6px 8px;border-bottom:1px solid var(--ink);position:sticky;top:0;background:var(--paper);white-space:nowrap}
 td{padding:4px 6px;border-bottom:1px solid var(--rule-2);text-align:right;white-space:nowrap}
-th:first-child,td:first-child{text-align:left;padding-left:0}
+th:first-child,td:first-child{text-align:left;padding-left:0;position:sticky;left:0;background:var(--paper)}
 td.f{overflow:hidden;text-overflow:ellipsis;max-width:22em}
 td.gas{color:var(--ink-2)}
 tr.group td{padding:22px 0 6px;border-bottom:1px solid var(--ink);font-weight:600;color:var(--ink);text-align:left}
@@ -174,7 +174,7 @@ function ratioCell(k) {
   const bar = k >= 1 ? `<i></i><i class="w" style="width:${pct}%"></i>` : `<i class="l" style="width:${pct}%"></i><i></i>`;
   return `<td class="ratio"><span class="rb">${bar}</span><span class="n ${cls(k)}">${k.toFixed(2)}</span></td>`;
 }
-const others = clients.filter(c => c !== base);
+const others = clients.filter(c => c !== base && execOnly(c));
 let html = `<table><thead><tr><th>fixture</th><th>gas</th><th>eth_call rps</th><th>eth_call Mgas/s</th>${clients.map(c => `<th>${name(c)}${execOnly(c) ? "" : "*"}</th>`).join("")}${others.map(c => `<th>e/${name(c)}${execOnly(c) ? "" : "*"}</th>`).join("")}</tr></thead><tbody>`;
 for (const g of groups) {
   html += `<tr class="group"><td colspan="${4 + clients.length + others.length}">${title(g)}</td></tr>`;
