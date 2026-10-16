@@ -24,3 +24,4 @@ vendor/
 /go-ethereum/
 /nethermind/
 results/
+blocktests/
