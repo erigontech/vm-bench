@@ -24,10 +24,9 @@ marked `*` and must never be quoted as an EVM comparison.
 
 ## Rules that keep the numbers fair
 
-- **Measure only on the bench box, under its lock.** Every script takes `exec 9>/tmp/n5bench.lock; flock 9`
-  (`run/all.sh` does it itself). Never build, profile or run anything else on the box while a run holds the lock:
-  two snapshots were already inflated 3x by a build running next to the measurement. Numbers taken without the lock
-  are void; delete them from history. Never measure on a laptop.
+- **Measure only on the bench box, under its lock.** Every measuring script takes the lock in `BENCH_LOCK`
+  (`run/all.sh` does it itself). Never build, profile or run anything else on the box while a run holds the lock.
+  Numbers taken without the lock are void; delete them from history. Never measure on a laptop.
 - **Setup is subtracted, not estimated.** Mgas/s = gas / (T(file) − T(twin)); the twin is the same genesis with no
   blocks. Grey (excluded from the hero) when twin/T > 0.3 or net < 100 ms. A client with fewer than half its blocks valid
   is left out of the hero.
@@ -76,17 +75,17 @@ node -e 'const fs=require("fs");const h=fs.readFileSync("docs/index.html","utf8"
 One JS error blanks the whole page, so never push `docs/` without the `JS OK` line. Screenshot with headless Chrome
 when the layout changed.
 
-## Box facts (n5)
+## Bench box
 
-- Tools: `~/go/bin/evm` (geth), `~/.cargo/bin/revme`, `~/evmone/bin/evmone` (`LD_LIBRARY_PATH=~/evmone/lib`),
-  `~/nethtest/nethtest` (`DOTNET_ROOT=~/.dotnet`), `~/bin/erigon-evm`. `run/all.sh` exports all of these.
-- `~/bin/erigon-evm` must be built from current erigon main with the Makefile's cgo flags
-  (`-O3 -DNDEBUG`); a stale or plain `go build` binary hides weeks of erigon work and inflates cgo precompiles.
-  `run/versions.sh` records its version.
-- EEST tarball: `~/eest-bench/fixtures` (benchmark@v0.0.7); node tier: `~/bm24775/benchmarkoor`.
-- n5 has no GitHub credentials: commit on n5, then push from a machine that has them, and keep both clones in sync
-  (`git checkout -- docs` and remove an already-pushed snapshot dir before `git pull` on n5).
-- The nightly cron (`run/nightly.sh`, 03:30 UTC) also takes the lock.
+- Runner paths come from `run/all.sh` (env `EVMONE`, `NETHTEST`, `DOTNET_ROOT`, `LD_LIBRARY_PATH`); set them there,
+  not in the per-client scripts.
+- The erigon runner must be built from current erigon main with the Makefile's cgo flags (`-O3 -DNDEBUG`); a stale
+  or plain `go build` binary hides erigon work and inflates cgo precompiles. `run/versions.sh` records its version.
+- Fixtures: the EEST benchmark tarball (benchmark@v0.0.7) unpacked on the box; the node tier needs a benchmarkoor
+  checkout and docker.
+- If the box has no GitHub credentials, commit there and push from a machine that has them. Keep both clones in
+  sync: `git checkout -- docs` and remove an already-pushed snapshot dir before `git pull` on the box.
+- The nightly cron (`run/nightly.sh`) also takes the lock.
 
 ## Writing
 
