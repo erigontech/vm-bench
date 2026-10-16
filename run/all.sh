@@ -12,8 +12,12 @@ for client in ${CLIENTS:-erigon geth revme evmone nethermind}; do
 	run/$client.sh > results/$client.csv || echo "$client: runner failed" >&2
 done
 if [ -d blocktests/eest ]; then
-	: > results/blocktest.csv
-	for client in ${CLIENTS:-erigon geth revme evmone nethermind}; do REPEAT=${REPEAT:-2} run/blocktest.sh $client >> results/blocktest.csv; done
+	touch results/blocktest.csv
+	for client in ${CLIENTS:-erigon geth revme evmone nethermind}; do
+		grep -v ",$client," results/blocktest.csv > results/blocktest.tmp || true
+		REPEAT=${REPEAT:-2} run/blocktest.sh $client >> results/blocktest.tmp
+		mv results/blocktest.tmp results/blocktest.csv
+	done
 fi
 snap=history/$(date -u +%Y-%m-%dT%H%M)
 mkdir -p "$snap"
