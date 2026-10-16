@@ -10,7 +10,10 @@ from pathlib import Path
 root = Path(__file__).resolve().parent.parent
 ns = {}
 for path in sys.argv[1:]:
-    for fixture, client, t in csv.reader(open(path)):
+    for row in csv.reader(open(path)):
+        if len(row) != 3:
+            break
+        fixture, client, t = row
         ns.setdefault(fixture, {})[client] = int(t)
 clients = sorted({c for row in ns.values() for c in row}, key=lambda c: (c != "erigon", c))
 base = next((c for c in clients if c.startswith("erigon")), clients[0])
