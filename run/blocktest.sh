@@ -10,7 +10,7 @@ case $client in
 	erigon)     cmd=("${ERIGON_EVM:-$HOME/bin/erigon-evm}" blocktest) ;;
 	geth)       cmd=(evm blocktest) ;;
 	revme)      cmd=(revme blockchaintest) ;;
-	nethermind) cmd=("${NETHTEST:-$HOME/nethtest/nethtest}" -b -i) ;;
+	nethermind) cmd=("${NETHTEST:-$HOME/nethtest/nethtest}" -b --parallelExecution false -i) ;;  # sequential EVM, like the others
 	evmone)     cmd=("${EVMONE_BLOCKCHAINTEST:-$HOME/evmone/bin/evmone-blockchaintest}") ;;
 	*) echo "unknown client $client" >&2; exit 2 ;;
 esac
