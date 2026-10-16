@@ -92,7 +92,7 @@ td.ratio .win{color:var(--win);font-weight:600}td.ratio .loss{color:var(--loss);
 <div class="charts" id="charts"></div>
 
 <h2>Every fixture, latest run</h2>
-<p class="note">Mgas/s per client and the ratio erigon / client. The bar extends right when erigon is faster, left when slower, from the 1.0 line. Click a row for its history. evmone and Nethermind are process wall time, the other three execution only.</p>
+<p class="note">Mgas/s per client and the ratio erigon / client. The bar extends right when erigon is faster, left when slower, from the 1.0 line. eth_call rps: the same transaction as an eth_call on erigon, one mainnet node, 16 connections; hover for p50/p99. Click a row for its history. evmone and Nethermind are process wall time, the other three execution only.</p>
 <div class="wrap" id="latest"></div>
 <div class="series-head" id="series-head" hidden><h3 id="series-title"></h3><button id="series-close">Close</button></div>
 <div id="series"></div>
@@ -107,6 +107,9 @@ const CSS = getComputedStyle(document.documentElement);
 const colorOf = c => c.startsWith("erigon") ? CSS.getPropertyValue("--erigon") : "#9aa5b8";
 const runs = data.runs.filter(r => Object.keys(r.ns).length), last = runs[runs.length - 1];
 const rpcRuns = data.runs.filter(r => r.rpc.length);
+const callsLatest = {};
+for (const r of data.runs) for (const [f, c] of Object.entries(r.calls || {})) callsLatest[f] = c;
+const callsCell = f => { const c = callsLatest[f]; return c ? `<td class="gas" title="${c.client}, p50 ${c.p50} ms, p99 ${c.p99} ms${c.err ? ", " + c.err + " errors" : ""}">${c.rps.toFixed(0)}${c.err ? " !" : ""}</td>` : `<td class="gas">–</td>`; };
 const clients = [...new Set(runs.flatMap(r => Object.values(r.ns).flatMap(Object.keys)))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || a.localeCompare(b));
 const base = clients.find(c => c.startsWith("erigon"));
 const fixtures = Object.keys(data.gas).sort();
@@ -171,12 +174,12 @@ function ratioCell(k) {
   return `<td class="ratio"><span class="rb">${bar}</span><span class="n ${cls(k)}">${k.toFixed(2)}</span></td>`;
 }
 const others = clients.filter(c => c !== base);
-let html = `<table><thead><tr><th>fixture</th><th>gas</th>${clients.map(c => `<th>${name(c)}</th>`).join("")}${others.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>`;
+let html = `<table><thead><tr><th>fixture</th><th>gas</th><th>eth_call rps</th>${clients.map(c => `<th>${name(c)}</th>`).join("")}${others.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>`;
 for (const g of groups) {
-  html += `<tr class="group"><td colspan="${2 + clients.length + others.length}">${title(g)}</td></tr>`;
+  html += `<tr class="group"><td colspan="${3 + clients.length + others.length}">${title(g)}</td></tr>`;
   for (const f of fixtures.filter(f => f.startsWith(g + "/") && last.ns[f])) {
     const v = c => mgas(last, f, c);
-    html += `<tr data-f="${f}" tabindex="0"><td class="f" title="${f}">${f.slice(g.length + 1)}</td><td class="gas">${(data.gas[f] / 1e6).toFixed(2)}M</td>` +
+    html += `<tr data-f="${f}" tabindex="0"><td class="f" title="${f}">${f.slice(g.length + 1)}</td><td class="gas">${(data.gas[f] / 1e6).toFixed(2)}M</td>${callsCell(f)}` +
       clients.map(c => `<td>${fmt(v(c))}</td>`).join("") + others.map(c => ratioCell(v(base) / v(c))).join("") + "</tr>";
   }
 }

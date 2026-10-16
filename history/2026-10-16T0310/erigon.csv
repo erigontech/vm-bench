@@ -1,7 +1,6 @@
 mainnet-edge-cases/22-efd056de-modexp-proof-verify,erigon,2208382
 benchmarkoor/bm-keccak_diff_mem_msg_sizes-msg_size_1024-mem_size_32,erigon,139920034
 mainnet-edge-cases/19-2b1039fc-metamorpho-redeem-5046,erigon,301860
-mainnet-popular/f628e4fd-4337084d,erigon,309179
 mainnet-edge-cases/28-86c02805-roles-exec-morpho,erigon,369149
 benchmarkoor/bm-keccak_diff_mem_msg_sizes-msg_size_1024-mem_size_256,erigon,140094397
 benchmarkoor/bm-bls12_pairing-num_pairs_1,erigon,111056141
@@ -9,7 +8,6 @@ benchmarkoor/bm-keccak_diff_mem_msg_sizes-msg_size_1024-mem_size_1024,erigon,139
 mainnet-edge-cases/5-ba639ee8-batch-transfer-77KB,erigon,3119315
 mainnet-edge-cases/12-2d524c14-create-d33d,erigon,262873
 mainnet-edge-cases/3-36e4e351-dispatch-oog-51KB,erigon,7287804
-mainnet-popular/0d8b0a17-4313c378,erigon,238617
 benchmarkoor/bm-mod-opcode_MOD-mod_bits_191,erigon,70140184
 benchmarkoor/bm-p256verify-p256verify,erigon,116279170
 mainnet-edge-cases/17-8653e244-ecrecover-330-110KB,erigon,50399048
@@ -21,23 +19,17 @@ mainnet-edge-cases/25-3304e751-pendle-pt-swap,erigon,339191
 mainnet-edge-cases/9-e52b14b4-increase-21M,erigon,1108135
 benchmarkoor/bm-bls12_g1_msm-k_1,erigon,111229185
 mainnet-edge-cases/23-a500a7f4-transferfrom-262,erigon,504566
-mainnet-popular/7f2ad478-entrypoint-v07-handleops,erigon,117956
-mainnet-popular/70d4f37e-0de8bf93-6.8M,erigon,3151101
 mainnet-edge-cases/11-45bf841d-gst2-mint,erigon,80733
 mainnet-edge-cases/32-6ce64e43-seaport-fulfill-orders,erigon,983275
 benchmarkoor/bm-p256verify_uncachable-p256verify,erigon,115448626
 mainnet-edge-cases/29-ad24b118-swap-route-a323,erigon,596598
 mainnet-edge-cases/13-c0b6ab3a-storage-b9c2,erigon,224507
 mainnet-edge-cases/21-d4c854e7-multicall3-forward,erigon,390674
-mainnet-popular/5c44f5fa-bdb3ba9f,erigon,85315
-mainnet-popular/e1500b08-ccc88a9d,erigon,286667
 mainnet-edge-cases/2-5a158d08-div-loop-28M,erigon,14270487
-mainnet-popular/71e7dffb-usdt-transfer,erigon,7804
 mainnet-edge-cases/30-51290012-call-tree-depth9-2c5d,erigon,348651
 benchmarkoor/bm-point_evaluation-point_evaluation,erigon,259306690
 benchmarkoor/bm-bls12_g1_msm-k_128,erigon,92681701
 mainnet-edge-cases/4-ea93481b-sload-storm,erigon,4035405
-mainnet-popular/2f650e5f-278d858f,erigon,45931
 mainnet-edge-cases/20-fe16276b-sha256-sstore-20a6,erigon,498928
 mainnet-edge-cases/14-a098cdcd-create-bot-99be,erigon,40796
 mainnet-edge-cases/18-3c70f07a-metamorpho-redeem-3302,erigon,305634
@@ -50,7 +42,5 @@ mainnet-edge-cases/10-680f4f10-create-8018,erigon,83250
 benchmarkoor/bm-ecrecover-ecrecover,erigon,137235750
 benchmarkoor/bm-keccak_diff_mem_msg_sizes-msg_size_1024-mem_size_0,erigon,139615461
 mainnet-edge-cases/16-52c62f26-create-selfdestruct-2c20,erigon,266062
-mainnet-popular/943ebb8c-usdc-transfer,erigon,8019
 mainnet-edge-cases/24-e312d0cf-morpho-bundle,erigon,308733
 benchmarkoor/bm-bls12_g1_msm-k_16,erigon,93586365
-mainnet-popular/e96f0607-8feab81d,erigon,253830
