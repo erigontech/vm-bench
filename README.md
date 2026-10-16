@@ -44,7 +44,7 @@ so nobody has to accept a benchmark patch and any team can rerun it from the pub
 ```
 geth, erigon   evm blocktest <file>
 revm           revme blockchaintest <file>
-nethermind     nethtest -b --parallelExecution false -i <file>
+nethermind     printf '%s\n' <file> <file> '' | nethtest -b --parallelExecution false -x -j -n
 evmone         evmone test <file>
 ```
 
@@ -56,6 +56,9 @@ Why it is fair:
 - Setup is subtracted, not estimated. Every file has a twin with the same genesis and no blocks; Mgas/s = gas /
   (T(file) − T(twin)), best of REPEAT runs. The twin time is kept in the CSV so the harness cost of each client stays
   visible. A result is grey when the twin is more than 30% of the run or the net time is under 100 ms.
+- nethtest's dotnet start-up is ~3 s, so nethermind runs the file and the twin as the second input of one process,
+  after a pass of the file: ms = T(file, file), twin = T(file, twin). Start-up and JIT warm-up cancel, so nethermind is
+  the one client measured warm; its cells are grey only under 100 ms net.
 - Everyone does the same work: parse the fixture, execute the block, compute the state root, check it. Runners that
   would execute a file's tests in parallel (nethtest, revme) see one block at a time; nethermind's BAL parallel
   execution is off.
