@@ -1,6 +1,6 @@
 # vm-bench
 
-Results: **https://erigontech.github.io/vm-bench/** (updated nightly from n5).
+Results: **https://erigontech.github.io/vm-bench/** (updated nightly).
 
 Real mainnet transactions as [EEST state tests](https://github.com/ethereum/execution-spec-tests), to compare EVM implementations on the same work.
 
