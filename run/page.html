@@ -125,7 +125,9 @@ document.getElementById("when").textContent = "Latest run " + last.date.replace(
 // hero
 document.getElementById("race").innerHTML = groups.map(g => {
   const rows = clients.map(c => ({ c, v: groupMean(last, g, c) })).filter(r => !isNaN(r.v));
-  const max = Math.max(...rows.map(r => r.v)), ref = rows.find(r => r.c === base).v;
+  const ref = rows.find(r => r.c === base)?.v;
+  if (!ref) return "";
+  const max = Math.max(...rows.map(r => r.v));
   return `<div><h3>${title(g)}: ${fixtures.filter(f => f.startsWith(g + "/")).length} fixtures, geometric mean Mgas/s</h3><div class="bars">` +
     rows.map(r => { const k = ref / r.v; return `<div class="c">${r.c}</div><div class="b ${r.c === base ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div>` +
       `<div class="v">${fmt(r.v)}</div><div class="r ${r.c === base ? "" : cls(k)}">${r.c === base ? "" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>";
