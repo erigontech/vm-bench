@@ -6,7 +6,7 @@ from pathlib import Path
 root = Path(__file__).resolve().parent.parent
 runs = []
 for d in sorted(p for p in (root / "history").iterdir() if p.is_dir()):
-    run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": []}
+    run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}}
     for f in d.glob("*.csv"):
         if f.name == "versions.csv":
             run["versions"] = dict(csv.reader(open(f)))
@@ -14,6 +14,13 @@ for d in sorted(p for p in (root / "history").iterdir() if p.is_dir()):
         if f.name == "blocktest.csv":
             for file, client, gas, ms, twin in csv.reader(open(f)):
                 run["bt"].setdefault(file, {})[client] = {"gas": int(gas), "ms": int(ms), "twin": int(twin)}
+            continue
+        if f.name == "node.csv":
+            for test, client, mgas in csv.reader(open(f)):
+                run["node"].setdefault(test, {})[client] = float(mgas)
+            continue
+        if f.name == "pass.csv":
+            run["nodePass"] = {client: float(r) for client, r in csv.reader(open(f))}
             continue
         if f.name == "rpcw.csv":
             run["rpcw"] = [dict(zip(("workload", "client", "rate", "rps", "p50", "p95", "p99", "err"), (r[0], r[1], *map(float, r[2:])))) for r in csv.reader(open(f))]
