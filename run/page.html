@@ -104,7 +104,7 @@ td.ratio .win{color:var(--win);font-weight:600}td.ratio .loss{color:var(--loss);
 
 
 <h2 id="rpcw-title" hidden>RPC workloads</h2>
-<p class="note" id="rpcw-note" hidden>Request corpora anyone can replay against their own mainnet node: <a href="https://github.com/erigontech/vm-bench/tree/main/workloads">workloads/</a>, one directory per workload with the JSON-RPC bodies, the pinned block and the rate ladder. Open loop at each rate, 16 workers, 20 s; latency in ms; err = failed requests. Numbers from different machines compare on latency at equal rate and on the knee, not on peak rps.</p>
+<p class="note" id="rpcw-note" hidden>Request corpora anyone can replay against their own mainnet node: <a href="https://github.com/erigontech/vm-bench/tree/main/workloads">workloads/</a>, one directory per workload with the JSON-RPC bodies, the pinned block and the rate ladder. Open loop at each rate, 20 s; rps below the rate means the node is at capacity; latency in ms; err = failed requests; a node that answers errors to a workload is skipped. Numbers from different machines compare on latency at equal rate and on the knee, not on peak rps.</p>
 <div id="rpcw" hidden></div>
 <h2>JSON-RPC throughput</h2>
 <p class="note">Requests per second against one mainnet datadir, 33 recorded requests per method, 16 connections. The chart indexes each scenario to its first measurement.</p>
