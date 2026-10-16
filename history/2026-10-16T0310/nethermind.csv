@@ -1,0 +1,16 @@
+benchmarkoor/bm-bls12_g1_msm-k_1,nethermind,1008703317
+benchmarkoor/bm-bls12_g1_msm-k_128,nethermind,938075733
+benchmarkoor/bm-bls12_g1_msm-k_16,nethermind,963344042
+benchmarkoor/bm-bls12_g2_msm-k_1,nethermind,999178325
+benchmarkoor/bm-bls12_g2_msm-k_16,nethermind,969704704
+benchmarkoor/bm-bls12_pairing-num_pairs_1,nethermind,995208021
+benchmarkoor/bm-ecrecover-ecrecover,nethermind,1033062656
+benchmarkoor/bm-keccak_diff_mem_msg_sizes-msg_size_1024-mem_size_0,nethermind,1066663680
+benchmarkoor/bm-keccak_diff_mem_msg_sizes-msg_size_1024-mem_size_1024,nethermind,1066816426
+benchmarkoor/bm-keccak_diff_mem_msg_sizes-msg_size_1024-mem_size_256,nethermind,1067599018
+benchmarkoor/bm-keccak_diff_mem_msg_sizes-msg_size_1024-mem_size_32,nethermind,1063914666
+benchmarkoor/bm-mod-opcode_MOD-mod_bits_191,nethermind,995721301
+benchmarkoor/bm-p256verify-p256verify,nethermind,963010986
+benchmarkoor/bm-p256verify_uncachable-p256verify,nethermind,971674709
+benchmarkoor/bm-point_evaluation-point_evaluation,nethermind,1181130410
+benchmarkoor/bm-point_evaluation_uncachable-point_evaluation,nethermind,1167894698
