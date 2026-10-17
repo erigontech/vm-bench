@@ -80,11 +80,25 @@ td.ratio .win{color:var(--win);font-weight:600}td.ratio .loss{color:var(--loss);
 @media (max-width:900px){.rpc{grid-template-columns:1fr}.charts{grid-template-columns:1fr}}
 :focus-visible{outline:2px solid var(--erigon);outline-offset:2px}
 @media (prefers-reduced-motion:no-preference){.bars .b i{transition:width .5s ease}}
+
+/* progress: trend per tier and a journal card per measured main */
+#prog-trend .chart svg{max-width:420px}
+td.up{color:var(--win);font-weight:600}td.down{color:var(--loss);font-weight:600}
+details.card{border-top:1px solid var(--rule);padding:10px 0}
+details.card summary{cursor:pointer}
+details.card h4{margin:10px 0 2px;font-size:14px;font-weight:600}
+details.card ul{margin:0;padding-left:18px;font-size:14px}
 </style>
 <body>
 <h1>vm-bench <a href="https://github.com/erigontech/vm-bench" style="font-size:15px;font-weight:500;color:var(--ink-2);margin-left:10px;vertical-align:middle">github.com/erigontech/vm-bench</a></h1>
 <p class="lede">How fast <span class="tag">erigon</span> executes EVM transactions compared with geth, revm, evmone and Nethermind, on the same state-test fixtures, re-measured on every change to main.</p>
 <p class="note" id="when"></p>
+
+<h2 id="prog-title" hidden>Progress</h2>
+<p class="note" id="prog-note" hidden></p>
+<div class="charts" id="prog-trend"></div>
+<div id="prog-rpc"></div>
+<div id="prog-journal"></div>
 
 <section class="race" id="race"></section>
 
@@ -147,6 +161,42 @@ const short = d => d.slice(5, 10);
 
 document.getElementById("when").textContent = "Latest run " + last.date.replace("T", " ") + " UTC. " +
   Object.entries(last.versions).map(([c, v]) => name(c) + " " + v.replace(/^v\d+\.\d+\.\d+-\d+\.\d{14}-/, "").replace(/\+.*/, "")).join(", ") + ".";
+
+// progress: one entry per measured main in history/runs.json, oldest first
+const prog = data.progress || [];
+if (prog.length) {
+  for (const id of ["prog-title", "prog-note"]) document.getElementById(id).hidden = false;
+  const pl = prog[prog.length - 1];
+  const esc = t => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const link = t => esc(t).replace(/#(\d+)/g, '<a href="https://github.com/erigontech/erigon/pull/$1">#$1</a>');
+  const sha = s => s.slice(0, 10);
+  document.getElementById("prog-note").textContent = `Erigon on each measured main; other clients keep their published numbers. ` +
+    `EVM: geometric mean over the instruction and scenario blocks, noise ±${pl.evm.noise}%. Node: geometric mean over all tests, noise ±${pl.node.noise}%. ` +
+    `Erigon / best client: erigon's geometric mean over the instruction and scenario cells divided by the best other client's on the same cells. ` +
+    `RPC: knee = the highest rate served in full without errors; latency one rate below the knee moves ±${pl.rpc.noise}%. Better and worse list only cells that moved past their noise.`;
+  const spark = (vals, f) => {
+    // the y range spans at least 10% of the value, so a move inside the noise stays a flat line
+    const w = 420, h = 110, p = 40, lo = Math.min(...vals), hi = Math.max(...vals), sp = Math.max(hi - lo, hi * 0.1) || 1, mid = (hi + lo) / 2;
+    const x = i => p + i * (w - 2 * p) / Math.max(1, vals.length - 1), y = v => 22 + (h - 46) * (0.5 - (v - mid) / sp);
+    return `<svg viewBox="0 0 ${w} ${h}" role="img"><polyline class="ln erigon" points="${vals.map((v, i) => x(i) + "," + y(v)).join(" ")}"/>` +
+      vals.map((v, i) => `<circle class="dot erigon" cx="${x(i)}" cy="${y(v)}"/><text class="end erigon" x="${x(i)}" y="${y(v) - 8}" text-anchor="middle">${f(v)}</text>`).join("") +
+      prog.map((r, i) => `<text class="tick" x="${x(i)}" y="${h - 4}" text-anchor="middle">${r.date.slice(5)}</text>`).join("") + "</svg>";
+  };
+  document.getElementById("prog-trend").innerHTML = [["evm", "EVM"], ["node", "Node"]].map(([k, t]) =>
+    `<div class="chart"><h3>${t}: erigon Mgas/s</h3>${spark(prog.map(r => r[k].mgas), v => v.toFixed(0))}</div>` +
+    `<div class="chart"><h3>${t}: erigon / best client (${pl[k].best})</h3>${spark(prog.map(r => r[k].ratio), v => "×" + v.toFixed(2))}</div>`).join("");
+  const wls = [...new Set(prog.flatMap(r => Object.keys(r.rpc.knee)))];
+  document.getElementById("prog-rpc").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">RPC: erigon knee per workload, rps</h3><div class="wrap"><table><thead><tr><th>workload</th>` +
+    prog.map(r => `<th>${r.date.slice(5)} ${sha(r.rpc.main).slice(0, 9)}</th>`).join("") + "</tr></thead><tbody>" +
+    wls.map(w => `<tr><td>${w}</td>` + prog.map((r, i) => { const v = r.rpc.knee[w], q = i ? prog[i - 1].rpc.knee[w] : v;
+      return `<td class="${v < q ? "down" : v > q ? "up" : ""}">${v ?? "–"}</td>`; }).join("") + "</tr>").join("") + "</tbody></table></div>";
+  const sec = (h, xs) => xs.length ? `<h4>${h}</h4><ul>${xs.map(x => `<li>${link(x)}</li>`).join("")}</ul>` : "";
+  document.getElementById("prog-journal").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">Journal</h3>` + [...prog].reverse().map((r, i) =>
+    `<details class="card"${i ? "" : " open"}><summary><b>${r.date}</b> · ` +
+    (r.old ? `<a href="https://github.com/erigontech/erigon/compare/${r.old}...${r.new}">${sha(r.old)}..${sha(r.new)}</a>` : `main ${sha(r.new)}, first point`) +
+    ` · EVM ${r.evm.mgas.toFixed(1)}, node ${r.node.mgas.toFixed(1)} Mgas/s</summary>` +
+    sec("Shipped", r.shipped) + sec("Better", r.better) + sec("Worse", r.worse) + sec("Bottlenecks", r.bottlenecks) + "</details>").join("");
+}
 
 // hero
 document.getElementById("race").innerHTML = groups.map(g => {
