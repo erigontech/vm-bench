@@ -8,7 +8,9 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 client=$1
 case $client in
-	erigon)     cmd=("${ERIGON_EVM:-$HOME/bin/erigon-evm}" blocktest) ;;
+	# erigon's Close waits for background file builds in 3 s ticks, which added 0-12 s to a file at random; the builds are node
+	# maintenance, not block execution
+	erigon)     cmd=(env NO_BACKGROUND_E3_BUILD=true "${ERIGON_EVM:-$HOME/bin/erigon-evm}" blocktest) ;;
 	geth)       cmd=(evm blocktest) ;;
 	revme)      cmd=(revme blockchaintest) ;;
 	nethermind) cmd=("${NETHTEST:-$HOME/nethtest/nethtest}" -b --parallelExecution false -x -j -n) ;;  # sequential EVM, like the others; file names on stdin
