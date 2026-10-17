@@ -3,10 +3,33 @@
     "date": "2026-10-16",
     "old": null,
     "new": "670e20e109af4f66528c05661d6c446d4551aeee",
-    "evm": {"mgas": 1082.2, "ratio": 0.632, "best": "nethermind", "noise": 0.7},
-    "node": {"mgas": 1844.6, "ratio": 0.713, "best": "reth", "noise": 1.0},
-    "rpc": {"main": "39cd621455a4b69c9e9f2474e2726f8e7b5b7a29", "noise": 3,
-            "knee": {"qa-mixed": 3000, "qa-getlogs": 5000, "call-mix-33": 1000, "block-receipts": 1000, "getlogs-1block": 3000, "trace-block-33": 200, "trace-tx-33": 200}},
+    "evm": {
+      "mgas": 1082.2,
+      "ratio": 0.632,
+      "best": "nethermind",
+      "noise": 0.7,
+      "fixtures": "benchmark@v0.0.7"
+    },
+    "node": {
+      "mgas": 1844.6,
+      "ratio": 0.713,
+      "best": "reth",
+      "noise": 1.0,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "rpc": {
+      "main": "39cd621455a4b69c9e9f2474e2726f8e7b5b7a29",
+      "noise": 3,
+      "knee": {
+        "qa-mixed": 3000,
+        "qa-getlogs": 5000,
+        "call-mix-33": 1000,
+        "block-receipts": 1000,
+        "getlogs-1block": 3000,
+        "trace-block-33": 200,
+        "trace-tx-33": 200
+      }
+    },
     "better": [],
     "worse": [],
     "bottlenecks": [],
@@ -16,10 +39,33 @@
     "date": "2026-10-17",
     "old": "670e20e109af4f66528c05661d6c446d4551aeee",
     "new": "6540ff4718d3d7285a76fed017c092d581c19e98",
-    "evm": {"mgas": 1086.6, "ratio": 0.634, "best": "nethermind", "noise": 0.7},
-    "node": {"mgas": 1803.9, "ratio": 0.694, "best": "reth", "noise": 1.0},
-    "rpc": {"main": "6540ff4718d3d7285a76fed017c092d581c19e98", "noise": 3,
-            "knee": {"qa-mixed": 3000, "qa-getlogs": 5000, "call-mix-33": 1000, "block-receipts": 1000, "getlogs-1block": 3000, "trace-block-33": 50, "trace-tx-33": 200}},
+    "evm": {
+      "mgas": 1086.6,
+      "ratio": 0.634,
+      "best": "nethermind",
+      "noise": 0.7,
+      "fixtures": "benchmark@v0.0.7"
+    },
+    "node": {
+      "mgas": 1803.9,
+      "ratio": 0.694,
+      "best": "reth",
+      "noise": 1.0,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "rpc": {
+      "main": "6540ff4718d3d7285a76fed017c092d581c19e98",
+      "noise": 3,
+      "knee": {
+        "qa-mixed": 3000,
+        "qa-getlogs": 5000,
+        "call-mix-33": 1000,
+        "block-receipts": 1000,
+        "getlogs-1block": 3000,
+        "trace-block-33": 50,
+        "trace-tx-33": 200
+      }
+    },
     "better": [
       "node return_revert 1 MiB RETURN 5198 -> 22019 Mgas/s (+324%)",
       "node ether_transfers diff_acc_to_b, empty account 49 -> 148 Mgas/s (+203%)",
@@ -52,6 +98,37 @@
       "#24915 execution: benchmarks run on the versioned noMaterialize state, as eth_call does",
       "#24892 cl: close the persistent block collector when the stage loop exits",
       "#24891 cl/beacon/handler: proposer_lookahead reads epoch data by slot"
+    ]
+  },
+  {
+    "date": "2026-10-17",
+    "old": "6540ff4718d3d7285a76fed017c092d581c19e98",
+    "new": "df6a0a67cdcb4f2bd509bdb4f1d5a8ff1849ad14",
+    "evm": {
+      "mgas": 1016.2,
+      "ratio": 0.528,
+      "best": "nethermind",
+      "noise": 0.7,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1848.8,
+      "ratio": 0.699,
+      "best": "reth",
+      "noise": 1.0,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "better": [],
+    "worse": [],
+    "bottlenecks": [
+      "node ether_transfers diff_acc_to_b, amount 1 (4 rows): 34-54 vs nethermind 1603-1854 (x0.02-0.03), #24976; top frame runtime.cgocall 12.1% (secp256k1 recover), then the validation loop",
+      "node tload, fresh keys: 360 vs reth 15237 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)",
+      "EVM instruction/storage_access_cold: 2389 vs revme 45916 (x0.05), no PR, not profiled yet",
+      "EVM instruction/calldatacopy_from_origin: 731 vs nethermind 9600 (x0.08), no PR, not profiled yet",
+      "EVM instruction/ext_account_query_cold: 2517 vs revme 32173 (x0.08), no PR, not profiled yet"
+    ],
+    "shipped": [
+      "#24960 rpc: calls with state overrides run on the versioned state path"
     ]
   }
 ]

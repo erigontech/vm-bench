@@ -1,0 +1,6 @@
+erigon-evm,main-df6a0a67c
+geth,1.17.8-stable
+revme,revm#95463eb2
+evmone,0.25.0
+nethermind,2.2.0-preview+8091c588b1616c9f6af60eaf6d5fed01ef3edd53
+fixtures,tests-benchmark@v0.0.9
