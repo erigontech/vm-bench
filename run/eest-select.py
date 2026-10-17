@@ -6,6 +6,7 @@ The copies run one after another in every runner (nethtest with --parallelExecut
 usage: run/eest-select.py <fixtures dir of tests-benchmark@vX> [gas variant, default 150M] [copies, default 8]
 Works on both layouts: blockchain_tests/benchmark/compute/<category>/ (v0.0.7) and blockchain_tests/for_<fork>_at_0<gas>/compute/<category>/<module>/ (v0.0.9)."""
 import json, sys
+from collections import Counter
 from pathlib import Path
 
 src, variant = Path(sys.argv[1]), (sys.argv[2] if len(sys.argv) > 2 else "150M")
@@ -13,13 +14,16 @@ copies = int(sys.argv[3]) if len(sys.argv) > 3 else 8
 root = Path(__file__).resolve().parent.parent
 out, twin = root / "blocktests" / "eest", root / "blocktests" / "eest-twin"
 files = tests = 0
-for p in sorted((src / "blockchain_tests").rglob("*.json")):
-    if any(x.startswith("for_") and not x.endswith(variant) for x in p.parts): continue
+paths = [p for p in sorted((src / "blockchain_tests").rglob("*.json")) if not any(x.startswith("for_") and not x.endswith(variant) for x in p.parts)]
+cat = lambda p: p.parts[p.parts.index("compute") + 1]
+stems = Counter((cat(p), p.stem) for p in paths)
+for p in paths:
     d = json.load(open(p))
     first = sorted((k, v) for k, v in d.items() if f"gas-value_{variant}" in k)[:1]
     if not first: continue
     keep = {f"{first[0][0]}#{i}": first[0][1] for i in range(copies)}
-    name = p.parts[p.parts.index("compute") + 1] + "/" + p.stem
+    # v0.0.9 has one stem in two modules (tx_context and call_context call_frame_context_ops): such files keep their module
+    name = cat(p) + "/" + (p.parent.name + "." if stems[cat(p), p.stem] > 1 else "") + p.stem
     (out / name).parent.mkdir(parents=True, exist_ok=True); (twin / name).parent.mkdir(parents=True, exist_ok=True)
     json.dump(keep, open(out / f"{name}.json", "w"), separators=(",", ":"))
     twins = {k: {**v, "blocks": [], "lastblockhash": v["genesisBlockHeader"]["hash"], "postState": v["pre"]} for k, v in keep.items()}
