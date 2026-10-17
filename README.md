@@ -50,7 +50,7 @@ evmone         evmone test <file>
 
 Why it is fair:
 
-- The unit is big. A file is eight copies of one 150M-gas block from `benchmark@v0.0.7`, run one after another in one
+- The unit is big. A file is eight copies of one 150M-gas block from `tests-benchmark@v0.0.9`, run one after another in one
   process; setup is O(pre-state), execution is O(gas). A state-test harness fails on exactly this: a 50k-gas transaction
   against 50 ms of harness.
 - Setup is subtracted, not estimated. Every file has a twin with the same genesis and no blocks; Mgas/s = gas /
@@ -68,7 +68,9 @@ What the groups mean: `instruction` and `scenario` are the EVM comparison. `prec
 and geth and nethermind serve repeated precompile calls from a result cache, so that group compares caches, not
 precompiles; it is shown but kept out of the hero.
 
-`run/eest-select.py <fixtures dir> 150M 8` builds `blocktests/eest/` and the twins from the tarball;
+`run/eest-select.py <fixtures dir> 150M 8` builds `blocktests/eest/` and the twins from the tarball
+(`fixtures_benchmark.tar.gz` of the execution-specs release `tests-benchmark@v0.0.9`, the version erigon's CI pins, sha256
+`5aee5d1bf7430d5b6ca5b48269dd2a1fb0f9df39ac1e980bac9fc56ad403b8c7`);
 `run/blocktest.sh <client>` prints `file,client,gas,ms,twin_ms`; `run/all.sh` includes it when `blocktests/eest/`
 exists. The other two tiers on the page are honest about what they measure: the node tier is benchmarkoor
 newPayload Mgas/s (erigon, reth, geth, nethermind, no evmone), the RPC tier is eth_call rps on one mainnet node,

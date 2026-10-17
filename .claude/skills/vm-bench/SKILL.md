@@ -84,8 +84,12 @@ when the layout changed.
   not in the per-client scripts.
 - The erigon runner must be built from current erigon main with the Makefile's cgo flags (`-O3 -DNDEBUG`); a stale
   or plain `go build` binary hides erigon work and inflates cgo precompiles. `run/versions.sh` records its version.
-- Fixtures: the EEST benchmark tarball (benchmark@v0.0.7) unpacked on the box; the node tier needs a benchmarkoor
-  checkout and docker.
+  It runs with `NO_BACKGROUND_E3_BUILD=true`: without it, Close waits for background file builds in 3 s ticks and a
+  file reads up to 16x slower at random.
+- Fixtures: `fixtures_benchmark.tar.gz` of the execution-specs release `tests-benchmark@v0.0.9` (the version erigon's CI pins),
+  sha256 `5aee5d1bf7430d5b6ca5b48269dd2a1fb0f9df39ac1e980bac9fc56ad403b8c7`, checked after download and unpacked on the box.
+  A fixture change breaks every EVM-tier cell: rerun all clients and start a new series in `history/runs.json`.
+  The node tier needs a benchmarkoor checkout and docker.
 - If the box has no GitHub credentials, commit there and push from a machine that has them. Keep both clones in
   sync: `git checkout -- docs` and remove an already-pushed snapshot dir before `git pull` on the box.
 - The nightly cron (`run/nightly.sh`) also takes the lock.
