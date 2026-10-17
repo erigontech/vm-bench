@@ -268,7 +268,7 @@ if (nodeRun) {
 
 // RPC workloads: for every workload and client, the latest snapshot that has it.
 const rpcw = {};
-for (const r of data.runs) for (const row of r.rpcw || []) (rpcw[row.workload] ??= {})[row.client + "@" + row.rate] = { ...row, date: r.date };
+for (const r of data.runs) for (const row of r.rpcw || []) (rpcw[row.workload] ??= {})[row.client.split("-")[0] + "@" + row.rate] = { ...row, date: r.date };
 if (Object.keys(rpcw).length) {
   for (const id of ["rpcw-title", "rpcw-note", "rpcw"]) document.getElementById(id).hidden = false;
   document.getElementById("rpcw").innerHTML = Object.keys(rpcw).sort().map(w => {
