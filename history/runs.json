@@ -130,5 +130,66 @@
     "shipped": [
       "#24960 rpc: calls with state overrides run on the versioned state path"
     ]
+  },
+  {
+    "date": "2026-10-19",
+    "old": "df6a0a67cdcb4f2bd509bdb4f1d5a8ff1849ad14",
+    "new": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82",
+    "evm": {
+      "mgas": 1046.3,
+      "ratio": 0.544,
+      "best": "nethermind",
+      "noise": 0.2,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1856.4,
+      "ratio": 0.703,
+      "best": "reth",
+      "noise": 1.1,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "rpc": {
+      "main": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82",
+      "noise": 3,
+      "knee": {
+        "qa-mixed": 3000,
+        "qa-getlogs": 5000,
+        "call-mix-33": 1000,
+        "block-receipts": 1000,
+        "getlogs-1block": 3000,
+        "trace-block-33": 50,
+        "trace-tx-33": 200
+      }
+    },
+    "better": [
+      "erigon here is main 6f95064a20 plus open PRs #25040 #25038 #25034 #25026 #24968; EVM tier +3.0% (noise 0.2%), node tier +1.3% (noise 1.1%), RPC knees unchanged",
+      "node EXP 1135 -> 61098, bls12 g1msm/g2msm x11-x29 (#25023, #25035)",
+      "node tload fresh keys 357 -> 8381 (#24968)",
+      "node ether_transfers diff_acc_to_b, amount 1: 18-66 -> 363-415 (#24976)",
+      "EVM call_frame_context_ops 176 -> 433 (#25034), tstore +32%",
+      "RPC block-receipts p99 -31% at every rate (#25026, #25025)"
+    ],
+    "worse": [
+      "node ether_transfers_to_precompile, amount 1 (17 rows): ~740 -> ~465 (-36%); amount 0 unchanged; suspect #25040",
+      "node 1MiB zero-data REVERT 22414 -> 5278 (cell noise 27%)",
+      "EVM dup/bitwise/swap/push -5..-8% (same code alignment in both builds)"
+    ],
+    "bottlenecks": [
+      "node 1MiB zero-data REVERT/RETURN: 5278/6896 vs reth 62927/65212 (x0.08-0.11)",
+      "node unchunkified_bytecode EXTCODECOPY/DELEGATECALL/CALL: 170-185 vs reth 1572-1976 (x0.09-0.11)",
+      "EVM instruction/storage_access_cold: 2401 vs revme 45916 (x0.05)",
+      "EVM instruction/ext_account_query_cold: 2547 vs revme 32173 (x0.08)",
+      "EVM instruction/calldatacopy_from_origin: 770 vs nethermind 9600 (x0.08)"
+    ],
+    "shipped": [
+      "#25023 vm: use word arithmetic for small EXP results",
+      "#25035 vm: reuse adjacent validated BLS points in MSM",
+      "#24976 execution/stagedsync: stop validation at the first result that cannot commit",
+      "#25025 types/ethutils: reuse the cached sender in receipt responses",
+      "#25024 types: reuse cached Keccak hashes for bloom construction",
+      "#25022 rpc/transactions: skip unused BAL recording during traces",
+      "#25009 vm: avoid redundant zeroing when copying log data"
+    ]
   }
 ]
