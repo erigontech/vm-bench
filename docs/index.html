@@ -20,6 +20,8 @@ h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:64px 0 4px;paddin
 .lede{font-size:17px}
 .note{font-size:14px}
 a{color:inherit}
+.anchor{text-decoration:none}
+.anchor:hover{text-decoration:underline}
 .tag{display:inline-block;color:var(--erigon);font-weight:600}
 
 /* hero: one row per client, bar = geomean Mgas/s of the latest run */
@@ -345,4 +347,16 @@ if (scenarios.length) {
   const series = scenarios.map(s => ({ name: s, values: rpcRuns.map(r => { const row = r.rpc.find(x => x.scenario === s); if (!row) return 0; first[s] ??= row.rps; return 100 * row.rps / first[s]; }) }));
   document.getElementById("rpc-chart").innerHTML = `<div class="chart"><h3>rps, first point = 100</h3>` + chart(series, rpcRuns.map(r => r.date), "%") + "</div>";
 }
+// Every section and chart title links to itself.
+const slugs = new Set();
+for (const h of document.querySelectorAll("h2, h3")) {
+  if (h.id === "series-title") continue;
+  // Text before the first comma or parenthesis, without counts or dates, so the anchor survives new runs.
+  let id = h.id || h.textContent.split(/[,(]/)[0].toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^|-)\d+(?=-|$)/g, "").replace(/^-+|-+$/g, "");
+  for (let n = 2; slugs.has(id); n++) id = id.replace(/-\d+$/, "") + "-" + n;
+  slugs.add(id);
+  h.id = id;
+  h.innerHTML = `<a class="anchor" href="#${id}">${h.innerHTML}</a>`;
+}
+if (globalThis.location?.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
 </script>
