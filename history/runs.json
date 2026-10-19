@@ -191,5 +191,61 @@
       "#25022 rpc/transactions: skip unused BAL recording during traces",
       "#25009 vm: avoid redundant zeroing when copying log data"
     ]
+  },
+  {
+    "date": "2026-10-19",
+    "old": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82",
+    "new": "77d3569d13973ae5e4e8220f5541e670e04bd814",
+    "evm": {
+      "mgas": 1081.3,
+      "ratio": 0.562,
+      "best": "nethermind",
+      "noise": 0.1,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1867.5,
+      "ratio": 0.708,
+      "best": "reth",
+      "noise": 0.5,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "rpc": {
+      "main": "77d3569d13973ae5e4e8220f5541e670e04bd814",
+      "noise": 3,
+      "knee": {
+        "qa-mixed": 3000,
+        "qa-getlogs": 5000,
+        "call-mix-33": 1000,
+        "block-receipts": 1000,
+        "getlogs-1block": 3000,
+        "trace-block-33": 50,
+        "trace-tx-33": 200
+      }
+    },
+    "better": [
+      "EVM tier 1045.9 -> 1081.3 Mgas/s (+3.4%), mostly opcode loops: comparison 1427 -> 1693 (+19%), push 592 -> 680 (+15%), shifts 576 -> 663 (+15%); the two builds differ in EVM.run alignment, layout suspected",
+      "node 1 MiB LOG rows 26k-30k -> 74k-81k Mgas/s (x2.7-x3.1)",
+      "node dup 989 -> 1086 Mgas/s (+9.8%), memory_access 1320 -> 1404 (+6.4%)"
+    ],
+    "worse": [
+      "node tload, fresh keys 8258 -> 359 Mgas/s and tstore 4493 -> 3458 (-23%): the previous point carried open #24968, main does not",
+      "EVM instruction/tstore 2010 -> 1493 Mgas/s (-26%), same reason",
+      "node return_revert empty REVERT 427 -> 373 Mgas/s (-13%), identity 756 -> 666 (-12%)",
+      "EVM instruction/call_context.call_frame_context_ops 434 -> 407 Mgas/s (-6%)"
+    ],
+    "bottlenecks": [
+      "node tload, fresh keys: 359 vs reth 15237 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)",
+      "EVM instruction/storage_access_cold: 2415 vs revme 45916 (x0.05), no PR; top frame fastkeccak.keccakF1600BMI2 5.8%, then GC 4.3%, go-freelru ShardedLRU.Len 2.0%",
+      "EVM instruction/ext_account_query_cold: 2551 vs revme 32173 (x0.08), no PR; top frame runtime.tryDeferToSpanScan 5.8% (GC), mapaccess2_fast64 4.7%",
+      "EVM scenario/ether_transfers: 555 vs revme 6856 (x0.08), no PR; top frame secp256k1_gej_double 18.9%, sender recovery about 43%",
+      "EVM instruction/calldatacopy_from_origin: 788 vs nethermind 9600 (x0.08), no PR; top frame vm.(*EVM).run 59%, memoryCopierGas 6.5%"
+    ],
+    "shipped": [
+      "#25034 vm: reuse address words within a call frame: ADDRESS 852 -> 342 ms (2.49x)",
+      "#25040 execution/stagedsync: schedule transfers after recipient validation: ether_transfers empty cold 1088 -> 402 ms (2.71x)",
+      "#25038 vm: evaluate powers of minus one from exponent parity: EXP all-ones 41x",
+      "#25026 types/ethutils: batch timestamped receipt log allocations: 100-log receipt -64%"
+    ]
   }
 ]
