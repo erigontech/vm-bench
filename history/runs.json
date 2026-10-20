@@ -300,5 +300,62 @@
    "#25017 #24991 #24966 #24961 (lupin012, RPC)"
   ],
   "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs"
+ },
+ {
+  "date": "2026-10-20",
+  "old": "228c92c7c4c42aa4e660586b994fb26278dfdd51",
+  "new": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
+  "evm": {
+   "mgas": 1091.3,
+   "ratio": 0.639,
+   "best": "revme",
+   "noise": 0.2,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 2012.1,
+   "ratio": 0.503,
+   "best": "nethermind",
+   "noise": 1.1,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "shipped": [
+   "#25109 execution/execmodule: answer a re-sent validated side-fork payload as VALID without an unwind",
+   "#25100 exec: evmone_precompiles v0.25.0",
+   "#25072 execution/cache: faster code-cache fill when loading cold contracts",
+   "#25091 execution/cache: no copy for a state-cache fill that is refused (merged)",
+   "#25103 execution/state: higher logArena limits",
+   "main up to e8222a2356 (#25094)"
+  ],
+  "better": [
+   "node suite +4.8% (noise 1.1%), EVM tier +0.8% (noise 0.2%); RPC knees the same on 7 of 7 workloads, p99 one rate below the knee within noise",
+   "node modexp x1.41 over 89 tests, 33 of them x2.8-x4.2; EVM precompile/modexp_uncachable 5306 -> 8637 Mgas/s (+63%) (#25100)",
+   "node ether_transfers to self (a_to_a), empty and non-empty account: 8 tests at x2.5-x3.3, now 13-16k Mgas/s",
+   "node bls12_pairing x1.32 over 5 tests, block_full_data +19%, unchunkified_bytecode +14%",
+   "EVM push +12%, blobhash +9%, returndatasize_zero +7%, calldatasize +6%; the two EVM builds differ in EVM.run alignment, so single-opcode rows can move by layout"
+  ],
+  "worse": [
+   "node auth_transaction (empty account) -30%, SWAP16 -16%, DUP9 -11%, calldatasize 1024 bytes -11%, COINBASE -11%, iszero -13%",
+   "EVM jumpdests 861 -> 739 Mgas/s (-14%), memory_access -9%, return_revert -5%"
+  ],
+  "bottlenecks": [
+   "node block_full_data[zero_byte_True]: dbg is ~10% slower than main here (1538 vs 1707 Mgas/s when only this family runs)",
+   "node block_full_data[zero_byte_True]: the full-suite number (~880) is about half of a family-only run; earlier tests in the same process slow it down, a harness effect",
+   "eth_call per transaction: erigon / reth 1.43 over 24 transactions, behind only on transferFrom x262 (0.86) and the modexp proof verify (0.92)"
+  ],
+  "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; gevm added to the EVM tier"
  }
 ]

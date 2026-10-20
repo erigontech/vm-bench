@@ -129,6 +129,9 @@ details.card ul{margin:0;padding-left:18px;font-size:14px}
 <h2 id="rpcw-title" hidden>RPC workloads</h2>
 <p class="note" id="rpcw-note" hidden>Request corpora anyone can replay against their own mainnet node: <a href="https://github.com/erigontech/vm-bench/tree/main/workloads">workloads/</a>, one directory per workload with the JSON-RPC bodies, the pinned block and the rate ladder. Open loop at each rate, 20 s; rps below the rate means the node is at capacity; latency in ms; err = failed requests; a node that answers errors to a workload is skipped. Numbers from different machines compare on latency at equal rate and on the knee, not on peak rps.</p>
 <div id="rpcw" hidden></div>
+<h2 id="calls-title" hidden>eth_call per transaction</h2>
+<p class="note" id="calls-note" hidden></p>
+<div id="calls" hidden></div>
 <h2>JSON-RPC throughput</h2>
 <p class="note">Requests per second against one mainnet datadir, 33 recorded requests per method, 16 connections. The chart indexes each scenario to its first measurement.</p>
 <div class="rpc"><div id="rpc"></div><div id="rpc-chart"></div></div>
@@ -335,6 +338,26 @@ if (Object.keys(rpcw).length) {
     return `<h3 style="margin:28px 0 6px;font-size:15px">${w}</h3><div class="wrap"><table><thead><tr><th>rate</th><th>client</th><th>rps</th><th>p50</th><th>p95</th><th>p99</th><th>err</th><th>measured</th></tr></thead><tbody>` +
       rows.map(x => `<tr><td>${x.rate}</td><td>${x.client}</td><td>${x.rps.toFixed(0)}</td><td>${x.p50}</td><td>${x.p95}</td><td class="${x.p99 > 100 ? "loss" : ""}">${x.p99}</td><td class="${x.err ? "loss" : "gas"}">${x.err}</td><td class="gas">${short(x.date)}</td></tr>`).join("") + "</tbody></table></div>";
   }).join("");
+}
+
+// eth_call per transaction: the latest snapshot with calls, change against the one before it.
+const callRuns = data.runs.filter(r => Object.keys(r.calls).length);
+if (callRuns.length) {
+  for (const id of ["calls-title", "calls-note", "calls"]) document.getElementById(id).hidden = false;
+  const cr = callRuns[callRuns.length - 1], prev = callRuns[callRuns.length - 2];
+  const pick = (by, p) => Object.entries(by || {}).find(([c]) => c.startsWith(p)) || [];
+  const [ec] = pick(Object.values(cr.calls)[0], "erigon"), [rc] = pick(Object.values(cr.calls)[0], "reth"), [pc] = pick(prev && Object.values(prev.calls)[0], "erigon");
+  document.getElementById("calls-note").textContent = `One mainnet transaction per row, replayed as eth_call at its own block on the same node and datadir window, 16 connections. ` +
+    `${ec} against ${rc}, measured ${short(cr.date)}; change = erigon rps against ${pc ? pc + " on " + short(prev.date) : "nothing yet"}. Transactions whose call fails on the node are left out.`;
+  const rows = Object.keys(cr.calls).sort().map(f => {
+    const [, e] = pick(cr.calls[f], "erigon"), [, r] = pick(cr.calls[f], "reth"), [, p] = pick(prev?.calls[f], "erigon");
+    return { f, e: e?.rps, r: r?.rps, ch: e && p ? e.rps / p.rps : NaN };
+  });
+  const chCell = k => { if (isNaN(k)) return `<td class="gas">–</td>`; const s = (100 * (k - 1)).toFixed(1).replace(/^-0\.0$/, "0.0"); return `<td class="${k > 1.03 ? "up" : k < 0.97 ? "down" : ""}">${s.startsWith("-") ? s : "+" + s}%</td>`; };
+  const tot = { e: geomean(rows.map(x => x.e)), r: geomean(rows.map(x => x.r)), ch: geomean(rows.map(x => x.ch)) };
+  document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>reth rps</th><th>e/r</th><th>change</th></tr></thead><tbody>` +
+    rows.map(x => `<tr><td class="f" title="${x.f}">${x.f}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}${chCell(x.ch)}</tr>`).join("") +
+    `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.r, 0)}</b></td>${ratioCell(tot.e / tot.r)}${chCell(tot.ch)}</tr></tbody></table></div>`;
 }
 
 // RPC
