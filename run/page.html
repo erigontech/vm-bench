@@ -202,7 +202,7 @@ if (prog.length) {
     `<details class="card"${i ? "" : " open"}><summary><b>${r.date}</b> · ` +
     (r.old ? `<a href="https://github.com/erigontech/erigon/compare/${r.old}...${r.new}">${sha(r.old)}..${sha(r.new)}</a>` : `main ${sha(r.new)}, first point`) +
     ` · EVM ${r.evm.mgas.toFixed(1)}, node ${r.node.mgas.toFixed(1)} Mgas/s` +
-    (i < prog.length - 1 && r.evm.fixtures !== prog[prog.length - 2 - i].evm.fixtures ? ` · EVM fixtures now ${r.evm.fixtures}, not comparable with earlier points` : "") + `</summary>` +
+    (i < prog.length - 1 && r.evm.fixtures !== prog[prog.length - 2 - i].evm.fixtures ? ` · EVM fixtures now ${r.evm.fixtures}, not comparable with earlier points` : "") + (r.note ? ` · ${r.note}` : "") + `</summary>` +
     sec("Shipped", r.shipped) + sec("Better", r.better) + sec("Worse", r.worse) + sec("Bottlenecks", r.bottlenecks) + "</details>").join("");
 }
 
