@@ -352,11 +352,11 @@ const slugs = new Set();
 for (const h of document.querySelectorAll("h2, h3")) {
   if (h.id === "series-title") continue;
   // Text before the first comma or parenthesis, without counts or dates, so the anchor survives new runs.
-  let id = h.id || h.textContent.split(/[,(]/)[0].toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^|-)\d+(?=-|$)/g, "").replace(/^-+|-+$/g, "");
-  for (let n = 2; slugs.has(id); n++) id = id.replace(/-\d+$/, "") + "-" + n;
+  let id = h.textContent.split(/[,(]/)[0].toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^|-)\d+(?=-|$)/g, "").replace(/^-+|-+$/g, "");
+  for (let n = 2; slugs.has(id) || document.getElementById(id); n++) id = id.replace(/-\d+$/, "") + "-" + n;
   slugs.add(id);
-  h.id = id;
-  h.innerHTML = `<a class="anchor" href="#${id}">${h.innerHTML}</a>`;
+  // A heading the script finds by its own id keeps it, so old links still work; the slug goes on the link.
+  h.innerHTML = `<a class="anchor" id="${id}" href="#${id}">${h.innerHTML}</a>`;
 }
 if (globalThis.location?.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
 </script>

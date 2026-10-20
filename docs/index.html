@@ -8,7 +8,7 @@
 <style>
 :root{
   --paper:#f2f4f6;--ink:#162033;--ink-2:#55627a;--rule:#d5dae2;--rule-2:#e6e9ee;
-  --erigon:#0b6e4f;--geth:#4a6fa5;--revme:#b5453a;--evmone:#c98a1b;--nethermind:#6b4e9b;
+  --erigon:#0b6e4f;--geth:#4a6fa5;--revme:#b5453a;--evmone:#c98a1b;--nethermind:#6b4e9b;--gevm:#2a8a8a;
   --win:#0b6e4f;--loss:#b5453a;--tint:#e3ede8;
 }
 *{box-sizing:border-box}
@@ -105,7 +105,7 @@ details.card ul{margin:0;padding-left:18px;font-size:14px}
 <section class="race" id="race"></section>
 
 <h2 id="bt-title" hidden>EVM: EEST benchmark blocks</h2>
-<p class="note" id="bt-note" hidden>Eight copies of one 150M-gas block per file, run one after another through each client's own blockchain-test tool (geth and erigon <code>evm blocktest</code>, revme <code>blockchaintest</code>, nethtest <code>-b</code>, <code>evmone test</code>), one block per process. Mgas/s = gas / (wall time of the file − wall time of the same file with no blocks), best of 3. Every client parses the fixture, executes the block and checks the state root, so the number is comparable across clients. Grey = the no-block twin is more than 30% of the run or the net time is under 100 ms: setup-dominated or too short for a wall clock. nethtest's dotnet start-up is ~3 s, so nethermind runs the file and the twin second in one process after a pass of the file: start-up and JIT warm-up cancel, nethermind is measured warm, and only the 100 ms floor greys its cells. A client with fewer than half of its blocks valid is left out of the hero. The precompile tests repeat one input, and geth and neth serve repeated precompile calls from a result cache, so that group compares caches, not precompiles; the hero uses instruction and scenario only. Fixtures: <a href="https://github.com/ethereum/execution-specs/releases/tag/tests-benchmark%40v0.0.9">EEST tests-benchmark@v0.0.9</a>, 150M variant.</p>
+<p class="note" id="bt-note" hidden>Eight copies of one 150M-gas block per file, run one after another through each client's own blockchain-test tool (geth and erigon <code>evm blocktest</code>, revme <code>blockchaintest</code>, nethtest <code>-b</code>, <code>evmone test</code>, gevm <code>RunBlockchainTestFile</code>), one block per process. Mgas/s = gas / (wall time of the file − wall time of the same file with no blocks), best of 3. Every client parses the fixture, executes the block and checks the state root, so the number is comparable across clients. gevm is the exception: it has no trie, computes no state root and checks the post-state account by account, from geth's dump of the same block; read its column as an upper bound. Grey = the no-block twin is more than 30% of the run or the net time is under 100 ms: setup-dominated or too short for a wall clock. nethtest's dotnet start-up is ~3 s, so nethermind runs the file and the twin second in one process after a pass of the file: start-up and JIT warm-up cancel, nethermind is measured warm, and only the 100 ms floor greys its cells. A client with fewer than half of its blocks valid is left out of the hero. The precompile tests repeat one input, and geth and neth serve repeated precompile calls from a result cache, so that group compares caches, not precompiles; the hero uses instruction and scenario only. Fixtures: <a href="https://github.com/ethereum/execution-specs/releases/tag/tests-benchmark%40v0.0.9">EEST tests-benchmark@v0.0.9</a>, 150M variant.</p>
 <section class="race" id="bt-race" hidden></section>
 <div class="wrap" id="bt" hidden></div>
 
@@ -352,11 +352,11 @@ const slugs = new Set();
 for (const h of document.querySelectorAll("h2, h3")) {
   if (h.id === "series-title") continue;
   // Text before the first comma or parenthesis, without counts or dates, so the anchor survives new runs.
-  let id = h.id || h.textContent.split(/[,(]/)[0].toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^|-)\d+(?=-|$)/g, "").replace(/^-+|-+$/g, "");
-  for (let n = 2; slugs.has(id); n++) id = id.replace(/-\d+$/, "") + "-" + n;
+  let id = h.textContent.split(/[,(]/)[0].toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^|-)\d+(?=-|$)/g, "").replace(/^-+|-+$/g, "");
+  for (let n = 2; slugs.has(id) || document.getElementById(id); n++) id = id.replace(/-\d+$/, "") + "-" + n;
   slugs.add(id);
-  h.id = id;
-  h.innerHTML = `<a class="anchor" href="#${id}">${h.innerHTML}</a>`;
+  // A heading the script finds by its own id keeps it, so old links still work; the slug goes on the link.
+  h.innerHTML = `<a class="anchor" id="${id}" href="#${id}">${h.innerHTML}</a>`;
 }
 if (globalThis.location?.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
 </script>
