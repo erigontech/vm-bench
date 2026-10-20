@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Blockchain-test fixtures through each client's own test runner, wall time minus the no-block twin.
-# usage: run/blocktest.sh <client>   client = erigon | geth | revme | nethermind | evmone  (FILTER=<file glob>)
+# usage: run/blocktest.sh <client>   client = erigon | geth | revme | nethermind | evmone | gevm  (FILTER=<file glob>)
 # One block per process (see eest-select.py), no CPU pinning: a client may use its background threads as in production.
 # prints file,client,gas,ms,twin_ms  (ms = best of REPEAT runs of the whole file)
 # nethermind: file and twin each run second in one nethtest process, after a pass of the file, so dotnet start-up and JIT warm-up cancel.
@@ -15,6 +15,8 @@ case $client in
 	revme)      cmd=(revme blockchaintest) ;;
 	nethermind) cmd=("${NETHTEST:-$HOME/nethtest/nethtest}" -b --parallelExecution false -x -j -n) ;;  # sequential EVM, like the others; file names on stdin
 	evmone)     cmd=("${EVMONE:-$HOME/evmone/bin/evmone}" test) ;;
+	# gevm checks postState account by account and computes no state root: its fixtures carry geth's post-state dump (gevm-fixtures.py)
+	gevm)       cmd=("${GEVM:-$HOME/bin/gevm-blocktest}") ;;
 	*) echo "unknown client $client" >&2; exit 2 ;;
 esac
 now() { perl -MTime::HiRes=time -e 'printf "%.0f", time * 1e3'; }
@@ -24,7 +26,8 @@ for f in blocktests/eest/*/${FILTER:-*}.json; do
 	name=${f#blocktests/eest/}; name=${name%.json}
 	gas=$(python3 -c 'import json,sys; print(sum(int(b["blockHeader"]["gasUsed"],16) for t in json.load(open(sys.argv[1])).values() for b in t["blocks"]))' "$f")
 	warm=; [ "$client" = nethermind ] && warm=$f
-	t=$(best $warm "$f") || { echo "$client: $name failed" >&2; continue; }
+	src=$f; [ "$client" = gevm ] && src=blocktests/eest-gevm/$name.json
+	t=$(best $warm "$src") || { echo "$client: $name failed" >&2; continue; }
 	tw=$(best $warm "blocktests/eest-twin/$name.json") || { echo "$client: $name twin failed" >&2; continue; }
 	echo "$name,$client,$gas,$t,$tw"
 done

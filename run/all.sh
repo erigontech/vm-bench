@@ -10,12 +10,13 @@ export DOTNET_ROOT=${DOTNET_ROOT:-$HOME/.dotnet}
 export EVMONE=${EVMONE:-$HOME/evmone/bin/evmone} NETHTEST=${NETHTEST:-$HOME/nethtest/nethtest}
 export LD_LIBRARY_PATH=$HOME/evmone/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 mkdir -p results
-for client in ${CLIENTS:-erigon geth revme evmone nethermind}; do
+for client in ${CLIENTS:-erigon geth revme evmone nethermind gevm}; do
+	[ -x run/$client.sh ] || continue  # gevm has only the blocktest tier
 	run/$client.sh > results/$client.csv || echo "$client: runner failed" >&2
 done
 if [ -d blocktests/eest ]; then
 	touch results/blocktest.csv
-	for client in ${CLIENTS:-erigon geth revme evmone nethermind}; do
+	for client in ${CLIENTS:-erigon geth revme evmone nethermind gevm}; do
 		grep -v ",$client," results/blocktest.csv > results/blocktest.tmp || true
 		REPEAT=${REPEAT:-2} run/blocktest.sh $client >> results/blocktest.tmp
 		mv results/blocktest.tmp results/blocktest.csv
