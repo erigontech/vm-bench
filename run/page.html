@@ -21,6 +21,7 @@ h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:64px 0 4px;paddin
 .note{font-size:14px}
 a{color:inherit}
 .anchor{text-decoration:none}
+.fold>summary{cursor:pointer;color:var(--ink-2);font-size:14px;margin:4px 0 8px}
 .anchor:hover{text-decoration:underline}
 .tag{display:inline-block;color:var(--erigon);font-weight:600}
 
@@ -347,6 +348,13 @@ if (scenarios.length) {
   const series = scenarios.map(s => ({ name: s, values: rpcRuns.map(r => { const row = r.rpc.find(x => x.scenario === s); if (!row) return 0; first[s] ??= row.rps; return 100 * row.rps / first[s]; }) }));
   document.getElementById("rpc-chart").innerHTML = `<div class="chart"><h3>rps, first point = 100</h3>` + chart(series, rpcRuns.map(r => r.date), "%") + "</div>";
 }
+// Every table folds; a long one starts folded.
+for (const t of document.querySelectorAll("table")) {
+  const rows = t.tBodies[0]?.rows.length ?? 0, d = document.createElement("details"), sum = document.createElement("summary");
+  d.className = "fold"; d.open = rows <= 15; sum.textContent = `table, ${rows} rows`;
+  t.replaceWith(d); d.append(sum, t);
+}
+
 // Every section and chart title links to itself.
 const slugs = new Set();
 for (const h of document.querySelectorAll("h2, h3")) {
