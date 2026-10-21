@@ -6,7 +6,7 @@ from pathlib import Path
 root = Path(__file__).resolve().parent.parent
 runs = []
 for d in sorted(p for p in (root / "history").iterdir() if p.is_dir()):
-    run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}}
+    run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}}
     for f in d.glob("*.csv"):
         if f.name == "versions.csv":
             run["versions"] = dict(csv.reader(open(f)))
@@ -24,6 +24,10 @@ for d in sorted(p for p in (root / "history").iterdir() if p.is_dir()):
             continue
         if f.name == "rpcw.csv":
             run["rpcw"] = [dict(zip(("workload", "client", "rate", "rps", "p50", "p95", "p99", "err"), (r[0], r[1], *map(float, r[2:])))) for r in csv.reader(open(f))]
+            continue
+        if f.name == "callsneth.csv":
+            for r in csv.reader(open(f)):
+                run[f.stem].setdefault(r[0], {})[r[1]] = dict(zip(("rps", "p50", "p99", "err", "gas"), map(float, r[2:])))
             continue
         if f.name == "calls.csv":
             for r in csv.reader(open(f)):
