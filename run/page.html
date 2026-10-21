@@ -122,10 +122,17 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <section class="race" id="bt-race" hidden></section>
 <div class="wrap" id="bt" hidden></div>
 
-<h2 id="node-title" hidden>Node: newPayload Mgas/s</h2>
+<h2 id="node-title" hidden>Node: newPayload Mgas/s, BAL off (Osaka)</h2>
 <p class="note" id="node-note" hidden></p>
 <section class="race" id="node-race" hidden></section>
+<div class="wrap" id="node-fam" hidden></div>
 <div class="wrap" id="node" hidden></div>
+
+<h2 id="nodebal-title" hidden>Node BAL on: newPayload Mgas/s, Amsterdam</h2>
+<p class="note" id="nodebal-note" hidden></p>
+<section class="race" id="nodebal-race" hidden></section>
+<div class="wrap" id="nodebal-fam" hidden></div>
+<div class="wrap" id="nodebal" hidden></div>
 
 <h2>Over time</h2>
 <p class="note">Geometric mean of Mgas/s across the fixtures of each group, execution-only harnesses: erigon in green, revm in grey. Points before the first cross-client run are erigon only.</p>
@@ -327,31 +334,52 @@ if (btRun) {
       bo.map(c => btGrey(f, c) || btGrey(f, btBase) ? `<td class="ratio"><span class="n even">–</span></td>` : ratioCell(btMgas(f, btBase) / btMgas(f, c))).join("") + "</tr>")])) + "</tbody></table>";
 }
 
-// Node: benchmarkoor newPayload Mgas/s, latest snapshot that has it.
-const nodeRun = [...data.runs].reverse().find(r => Object.keys(r.node).length);
-if (nodeRun) {
-  for (const id of ["node-title", "node-note", "node-race", "node"]) document.getElementById(id).hidden = false;
-  const tests = Object.keys(nodeRun.node).sort(), nv = nodeRun.versions;
-  const nc = ["erigon", "reth", "nethermind", "geth"].filter(c => tests.some(t => nodeRun.node[t][c]));
+// Node: benchmarkoor newPayload Mgas/s, latest snapshot that has it. Hero and family rows use the tests every hero client passed;
+// a client valid on fewer than half of the tests keeps its per-test column but stays out of the hero.
+function nodeSection(id, key, passKey, note) {
+  const run = [...data.runs].reverse().find(r => Object.keys(r[key]).length);
+  if (!run) return;
+  for (const x of ["-title", "-note", "-race", "-fam", ""]) document.getElementById(id + x).hidden = false;
+  const res = run[key], tests = Object.keys(res).sort(), nv = run.versions;
+  const order = ["erigon", "reth", "nethermind", "geth", "besu", "ethrex", "nimbus"], rank = c => (order.indexOf(c) + 1) || 99;
+  const nc = [...new Set(tests.flatMap(t => Object.keys(res[t])))].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
   const no = nc.filter(c => c !== "erigon");
   const cat = t => t.match(/compute\/([^/]+)\//)?.[1] || "other";
-  const hero = tests.filter(t => cat(t) !== "precompile");
-  const pp = Math.max(...Object.values(nodeRun.nodePass).map(r => Math.abs(r - 1)));
-  document.getElementById("node-note").textContent = `EEST compute tests, genesis state per test (small state), newPayload Mgas/s, driven by benchmarkoor. ` +
-    `This is not the large-state number: every test runs on its own small pre-state, with no mainnet-sized database behind it. ` +
-    `Fixtures ${nv.fixtures}, Osaka, 150M-gas blocks, ${tests.length} tests. ${nc.map(c => c + " " + nv[c]).join(", ")}. ` +
-    `Same cpuset and memory limit for every client, a fresh container per client and run, the first test of each genesis group dropped as warm-up, ` +
-    `two passes (erigon, reth, nethermind, geth, then reversed), Mgas/s = mean of the passes, pass-to-pass within ${(100 * pp).toFixed(1)}%. ` +
-    `The hero leaves out the ${tests.length - hero.length} precompile tests: geth and nethermind run with their default precompile result caches, so that group compares caches.`;
-  const means = nc.map(c => ({ c, v: geomean(hero.map(t => nodeRun.node[t][c])) }));
+  const fam = t => t.split("::")[1].replace(/\[.*/, "");
+  const hc = nc.filter(c => tests.filter(t => res[t][c]).length * 2 >= tests.length);
+  const hero = tests.filter(t => cat(t) !== "precompile" && hc.every(c => res[t][c]));
+  const pp = (100 * Math.max(...Object.values(run[passKey]).map(r => Math.abs(r - 1)))).toFixed(1);
+  document.getElementById(id + "-note").textContent = note({ tests, nc, hc, hero, nv, pp });
+  const means = hc.map(c => ({ c, v: geomean(hero.map(t => res[t][c])) }));
   const ref = means.find(r => r.c === "erigon").v, max = Math.max(...means.map(r => r.v));
-  document.getElementById("node-race").innerHTML = `<div><h3>${hero.length} instruction and scenario tests, ${nodeRun.date.slice(0, 10)}, geometric mean Mgas/s</h3><div class="bars">` +
-    means.map(r => { const k = ref / r.v; return `<div class="c">${r.c}</div><div class="b ${r.c === "erigon" ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div><div class="v">${fmt(r.v)}</div><div class="r ${r.c === "erigon" ? "" : cls(k)}">${r.c === "erigon" ? "" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>";
-  const label = t => t.split("::")[1].replace("fork_Osaka-blockchain_test_engine_x-", "").replace(/-?benchmark-gas-value_150M/, "").replace("[]", "");
-  document.getElementById("node").innerHTML = `<table><thead><tr><th>test</th>${nc.map(c => `<th>${c}</th>`).join("")}${no.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
+  document.getElementById(id + "-race").innerHTML = `<div><h3>${hero.length} instruction and scenario tests, ${run.date.slice(0, 10)}, geometric mean Mgas/s</h3><div class="bars">` +
+    means.map(r => { const k = ref / r.v; return `<div class="c">${name(r.c)}</div><div class="b ${r.c === "erigon" ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div><div class="v">${fmt(r.v)}</div><div class="r ${r.c === "erigon" ? "" : cls(k)}">${r.c === "erigon" ? "" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>";
+  const ho = hc.filter(c => c !== "erigon"), fams = [...new Set(hero.map(fam))].sort();
+  const fm = (f, c) => geomean(hero.filter(t => fam(t) === f).map(t => res[t][c]));
+  document.getElementById(id + "-fam").innerHTML = `<table><thead><tr><th>family</th><th>tests</th>${hc.map(c => `<th>${name(c)}</th>`).join("")}${ho.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
+    body(fams.map(f => `<tr><td class="f" title="${f}">${f.replace(/^test_/, "")}</td><td class="gas">${hero.filter(t => fam(t) === f).length}</td>` +
+      hc.map(c => `<td>${fmt(fm(f, c))}</td>`).join("") + ho.map(c => ratioCell(fm(f, "erigon") / fm(f, c))).join("") + "</tr>")) + "</tbody></table>";
+  const label = t => t.split("::")[1].replace(/fork_\w+-blockchain_test_engine_x-/, "").replace(/-?benchmark-gas-value_\d+M/, "").replace("[]", "");
+  document.getElementById(id).innerHTML = `<table><thead><tr><th>test</th>${nc.map(c => `<th>${name(c)}</th>`).join("")}${no.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
     body([...new Set(tests.map(cat))].flatMap(g => [`<tr class="group"><td colspan="${1 + nc.length + no.length}">${g}</td></tr>`, ...tests.filter(t => cat(t) === g).map(t => `<tr><td class="f" title="${t}">${label(t)}</td>` +
-      nc.map(c => `<td>${fmt(nodeRun.node[t][c])}</td>`).join("") + no.map(c => ratioCell(nodeRun.node[t].erigon / nodeRun.node[t][c])).join("") + "</tr>")])) + "</tbody></table>";
+      nc.map(c => `<td>${fmt(res[t][c] ?? NaN)}</td>`).join("") + no.map(c => ratioCell(res[t].erigon / res[t][c])).join("") + "</tr>")])) + "</tbody></table>";
 }
+nodeSection("node", "node", "nodePass", ({ tests, nc, hero, nv, pp }) => `BAL off: Osaka blocks, which carry no block access list. ` +
+  `EEST compute tests, genesis state per test (small state), newPayload Mgas/s, driven by benchmarkoor. ` +
+  `This is not the large-state number: every test runs on its own small pre-state, with no mainnet-sized database behind it. ` +
+  `Fixtures ${nv.fixtures}, Osaka, 150M-gas blocks, ${tests.length} tests. ${nc.map(c => c + " " + nv[c]).join(", ")}. ` +
+  `Same cpuset and memory limit for every client, a fresh container per client and run, the first test of each genesis group dropped as warm-up, ` +
+  `two passes (erigon, reth, nethermind, geth, then reversed), Mgas/s = mean of the passes, pass-to-pass within ${pp}%. ` +
+  `The hero leaves out the ${tests.length - hero.length} precompile tests: geth and nethermind run with their default precompile result caches, so that group compares caches.`);
+nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp }) => `BAL on (Amsterdam, glamsterdam-devnet-8 fixtures): the same EEST compute tests ` +
+  `filled for Amsterdam, so every block carries its block access list and every client runs in its BAL mode with the instance flags of ethpandaops/benchmarkoor-tests. ` +
+  `Fixtures: ${nv.fixtures}; ${tests.length} tests (${nv.missing}). Genesis state per test (small state), newPayload Mgas/s, driven by benchmarkoor. ` +
+  `${nc.map(c => c + " " + nv[c]).join(", ")}. Modes: ${nv.modes}. ` +
+  `Same cpuset, memory limit, warm-up drop and two passes as the BAL-off section, pass-to-pass within ${pp}%. ` +
+  `Amsterdam reprices gas, so the same test burns a different amount of gas for the same work: compare clients inside this section, not Mgas/s across the two sections. ` +
+  `The hero and the family table use the ${hero.length} instruction and scenario tests that ${hc.join(", ")} all passed` +
+  (nc.length > hc.length ? `; ${nc.filter(c => !hc.includes(c)).join(", ")} passed fewer than half of the tests and shows in the per-test table only` : "") +
+  (nv["not run"] ? `. Not run: ${nv["not run"]}.` : "."));
 
 // RPC workloads: for every workload and client, the latest snapshot that has it.
 const rpcw = {};

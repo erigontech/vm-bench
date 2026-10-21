@@ -6,7 +6,7 @@ from pathlib import Path
 root = Path(__file__).resolve().parent.parent
 runs = []
 for d in sorted(p for p in (root / "history").iterdir() if p.is_dir()):
-    run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}}
+    run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}}
     for f in d.glob("*.csv"):
         if f.name == "versions.csv":
             run["versions"] = dict(csv.reader(open(f)))
@@ -15,12 +15,12 @@ for d in sorted(p for p in (root / "history").iterdir() if p.is_dir()):
             for file, client, gas, ms, twin in csv.reader(open(f)):
                 run["bt"].setdefault(file, {})[client] = {"gas": int(gas), "ms": int(ms), "twin": int(twin)}
             continue
-        if f.name == "node.csv":
+        if f.name in ("node.csv", "nodebal.csv"):
             for test, client, mgas in csv.reader(open(f)):
-                run["node"].setdefault(test, {})[client] = float(mgas)
+                run[f.stem].setdefault(test, {})[client] = float(mgas)
             continue
-        if f.name == "pass.csv":
-            run["nodePass"] = {client: float(r) for client, r in csv.reader(open(f))}
+        if f.name in ("pass.csv", "passbal.csv"):
+            run["nodePass" if f.name == "pass.csv" else "nodebalPass"] = {client: float(r) for client, r in csv.reader(open(f))}
             continue
         if f.name == "rpcw.csv":
             run["rpcw"] = [dict(zip(("workload", "client", "rate", "rps", "p50", "p95", "p99", "err"), (r[0], r[1], *map(float, r[2:])))) for r in csv.reader(open(f))]
@@ -36,7 +36,7 @@ for d in sorted(p for p in (root / "history").iterdir() if p.is_dir()):
             run["ns"].setdefault(fixture, {})[client] = int(ns)
     runs.append(run)
 # The page shows only the latest node and blocktest tables.
-for k in ("node", "nodePass", "bt"):
+for k in ("node", "nodePass", "nodebal", "nodebalPass", "bt"):
     for run in [r for r in runs if r[k]][:-1]:
         run[k] = {}
 gas = {p.parent.name + "/" + p.stem: int(next(iter(json.load(open(p)).values()))["_info"]["gasUsed"], 16)
