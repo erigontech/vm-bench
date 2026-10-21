@@ -410,5 +410,53 @@
   ],
   "bottlenecks": [],
   "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; node and RPC numbers are from the 2026-10-20 snapshot"
+ },
+ {
+  "date": "2026-10-21",
+  "old": "b03dee1904f6a01c43d9acf95c19d284382a6ba8",
+  "new": "0d9cecb17a501c44766d8dcf7c04a5f77e0fdbf5",
+  "evm": {
+   "mgas": 1161.2,
+   "ratio": 0.69,
+   "best": "revme",
+   "noise": 0.11,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 2232.6,
+   "ratio": 0.534,
+   "best": "nethermind",
+   "noise": 1.1,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "shipped": [
+   "#25181 Makefile: build C++ cgo deps without NDEBUG",
+   "#25185 execution/vm: write PREVRANDAO straight into its stack slot",
+   "#25186 execution/vm: copy cached address words onto the stack without a memmove call on amd64",
+   "#25072 execution/cache: faster code-cache fill when loading cold contracts (simpler version)",
+   "#25156 execution/vm: pin MCOPY fast-path bounds (tests only)"
+  ],
+  "better": [
+   "node BAL-off +10.9% (1075 tests, noise 1.1%), BAL-on +9.5% (1161 tests)",
+   "node modexp x5.6..8.2 on 30 tests (#25181), identity x8.2 BAL-off and x14.9 BAL-on (#25155)"
+  ],
+  "worse": [
+   "EVM tier -2.4% (noise 0.11%): shifts -24%, calldatasize -23%, codesize -19%, call_frame_context -16%, jumpdests -14%; the binaries differ in EVM.run alignment, an A/B of the #25164 op-table guard is running"
+  ],
+  "bottlenecks": [],
+  "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; EVM tier is dbg 8e711db2b3, node tier dbg 0d9cecb17a (projected: page numbers times the A/B ratio on the same box); RPC numbers are from the 2026-10-20 snapshot"
  }
 ]
