@@ -459,7 +459,7 @@ if (scenarios.length) {
   const series = scenarios.map(s => ({ name: s, values: rpcRuns.map(r => { const row = r.rpc.find(x => x.scenario === s); if (!row) return 0; first[s] ??= row.rps; return 100 * row.rps / first[s]; }) }));
   document.getElementById("rpc-chart").innerHTML = `<div class="chart"><h3>rps, first point = 100</h3>` + chart(series, rpcRuns.map(r => r.date), "%") + "</div>";
 }
-// Every table folds.
+// Every table but the client tables folds.
 for (const t of document.querySelectorAll("table:not(.cl)")) {
   const rows = t.querySelector("tr.more")?.dataset.n ?? t.tBodies[0]?.rows.length ?? 0, d = document.createElement("details"), sum = document.createElement("summary");
   d.className = "fold"; d.open = true; sum.textContent = `table, ${rows} rows`;
