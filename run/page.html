@@ -152,6 +152,9 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <h2 id="calls-title" hidden>eth_call per transaction</h2>
 <p class="note" id="calls-note" hidden></p>
 <div id="calls" hidden></div>
+<h2 id="neth-title" hidden>eth_call vs Nethermind</h2>
+<p class="note" id="neth-note" hidden></p>
+<div id="neth" hidden></div>
 <h2>JSON-RPC throughput</h2>
 <p class="note">Requests per second against one mainnet datadir, 33 recorded requests per method, 16 connections. The chart indexes each scenario to its first measurement.</p>
 <div class="rpc"><div class="wrap" id="rpc"></div><div id="rpc-chart"></div></div>
@@ -411,6 +414,27 @@ if (callRuns.length) {
   document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>reth rps</th><th>e/r</th><th>change</th></tr></thead><tbody>` +
     rows.map(x => `<tr><td class="f" title="${x.f}">${x.f}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}${chCell(x.ch)}</tr>`).join("") +
     `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.r, 0)}</b></td>${ratioCell(tot.e / tot.r)}${chCell(tot.ch)}</tr></tbody></table></div>`;
+}
+
+// eth_call vs Nethermind: per-transaction rps at 16 connections and single-call p50 at 1 connection, latest snapshot with them.
+const nethRun = data.runs.filter(r => Object.keys(r.callsneth || {}).length).pop();
+if (nethRun) {
+  for (const id of ["neth-title", "neth-note", "neth"]) document.getElementById(id).hidden = false;
+  const pick = (by, p) => Object.entries(by || {}).find(([c]) => c.startsWith(p)) || [];
+  const [ec] = pick(Object.values(nethRun.callsneth)[0], "erigon"), [nc] = pick(Object.values(nethRun.callsneth)[0], "nethermind");
+  document.getElementById("neth-note").textContent = `${ec} against ${nc}, measured ${short(nethRun.date)} on the same machine and cores, ABBA, median of the two rounds per client. ` +
+    "Both clients answer the same bodies at \"latest\", but their heads are about 149k blocks apart, so these are not same-state numbers. " +
+    "Rows where either client reverts or errors are left out. The load ladder of the same request mix is under RPC workloads.";
+  const table = (res, head, val, better) => {
+    const rows = Object.keys(res).sort().map(f => { const [, e] = pick(res[f], "erigon"), [, n] = pick(res[f], "nethermind"); return { f, e: val(e), n: val(n) }; });
+    const k = x => better(x.e, x.n), tot = { e: geomean(rows.map(x => x.e)), n: geomean(rows.map(x => x.n)) };
+    return `<h3 style="margin:28px 0 6px;font-size:15px">${head[0]}</h3><div class="wrap"><table><thead><tr><th>call</th><th>erigon ${head[1]}</th><th>neth ${head[1]}</th><th>erigon/neth</th></tr></thead><tbody>` +
+      rows.map(x => `<tr><td class="f" title="${x.f}">${x.f}</td><td>${fmt(x.e, head[2])}</td><td>${fmt(x.n, head[2])}</td>${ratioCell(k(x))}</tr>`).join("") +
+      `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, head[2])}</b></td><td><b>${fmt(tot.n, head[2])}</b></td>${ratioCell(better(tot.e, tot.n))}</tr></tbody></table></div>`;
+  };
+  document.getElementById("neth").innerHTML =
+    table(nethRun.callsneth, ["per transaction, 16 connections", "rps", 0], x => x?.rps, (e, n) => e / n) +
+    table(nethRun.c1neth, ["single call, 1 connection", "p50 ms", 2], x => x?.p50, (e, n) => n / e);
 }
 
 // RPC
