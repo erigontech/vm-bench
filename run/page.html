@@ -128,7 +128,7 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <div class="wrap" id="node-fam" hidden></div>
 <div class="wrap" id="node" hidden></div>
 
-<h2 id="nodebal-title" hidden>Node BAL-on: newPayload Mgas/s, Amsterdam</h2>
+<h2 id="nodebal-title" hidden>_newPayload BAL-on</h2>
 <p class="note" id="nodebal-note" hidden></p>
 <section class="race" id="nodebal-race" hidden></section>
 <div class="wrap" id="nodebal-fam" hidden></div>
@@ -371,7 +371,7 @@ nodeSection("node", "node", "nodePass", ({ tests, nc, hero, nv, pp }) => `BAL of
   `Same cpuset and memory limit for every client, a fresh container per client and run, the first test of each genesis group dropped as warm-up, ` +
   `two passes (erigon, reth, nethermind, geth, then reversed), Mgas/s = mean of the passes, pass-to-pass within ${pp}%. ` +
   `The hero leaves out the ${tests.length - hero.length} precompile tests: geth and nethermind run with their default precompile result caches, so that group compares caches.`);
-nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp }) => `BAL on (Amsterdam, glamsterdam-devnet-8 fixtures): the same EEST compute tests ` +
+nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp }) => `Node tier: engine_newPayload Mgas/s on Amsterdam blocks (glamsterdam-devnet-8 fixtures), BAL on: the same EEST compute tests ` +
   `filled for Amsterdam, so every block carries its block access list and every client runs in its BAL mode with the instance flags of ethpandaops/benchmarkoor-tests. ` +
   `Fixtures: ${nv.fixtures}; ${tests.length} tests (${nv.missing}). Genesis state per test (small state), newPayload Mgas/s, driven by benchmarkoor. ` +
   `${nc.map(c => c + " " + nv[c]).join(", ")}. Modes: ${nv.modes}. ` +
@@ -443,6 +443,6 @@ for (const h of document.querySelectorAll("h2, h3")) {
   h.innerHTML = `<a class="anchor" id="${id}" href="#${id}">${h.innerHTML}</a>`;
 }
 // Slugs of renamed headings, so links shared before the rename still land.
-const oldSlugs = { "node-newpayload-mgas-s": "node-bal-off-newpayload-mgas-s" };
+const oldSlugs = { "node-newpayload-mgas-s": "node-bal-off-newpayload-mgas-s", "node-bal-on-newpayload-mgas-s": "newpayload-bal-on" };
 if (globalThis.location?.hash) { const h = location.hash.slice(1); document.getElementById(oldSlugs[h] ?? h)?.scrollIntoView(); }
 </script>
