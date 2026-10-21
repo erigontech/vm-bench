@@ -19,6 +19,11 @@ h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:64px 0 4px;paddin
 .lede,.note{color:var(--ink-2);max-width:68ch;margin:0 0 18px}
 .lede{font-size:17px}
 .note{font-size:14px}
+.note p{margin:0}
+.note ul{margin:8px 0 0;padding-left:18px}
+.note .wrap{margin:10px 0}
+table.cl th,table.cl td{text-align:left;white-space:normal;overflow-wrap:anywhere;vertical-align:top}
+table.cl th:first-child,table.cl td:first-child{white-space:nowrap;padding-right:10px}
 a{color:inherit}
 .anchor{text-decoration:none}
 .fold>summary{cursor:pointer;color:var(--ink-2);font-size:14px;margin:4px 0 8px}
@@ -118,18 +123,18 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <section class="race" id="race"></section>
 
 <h2 id="bt-title" hidden>EVM: EEST benchmark blocks</h2>
-<p class="note" id="bt-note" hidden>Eight copies of one 150M-gas block per file, run one after another through each client's own blockchain-test tool (geth and erigon <code>evm blocktest</code>, revme <code>blockchaintest</code>, nethtest <code>-b</code>, <code>evmone test</code>, gevm <code>RunBlockchainTestFile</code>), one block per process. Mgas/s = gas / (wall time of the file − wall time of the same file with no blocks), best of 3. Every client parses the fixture, executes the block and checks the state root, so the number is comparable across clients. gevm is the exception: it has no trie, computes no state root and checks the post-state account by account, from geth's dump of the same block; read its column as an upper bound. Grey = the no-block twin is more than 30% of the run or the net time is under 100 ms: setup-dominated or too short for a wall clock. nethtest's dotnet start-up is ~3 s, so nethermind runs the file and the twin second in one process after a pass of the file: start-up and JIT warm-up cancel, nethermind is measured warm, and only the 100 ms floor greys its cells. A client with fewer than half of its blocks valid is left out of the hero. The precompile tests repeat one input, and geth and neth serve repeated precompile calls from a result cache, so that group compares caches, not precompiles; the hero uses instruction and scenario only. Fixtures: <a href="https://github.com/ethereum/execution-specs/releases/tag/tests-benchmark%40v0.0.9">EEST tests-benchmark@v0.0.9</a>, 150M variant.</p>
+<div class="note" id="bt-note" hidden></div>
 <section class="race" id="bt-race" hidden></section>
 <div class="wrap" id="bt" hidden></div>
 
 <h2 id="node-title" hidden>_newPayload BAL-off</h2>
-<p class="note" id="node-note" hidden></p>
+<div class="note" id="node-note" hidden></div>
 <section class="race" id="node-race" hidden></section>
 <div class="wrap" id="node-fam" hidden></div>
 <div class="wrap" id="node" hidden></div>
 
 <h2 id="nodebal-title" hidden>_newPayload BAL-on</h2>
-<p class="note" id="nodebal-note" hidden></p>
+<div class="note" id="nodebal-note" hidden></div>
 <section class="race" id="nodebal-race" hidden></section>
 <div class="wrap" id="nodebal-fam" hidden></div>
 <div class="wrap" id="nodebal" hidden></div>
@@ -183,6 +188,12 @@ const groupMean = (run, g, c) => geomean(fixtures.filter(f => f.startsWith(g + "
 const cls = r => r > 1.02 ? "win" : r < 0.98 ? "loss" : "even";
 const name = c => ({ revme: "revm", nethermind: "neth" })[c] || c;
 const fmt = (v, d = 1) => isNaN(v) ? "–" : v.toFixed(d);
+const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const clientNote = (desc, rows, facts) => `<p>${desc}</p>` +
+  `<div class="wrap"><table class="cl"><thead><tr><th>client</th><th>version</th>${rows.some(r => r[2]) ? "<th>run parameters</th>" : ""}</tr></thead><tbody>` +
+  rows.map(([c, v, p]) => `<tr><td>${name(c)}</td><td>${esc(v)}</td>${p ? `<td>${esc(p)}</td>` : rows.some(r => r[2]) ? "<td></td>" : ""}</tr>`).join("") + "</tbody></table></div>" +
+  `<ul>${facts.map(f => `<li>${f}</li>`).join("")}</ul>`;
+const modeMap = m => Object.fromEntries((m ? m.split("; ") : []).map(x => [x.split(" ")[0], x.slice(x.indexOf(" ") + 1)]));
 const short = d => d.slice(5, 10);
 // A big table renders its first rows; the rest stay a string until "show all", so a phone does not lay out thousands of rows.
 const LAZY = 50, lazyRows = [];
@@ -204,7 +215,6 @@ const prog = data.progress || [];
 if (prog.length) {
   for (const id of ["prog-title", "prog-note"]) document.getElementById(id).hidden = false;
   const pl = prog[prog.length - 1];
-  const esc = t => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   const link = t => esc(t).replace(/#(\d+)/g, '<a href="https://github.com/erigontech/erigon/pull/$1">#$1</a>');
   const sha = s => s.slice(0, 10);
   document.getElementById("prog-note").textContent = `Erigon on each measured main; other clients keep their published numbers. ` +
@@ -319,6 +329,18 @@ if (btRun) {
   for (const id of ["bt-title", "bt-note", "bt-race", "bt"]) document.getElementById(id).hidden = false;
   const files = Object.keys(btRun.bt).sort();
   const btClients = [...new Set(files.flatMap(f => Object.keys(btRun.bt[f])))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || a.localeCompare(b));
+  const btTool = { geth: "evm blocktest", erigon: "evm blocktest", revme: "revme blockchaintest", nethermind: "nethtest -b", evmone: "evmone test", gevm: "RunBlockchainTestFile" };
+  document.getElementById("bt-note").innerHTML = clientNote(
+    `Eight copies of one 150M-gas block per file, run one after another through each client's own blockchain-test tool, one block per process. ` +
+    `Mgas/s = gas / (wall time of the file − wall time of the same file with no blocks), best of 3. ` +
+    `Every client parses the fixture, executes the block and checks the state root, so the number is comparable across clients.`,
+    btClients.map(c => [c, btRun.versions[c + "-evm"] || btRun.versions[c], btTool[c]]),
+    [`gevm is the exception: it has no trie, computes no state root and checks the post-state account by account, from geth's dump of the same block; read its column as an upper bound.`,
+     `Grey = the no-block twin is more than 30% of the run or the net time is under 100 ms: setup-dominated or too short for a wall clock.`,
+     `nethtest's dotnet start-up is ~3 s, so nethermind runs the file and the twin second in one process after a pass of the file: start-up and JIT warm-up cancel, nethermind is measured warm, and only the 100 ms floor greys its cells.`,
+     `A client with fewer than half of its blocks valid is left out of the hero.`,
+     `The precompile tests repeat one input, and geth and neth serve repeated precompile calls from a result cache, so that group compares caches, not precompiles; the hero uses instruction and scenario only.`,
+     `Fixtures: <a href="https://github.com/ethereum/execution-specs/releases/tag/tests-benchmark%40v0.0.9">EEST tests-benchmark@v0.0.9</a>, 150M variant.`]);
   const btMgas = (f, c) => { const x = btRun.bt[f]?.[c]; return x && x.ms > x.twin ? x.gas / (x.ms - x.twin) / 1e3 : NaN; };
   const btGrey = (f, c) => { const x = btRun.bt[f]?.[c]; return x && ((c !== "nethermind" && x.twin / x.ms > 0.3) || x.ms - x.twin < 100); };
   const btBase = btClients.find(c => c.startsWith("erigon"));
@@ -349,7 +371,7 @@ function nodeSection(id, key, passKey, note) {
   const hc = nc.filter(c => tests.filter(t => res[t][c]).length * 2 >= tests.length);
   const hero = tests.filter(t => cat(t) !== "precompile" && hc.every(c => res[t][c]));
   const pp = (100 * Math.max(...Object.values(run[passKey]).map(r => Math.abs(r - 1)))).toFixed(1);
-  document.getElementById(id + "-note").textContent = note({ tests, nc, hc, hero, nv, pp });
+  document.getElementById(id + "-note").innerHTML = note({ tests, nc, hc, hero, nv, pp, rows: nc.map(c => [c, nv[c], modeMap(nv.modes)[c]]), extra: Object.entries(modeMap(nv.modes)).filter(([c]) => !nc.includes(c)).map(([c, m]) => c + " " + m) });
   const means = hc.map(c => ({ c, v: geomean(hero.map(t => res[t][c])) }));
   const ref = means.find(r => r.c === "erigon").v, max = Math.max(...means.map(r => r.v));
   document.getElementById(id + "-race").innerHTML = `<div><h3>${hero.length} instruction and scenario tests, ${run.date.slice(0, 10)}, geometric mean Mgas/s</h3><div class="bars">` +
@@ -364,22 +386,24 @@ function nodeSection(id, key, passKey, note) {
     body([...new Set(tests.map(cat))].flatMap(g => [`<tr class="group"><td colspan="${1 + nc.length + no.length}">${g}</td></tr>`, ...tests.filter(t => cat(t) === g).map(t => `<tr><td class="f" title="${t}">${label(t)}</td>` +
       nc.map(c => `<td>${fmt(res[t][c] ?? NaN)}</td>`).join("") + no.map(c => ratioCell(res[t].erigon / res[t][c])).join("") + "</tr>")])) + "</tbody></table>";
 }
-nodeSection("node", "node", "nodePass", ({ tests, nc, hero, nv, pp }) => `Node tier: engine_newPayload Mgas/s on Osaka blocks, BAL off (Osaka blocks carry no block access list). ` +
+nodeSection("node", "node", "nodePass", ({ tests, hero, nv, pp, rows }) => clientNote(
+  `Node tier: engine_newPayload Mgas/s on Osaka blocks, BAL off (Osaka blocks carry no block access list). ` +
   `EEST compute tests, genesis state per test (small state), newPayload Mgas/s, driven by benchmarkoor. ` +
   `This is not the large-state number: every test runs on its own small pre-state, with no mainnet-sized database behind it. ` +
-  `Fixtures ${nv.fixtures}, Osaka, 150M-gas blocks, ${tests.length} tests. ${nc.map(c => c + " " + nv[c]).join(", ")}. ` +
   `Same cpuset and memory limit for every client, a fresh container per client and run, the first test of each genesis group dropped as warm-up, ` +
-  `two passes (erigon, reth, nethermind, geth, then reversed), Mgas/s = mean of the passes, pass-to-pass within ${pp}%. ` +
-  `The hero leaves out the ${tests.length - hero.length} precompile tests: geth and nethermind run with their default precompile result caches, so that group compares caches.`);
-nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp }) => `Node tier: engine_newPayload Mgas/s on Amsterdam blocks (glamsterdam-devnet-8 fixtures), BAL on: the same EEST compute tests ` +
+  `two passes (erigon, reth, nethermind, geth, then reversed), Mgas/s = mean of the passes.`, rows,
+  [`Fixtures ${esc(nv.fixtures)}, Osaka, 150M-gas blocks.`, `${tests.length} tests.`, `Pass-to-pass within ${pp}%.`,
+   `The hero leaves out the ${tests.length - hero.length} precompile tests: geth and nethermind run with their default precompile result caches, so that group compares caches.`]));
+nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp, rows, extra }) => clientNote(
+  `Node tier: engine_newPayload Mgas/s on Amsterdam blocks (glamsterdam-devnet-8 fixtures), BAL on: the same EEST compute tests ` +
   `filled for Amsterdam, so every block carries its block access list and every client runs in its BAL mode with the instance flags of ethpandaops/benchmarkoor-tests. ` +
-  `Fixtures: ${nv.fixtures}; ${tests.length} tests (${nv.missing}). Genesis state per test (small state), newPayload Mgas/s, driven by benchmarkoor. ` +
-  `${nc.map(c => c + " " + nv[c]).join(", ")}. Modes: ${nv.modes}. ` +
-  `Same cpuset, memory limit, warm-up drop and two passes as the BAL-off section, pass-to-pass within ${pp}%. ` +
-  `Amsterdam reprices gas, so the same test burns a different amount of gas for the same work: compare clients inside this section, not Mgas/s across the two sections. ` +
-  `The hero and the family table use the ${hero.length} instruction and scenario tests that ${hc.join(", ")} all passed` +
-  (nc.length > hc.length ? `; ${nc.filter(c => !hc.includes(c)).join(", ")} passed fewer than half of the tests and shows in the per-test table only` : "") +
-  (nv["not run"] ? `. Not run: ${nv["not run"]}.` : "."));
+  `Genesis state per test (small state), newPayload Mgas/s, driven by benchmarkoor. ` +
+  `Same cpuset, memory limit, warm-up drop and two passes as the BAL-off section. ` +
+  `Amsterdam reprices gas, so the same test burns a different amount of gas for the same work: compare clients inside this section, not Mgas/s across the two sections.`, rows,
+  [`Fixtures: ${esc(nv.fixtures)}.`, `${tests.length} tests (${esc(nv.missing)}).`, `Pass-to-pass within ${pp}%.`,
+   `The hero and the family table use the ${hero.length} instruction and scenario tests that ${hc.join(", ")} all passed` +
+   (nc.length > hc.length ? `; ${nc.filter(c => !hc.includes(c)).join(", ")} passed fewer than half of the tests and shows in the per-test table only.` : "."),
+   ...extra.map(esc), ...(nv["not run"] ? [`Not run: ${esc(nv["not run"])}.`] : [])]));
 
 // RPC workloads: for every workload and client, the latest snapshot that has it.
 const rpcw = {};
