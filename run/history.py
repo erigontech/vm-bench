@@ -27,7 +27,7 @@ for d in sorted(p for p in (root / "history").iterdir() if p.is_dir()):
             continue
         if f.name == "callsneth.csv":
             for r in csv.reader(open(f)):
-                run[f.stem].setdefault(r[0], {})[r[1]] = dict(zip(("rps", "p50", "p99", "err"), map(float, r[2:])))
+                run[f.stem].setdefault(r[0], {})[r[1]] = dict(zip(("rps", "p50", "p99", "err", "gas"), map(float, r[2:])))
             continue
         if f.name == "calls.csv":
             for r in csv.reader(open(f)):
