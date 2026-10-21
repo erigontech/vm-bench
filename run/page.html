@@ -51,8 +51,7 @@ a{color:inherit}
 .chart .dot{r:2.5;fill:#9aa5b8}.chart .dot.erigon{fill:var(--erigon)}
 
 /* fixture table */
-.wrap{margin-top:14px}
-@media (max-width:1300px){.wrap{overflow-x:auto;scrollbar-width:thin;padding-bottom:6px}}
+.wrap{margin-top:14px;overflow-x:auto;scrollbar-width:thin;padding-bottom:6px}
 table{border-collapse:collapse;width:100%;font-size:13px}
 th{font-weight:500;color:var(--ink-2);text-align:right;padding:6px 6px 8px;border-bottom:1px solid var(--ink);position:sticky;top:0;z-index:2;background:var(--paper);white-space:nowrap}
 td{padding:4px 6px;border-bottom:1px solid var(--rule-2);text-align:right;white-space:nowrap}
@@ -91,6 +90,19 @@ details.card{border-top:1px solid var(--rule);padding:10px 0}
 details.card summary{cursor:pointer}
 details.card h4{margin:10px 0 2px;font-size:14px;font-weight:600}
 details.card ul{margin:0;padding-left:18px;font-size:14px}
+tr.more td{padding:10px 0;text-align:left}
+tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(--rule);color:var(--ink);padding:6px 14px;cursor:pointer}
+#tip{position:fixed;left:12px;right:12px;bottom:12px;z-index:9;background:var(--ink);color:var(--paper);padding:10px 12px;font-size:14px;white-space:pre-line}
+#tip[hidden]{display:none}
+.rpc>*{min-width:0}
+@media (max-width:600px){
+  body{padding:24px 14px 64px}
+  h1{font-size:26px}
+  h2{margin-top:44px}
+  .bars{grid-template-columns:5.5em 1fr 4.5em 3.5em;gap:6px 8px}
+  .chart .tick,.chart .end{font-size:14px}
+  td.f{max-width:12em}
+}
 </style>
 <body>
 <h1>vm-bench <a href="https://github.com/erigontech/vm-bench" style="font-size:15px;font-weight:500;color:var(--ink-2);margin-left:10px;vertical-align:middle">github.com/erigontech/vm-bench</a></h1>
@@ -120,10 +132,11 @@ details.card ul{margin:0;padding-left:18px;font-size:14px}
 <div class="charts" id="charts"></div>
 
 <h2>Every fixture, latest run</h2>
-<p class="note">Mgas/s per client and the ratio erigon / client. The bar extends right when erigon is faster, left when slower, from the 1.0 line. eth_call rps and Mgas/s: the same transaction as an eth_call against erigon on one mainnet node, 16 connections, Mgas/s = rps × gas; e/reth call = erigon rps / reth rps on the same box and datadir window; hover for p50/p99 of both. Click a row for its history. * geth times the pre-state setup with the execution, evmone and neth are process wall time, so their columns are not comparable; erigon and revm are execution only.</p>
+<p class="note">Mgas/s per client and the ratio erigon / client. The bar extends right when erigon is faster, left when slower, from the 1.0 line. eth_call rps and Mgas/s: the same transaction as an eth_call against erigon on one mainnet node, 16 connections, Mgas/s = rps × gas; e/reth call = erigon rps / reth rps on the same box and datadir window; hover or tap for p50/p99 of both. Click a row for its history. * geth times the pre-state setup with the execution, evmone and neth are process wall time, so their columns are not comparable; erigon and revm are execution only.</p>
 <div class="wrap" id="latest"></div>
 <div class="series-head" id="series-head" hidden><h3 id="series-title"></h3><button id="series-close">Close</button></div>
 <div id="series"></div>
+<div id="tip" hidden></div>
 
 
 <h2 id="rpcw-title" hidden>RPC workloads</h2>
@@ -134,7 +147,7 @@ details.card ul{margin:0;padding-left:18px;font-size:14px}
 <div id="calls" hidden></div>
 <h2>JSON-RPC throughput</h2>
 <p class="note">Requests per second against one mainnet datadir, 33 recorded requests per method, 16 connections. The chart indexes each scenario to its first measurement.</p>
-<div class="rpc"><div id="rpc"></div><div id="rpc-chart"></div></div>
+<div class="rpc"><div class="wrap" id="rpc"></div><div id="rpc-chart"></div></div>
 
 <script>
 const data = /*DATA*/;
@@ -164,6 +177,17 @@ const cls = r => r > 1.02 ? "win" : r < 0.98 ? "loss" : "even";
 const name = c => ({ revme: "revm", nethermind: "neth" })[c] || c;
 const fmt = (v, d = 1) => isNaN(v) ? "–" : v.toFixed(d);
 const short = d => d.slice(5, 10);
+// A big table renders its first rows; the rest stay a string until "show all", so a phone does not lay out thousands of rows.
+const LAZY = 50, lazyRows = [];
+const body = rows => rows.length <= LAZY ? rows.join("") :
+  rows.slice(0, LAZY).join("") + `<tr class="more" data-n="${rows.length}"><td colspan="99"><button data-rest="${lazyRows.push(rows.slice(LAZY).join("")) - 1}">show all ${rows.length} rows</button></td></tr>`;
+document.addEventListener("click", e => {
+  const b = e.target.closest("tr.more button");
+  if (b) { b.closest("tr").outerHTML = lazyRows[b.dataset.rest]; return; }
+  const t = e.target.closest("[title]"), tip = document.getElementById("tip");
+  if (!matchMedia("(hover: none)").matches || !t) { tip.hidden = true; return; }
+  tip.textContent = t.title; tip.hidden = false;
+});
 
 document.getElementById("when").textContent = "Latest run " + last.date.replace("T", " ") + " UTC. " +
   Object.entries(last.versions).map(([c, v]) => name(c) + " " + v.replace(/^v\d+\.\d+\.\d+-\d+\.\d{14}-/, "").replace(/\+.*/, "")).join(", ") + ".";
@@ -258,16 +282,17 @@ function ratioCell(k) {
   return `<td class="ratio"><span class="rb">${bar}</span><span class="n ${cls(k)}">${k.toFixed(2)}</span></td>`;
 }
 const others = clients.filter(c => c !== base && execOnly(c));
+const latestRows = [];
 let html = `<table><thead><tr><th>fixture</th><th>gas</th><th>eth_call rps</th><th>eth_call Mgas/s</th><th>e/reth call</th>${clients.map(c => `<th>${name(c)}${execOnly(c) ? "" : "*"}</th>`).join("")}${others.map(c => `<th>e/${name(c)}${execOnly(c) ? "" : "*"}</th>`).join("")}</tr></thead><tbody>`;
 for (const g of groups) {
-  html += `<tr class="group"><td colspan="${5 + clients.length + others.length}">${title(g)}</td></tr>`;
+  latestRows.push(`<tr class="group"><td colspan="${5 + clients.length + others.length}">${title(g)}</td></tr>`);
   for (const f of fixtures.filter(f => f.startsWith(g + "/") && last.ns[f])) {
     const v = c => mgas(last, f, c);
-    html += `<tr data-f="${f}" tabindex="0"><td class="f" title="${f}">${f.slice(g.length + 1)}</td><td class="gas">${(data.gas[f] / 1e6).toFixed(2)}M</td>${callsCell(f)}` +
-      clients.map(c => `<td>${fmt(v(c))}</td>`).join("") + others.map(c => ratioCell(v(base) / v(c))).join("") + "</tr>";
+    latestRows.push(`<tr data-f="${f}" tabindex="0"><td class="f" title="${f}">${f.slice(g.length + 1)}</td><td class="gas">${(data.gas[f] / 1e6).toFixed(2)}M</td>${callsCell(f)}` +
+      clients.map(c => `<td>${fmt(v(c))}</td>`).join("") + others.map(c => ratioCell(v(base) / v(c))).join("") + "</tr>");
   }
 }
-document.getElementById("latest").innerHTML = html + "</tbody></table>";
+document.getElementById("latest").innerHTML = html + body(latestRows) + "</tbody></table>";
 
 const show = f => {
   document.querySelectorAll("tr.sel").forEach(t => t.classList.remove("sel"));
@@ -297,9 +322,9 @@ if (btRun) {
     means.map(r => { const k = ref / r.v; return `<div class="c">${name(r.c)}</div><div class="b ${r.c === btBase ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div><div class="v">${fmt(r.v)}</div><div class="r ${r.c === btBase ? "" : cls(k)}">${r.c === btBase ? "" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>" : "";
   const bo = btClients.filter(c => c !== btBase);
   document.getElementById("bt").innerHTML = `<table><thead><tr><th>file</th><th>gas</th>${btClients.map(c => `<th>${name(c)}</th>`).join("")}${bo.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
-    [...new Set(files.map(f => f.split("/")[0]))].map(g => `<tr class="group"><td colspan="${2 + btClients.length + bo.length}">${g}</td></tr>` + files.filter(f => f.startsWith(g + "/")).map(f => `<tr><td class="f">${f.slice(g.length + 1)}</td><td class="gas">${(Object.values(btRun.bt[f])[0].gas / 1e6).toFixed(0)}M</td>` +
+    body([...new Set(files.map(f => f.split("/")[0]))].flatMap(g => [`<tr class="group"><td colspan="${2 + btClients.length + bo.length}">${g}</td></tr>`, ...files.filter(f => f.startsWith(g + "/")).map(f => `<tr><td class="f">${f.slice(g.length + 1)}</td><td class="gas">${(Object.values(btRun.bt[f])[0].gas / 1e6).toFixed(0)}M</td>` +
       btClients.map(c => `<td class="${btGrey(f, c) ? "gas" : ""}" title="${btRun.bt[f]?.[c] ? btRun.bt[f][c].ms + " ms, twin " + btRun.bt[f][c].twin + " ms" : ""}">${fmt(btMgas(f, c))}</td>`).join("") +
-      bo.map(c => btGrey(f, c) || btGrey(f, btBase) ? `<td class="ratio"><span class="n even">–</span></td>` : ratioCell(btMgas(f, btBase) / btMgas(f, c))).join("") + "</tr>").join("")).join("") + "</tbody></table>";
+      bo.map(c => btGrey(f, c) || btGrey(f, btBase) ? `<td class="ratio"><span class="n even">–</span></td>` : ratioCell(btMgas(f, btBase) / btMgas(f, c))).join("") + "</tr>")])) + "</tbody></table>";
 }
 
 // Node: benchmarkoor newPayload Mgas/s, latest snapshot that has it.
@@ -324,8 +349,8 @@ if (nodeRun) {
     means.map(r => { const k = ref / r.v; return `<div class="c">${r.c}</div><div class="b ${r.c === "erigon" ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div><div class="v">${fmt(r.v)}</div><div class="r ${r.c === "erigon" ? "" : cls(k)}">${r.c === "erigon" ? "" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>";
   const label = t => t.split("::")[1].replace("fork_Osaka-blockchain_test_engine_x-", "").replace(/-?benchmark-gas-value_150M/, "").replace("[]", "");
   document.getElementById("node").innerHTML = `<table><thead><tr><th>test</th>${nc.map(c => `<th>${c}</th>`).join("")}${no.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
-    [...new Set(tests.map(cat))].map(g => `<tr class="group"><td colspan="${1 + nc.length + no.length}">${g}</td></tr>` + tests.filter(t => cat(t) === g).map(t => `<tr><td class="f" title="${t}">${label(t)}</td>` +
-      nc.map(c => `<td>${fmt(nodeRun.node[t][c])}</td>`).join("") + no.map(c => ratioCell(nodeRun.node[t].erigon / nodeRun.node[t][c])).join("") + "</tr>").join("")).join("") + "</tbody></table>";
+    body([...new Set(tests.map(cat))].flatMap(g => [`<tr class="group"><td colspan="${1 + nc.length + no.length}">${g}</td></tr>`, ...tests.filter(t => cat(t) === g).map(t => `<tr><td class="f" title="${t}">${label(t)}</td>` +
+      nc.map(c => `<td>${fmt(nodeRun.node[t][c])}</td>`).join("") + no.map(c => ratioCell(nodeRun.node[t].erigon / nodeRun.node[t][c])).join("") + "</tr>")])) + "</tbody></table>";
 }
 
 // RPC workloads: for every workload and client, the latest snapshot that has it.
@@ -373,7 +398,7 @@ if (scenarios.length) {
 }
 // Every table folds.
 for (const t of document.querySelectorAll("table")) {
-  const rows = t.tBodies[0]?.rows.length ?? 0, d = document.createElement("details"), sum = document.createElement("summary");
+  const rows = t.querySelector("tr.more")?.dataset.n ?? t.tBodies[0]?.rows.length ?? 0, d = document.createElement("details"), sum = document.createElement("summary");
   d.className = "fold"; d.open = true; sum.textContent = `table, ${rows} rows`;
   t.replaceWith(d); d.append(sum, t);
 }

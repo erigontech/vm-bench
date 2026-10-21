@@ -35,6 +35,10 @@ for d in sorted(p for p in (root / "history").iterdir() if p.is_dir()):
         for fixture, client, ns in csv.reader(open(f)):
             run["ns"].setdefault(fixture, {})[client] = int(ns)
     runs.append(run)
+# The page shows only the latest node and blocktest tables.
+for k in ("node", "nodePass", "bt"):
+    for run in [r for r in runs if r[k]][:-1]:
+        run[k] = {}
 gas = {p.parent.name + "/" + p.stem: int(next(iter(json.load(open(p)).values()))["_info"]["gasUsed"], 16)
        for p in (root / "fixtures").glob("*/*.json")}
 progress = root / "history" / "runs.json"
