@@ -454,7 +454,7 @@
    "node modexp x5.6..8.2 on 30 tests (#25181), identity x8.2 BAL-off and x14.9 BAL-on (#25155)"
   ],
   "worse": [
-   "EVM tier -2.4% (noise 0.11%): shifts -24%, calldatasize -23%, codesize -19%, call_frame_context -16%, jumpdests -14%; the binaries differ in EVM.run alignment, an A/B of the #25164 op-table guard is running"
+   "EVM tier -2.4% (noise 0.11%): shifts -24%, calldatasize -23%, codesize -19%, call_frame_context -16%, jumpdests -14%; code layout, not a code change: the binaries differ in EVM.run alignment, and at equal alignment the #25164 op table is 1.4% faster than the range check it replaced"
   ],
   "bottlenecks": [],
   "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; EVM tier is dbg 8e711db2b3, node tier dbg 0d9cecb17a (projected: page numbers times the A/B ratio on the same box); RPC numbers are from the 2026-10-20 snapshot"
