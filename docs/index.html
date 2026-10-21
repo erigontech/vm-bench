@@ -122,7 +122,7 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <section class="race" id="bt-race" hidden></section>
 <div class="wrap" id="bt" hidden></div>
 
-<h2 id="node-title" hidden>Node BAL-off: newPayload Mgas/s, Osaka</h2>
+<h2 id="node-title" hidden>_newPayload BAL-off</h2>
 <p class="note" id="node-note" hidden></p>
 <section class="race" id="node-race" hidden></section>
 <div class="wrap" id="node-fam" hidden></div>
@@ -364,7 +364,7 @@ function nodeSection(id, key, passKey, note) {
     body([...new Set(tests.map(cat))].flatMap(g => [`<tr class="group"><td colspan="${1 + nc.length + no.length}">${g}</td></tr>`, ...tests.filter(t => cat(t) === g).map(t => `<tr><td class="f" title="${t}">${label(t)}</td>` +
       nc.map(c => `<td>${fmt(res[t][c] ?? NaN)}</td>`).join("") + no.map(c => ratioCell(res[t].erigon / res[t][c])).join("") + "</tr>")])) + "</tbody></table>";
 }
-nodeSection("node", "node", "nodePass", ({ tests, nc, hero, nv, pp }) => `BAL off: Osaka blocks, which carry no block access list. ` +
+nodeSection("node", "node", "nodePass", ({ tests, nc, hero, nv, pp }) => `Node tier: engine_newPayload Mgas/s on Osaka blocks, BAL off (Osaka blocks carry no block access list). ` +
   `EEST compute tests, genesis state per test (small state), newPayload Mgas/s, driven by benchmarkoor. ` +
   `This is not the large-state number: every test runs on its own small pre-state, with no mainnet-sized database behind it. ` +
   `Fixtures ${nv.fixtures}, Osaka, 150M-gas blocks, ${tests.length} tests. ${nc.map(c => c + " " + nv[c]).join(", ")}. ` +
@@ -443,6 +443,6 @@ for (const h of document.querySelectorAll("h2, h3")) {
   h.innerHTML = `<a class="anchor" id="${id}" href="#${id}">${h.innerHTML}</a>`;
 }
 // Slugs of renamed headings, so links shared before the rename still land.
-const oldSlugs = { "node-newpayload-mgas-s": "node-bal-off-newpayload-mgas-s", "node-bal-on-newpayload-mgas-s": "newpayload-bal-on" };
+const oldSlugs = { "node-newpayload-mgas-s": "newpayload-bal-off", "node-bal-off-newpayload-mgas-s": "newpayload-bal-off", "node-bal-on-newpayload-mgas-s": "newpayload-bal-on" };
 if (globalThis.location?.hash) { const h = location.hash.slice(1); document.getElementById(oldSlugs[h] ?? h)?.scrollIntoView(); }
 </script>
