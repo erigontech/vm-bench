@@ -341,7 +341,7 @@ function nodeSection(id, key, passKey, note) {
   if (!run) return;
   for (const x of ["-title", "-note", "-race", "-fam", ""]) document.getElementById(id + x).hidden = false;
   const res = run[key], tests = Object.keys(res).sort(), nv = run.versions;
-  const order = ["erigon", "reth", "nethermind", "geth", "besu", "ethrex", "nimbus"], rank = c => (order.indexOf(c) + 1) || 99;
+  const order = ["erigon", "reth", "nethermind", "geth"], rank = c => (order.indexOf(c) + 1) || 99;
   const nc = [...new Set(tests.flatMap(t => Object.keys(res[t])))].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
   const no = nc.filter(c => c !== "erigon");
   const cat = t => t.match(/compute\/([^/]+)\//)?.[1] || "other";

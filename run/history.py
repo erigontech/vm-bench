@@ -4,12 +4,15 @@ import csv, json
 from pathlib import Path
 
 root = Path(__file__).resolve().parent.parent
+hidden = {"besu", "ethrex", "nimbus"}
 runs = []
 for d in sorted(p for p in (root / "history").iterdir() if p.is_dir()):
     run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}}
     for f in d.glob("*.csv"):
         if f.name == "versions.csv":
-            run["versions"] = dict(csv.reader(open(f)))
+            run["versions"] = {c: v for c, v in csv.reader(open(f)) if c not in hidden}
+            if "modes" in run["versions"]:
+                run["versions"]["modes"] = "; ".join(m for m in run["versions"]["modes"].split("; ") if m.split(" ")[0] not in hidden)
             continue
         if f.name == "blocktest.csv":
             for file, client, gas, ms, twin in csv.reader(open(f)):
@@ -17,10 +20,11 @@ for d in sorted(p for p in (root / "history").iterdir() if p.is_dir()):
             continue
         if f.name in ("node.csv", "nodebal.csv"):
             for test, client, mgas in csv.reader(open(f)):
-                run[f.stem].setdefault(test, {})[client] = float(mgas)
+                if client not in hidden:
+                    run[f.stem].setdefault(test, {})[client] = float(mgas)
             continue
         if f.name in ("pass.csv", "passbal.csv"):
-            run["nodePass" if f.name == "pass.csv" else "nodebalPass"] = {client: float(r) for client, r in csv.reader(open(f))}
+            run["nodePass" if f.name == "pass.csv" else "nodebalPass"] = {client: float(r) for client, r in csv.reader(open(f)) if client not in hidden}
             continue
         if f.name == "rpcw.csv":
             run["rpcw"] = [dict(zip(("workload", "client", "rate", "rps", "p50", "p95", "p99", "err"), (r[0], r[1], *map(float, r[2:])))) for r in csv.reader(open(f))]
