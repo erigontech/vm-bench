@@ -1,1 +1,414 @@
-[{"date": "2026-10-16", "old": null, "new": "670e20e109af4f66528c05661d6c446d4551aeee", "evm": {"mgas": 1082.2, "ratio": 0.632, "best": "nethermind", "noise": 0.7, "fixtures": "benchmark@v0.0.7"}, "node": {"mgas": 1844.6, "ratio": 0.713, "best": "reth", "noise": 1.0, "fixtures": "tests-benchmark@v0.0.9"}, "rpc": {"main": "39cd621455a4b69c9e9f2474e2726f8e7b5b7a29", "noise": 3, "knee": {"qa-mixed": 3000, "qa-getlogs": 5000, "call-mix-33": 1000, "block-receipts": 1000, "getlogs-1block": 3000, "trace-block-33": 200, "trace-tx-33": 200}}, "better": [], "worse": [], "bottlenecks": [], "shipped": []}, {"date": "2026-10-17", "old": "670e20e109af4f66528c05661d6c446d4551aeee", "new": "6540ff4718d3d7285a76fed017c092d581c19e98", "evm": {"mgas": 1086.6, "ratio": 0.634, "best": "nethermind", "noise": 0.7, "fixtures": "benchmark@v0.0.7"}, "node": {"mgas": 1803.9, "ratio": 0.694, "best": "reth", "noise": 1.0, "fixtures": "tests-benchmark@v0.0.9"}, "rpc": {"main": "6540ff4718d3d7285a76fed017c092d581c19e98", "noise": 3, "knee": {"qa-mixed": 3000, "qa-getlogs": 5000, "call-mix-33": 1000, "block-receipts": 1000, "getlogs-1block": 3000, "trace-block-33": 50, "trace-tx-33": 200}}, "better": ["node return_revert 1 MiB RETURN 5198 -> 22019 Mgas/s (+324%)", "node ether_transfers diff_acc_to_b, empty account 49 -> 148 Mgas/s (+203%)", "RPC getlogs-1block p99 at 3000 rps 64 -> 46 ms (-28%)", "EVM instruction/bitwise 1875 -> 1932 Mgas/s (+3.1%)", "EVM instruction/storage_access_cold_benchmark 2721 -> 2784 Mgas/s (+2.3%)"], "worse": ["RPC trace-block-33 knee 200 -> 50 rps; p99 at 10 rps 87 -> 101 ms (+16%)", "RPC qa-mixed p99 at 1000 rps 49 -> 61 ms (+24%)", "node ether_transfers a_to_a, empty account 5385 -> 2846 Mgas/s (-47%)", "node shifts 674 -> 542 Mgas/s (-20%), jumpdests 852 -> 744 (-13%), create 33828 -> 30006 (-11%)", "node suite 1844.6 -> 1803.9 Mgas/s (-2.2%), in compute loops; the EVM tier on the same code is flat, code layout suspected", "RPC block-receipts p99 at 300 rps 9.3 -> 9.8 ms (+4%)", "EVM instruction/comparison 1729 -> 1697 Mgas/s (-1.8%)"], "bottlenecks": ["node tload, fresh keys: 359 vs reth 15757 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)", "node ether_transfers diff_acc_to_b, empty account: 41 vs nethermind 1752 (x0.02), #24976; top frame runtime.cgocall 12.1% (secp256k1 recover), then the validation loop", "node ether_transfers diff_acc_to_b, non-empty account: 72 vs reth 1543 (x0.05), #24976; same path", "node ether_transfers diff_acc_to_b, delegated account: 114 vs reth 1402 (x0.08), #24976; same path", "node EXP: 1124 vs nethermind 13230 (x0.08), no PR; top frame runtime.cgocall 6.1% (MDBX put), uint256.(*Int).Mul 4.6%"], "shipped": ["#24957 execution/state: setCreatedCode reads the created account's code writes once: tx time -5.7%", "#24963 node: buffer gzip output before the response writer: qa-getlogs CPU per request -11.3% at 3000 rps", "#24914 go.mod: otter main, with the in-place replacement of a live key: exec cold-account family -1.4%", "#24920 rpc: the replay methods use eth_call's state path: debug_traceBlockByNumber 252 -> 221 rps", "#24916 rpc: eth_estimateGas, eth_createAccessList and debug_traceCall run on the versioned state path: eth_estimateGas 964 -> 908 rps", "#24915 execution: benchmarks run on the versioned noMaterialize state, as eth_call does", "#24892 cl: close the persistent block collector when the stage loop exits", "#24891 cl/beacon/handler: proposer_lookahead reads epoch data by slot"]}, {"date": "2026-10-17", "old": "6540ff4718d3d7285a76fed017c092d581c19e98", "new": "df6a0a67cdcb4f2bd509bdb4f1d5a8ff1849ad14", "evm": {"mgas": 1016.2, "ratio": 0.528, "best": "nethermind", "noise": 0.7, "fixtures": "tests-benchmark@v0.0.9"}, "node": {"mgas": 1848.8, "ratio": 0.699, "best": "reth", "noise": 1.0, "fixtures": "tests-benchmark@v0.0.9"}, "better": [], "worse": [], "bottlenecks": ["node ether_transfers diff_acc_to_b, amount 1 (4 rows): 34-54 vs nethermind 1603-1854 (x0.02-0.03), #24976; top frame runtime.cgocall 12.1% (secp256k1 recover), then the validation loop", "node tload, fresh keys: 360 vs reth 15237 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)", "EVM instruction/storage_access_cold: 2389 vs revme 45916 (x0.05), no PR, not profiled yet", "EVM instruction/calldatacopy_from_origin: 731 vs nethermind 9600 (x0.08), no PR, not profiled yet", "EVM instruction/ext_account_query_cold: 2517 vs revme 32173 (x0.08), no PR, not profiled yet"], "shipped": ["#24960 rpc: calls with state overrides run on the versioned state path"]}, {"date": "2026-10-19", "old": "df6a0a67cdcb4f2bd509bdb4f1d5a8ff1849ad14", "new": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82", "evm": {"mgas": 1046.3, "ratio": 0.544, "best": "nethermind", "noise": 0.2, "fixtures": "tests-benchmark@v0.0.9"}, "node": {"mgas": 1856.4, "ratio": 0.703, "best": "reth", "noise": 1.1, "fixtures": "tests-benchmark@v0.0.9"}, "rpc": {"main": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82", "noise": 3, "knee": {"qa-mixed": 3000, "qa-getlogs": 5000, "call-mix-33": 1000, "block-receipts": 1000, "getlogs-1block": 3000, "trace-block-33": 50, "trace-tx-33": 200}}, "better": ["erigon here is main 6f95064a20 plus open PRs #25040 #25038 #25034 #25026 #24968; EVM tier +3.0% (noise 0.2%), node tier +1.3% (noise 1.1%), RPC knees unchanged", "node EXP 1135 -> 61098, bls12 g1msm/g2msm x11-x29 (#25023, #25035)", "node tload fresh keys 357 -> 8381 (#24968)", "node ether_transfers diff_acc_to_b, amount 1: 18-66 -> 363-415 (#24976)", "EVM call_frame_context_ops 176 -> 433 (#25034), tstore +32%", "RPC block-receipts p99 -31% at every rate (#25026, #25025)"], "worse": ["node ether_transfers_to_precompile, amount 1 (17 rows): ~740 -> ~465 (-36%); amount 0 unchanged; suspect #25040", "node 1MiB zero-data REVERT 22414 -> 5278 (cell noise 27%)", "EVM dup/bitwise/swap/push -5..-8% (same code alignment in both builds)"], "bottlenecks": ["node 1MiB zero-data REVERT/RETURN: 5278/6896 vs reth 62927/65212 (x0.08-0.11)", "node unchunkified_bytecode EXTCODECOPY/DELEGATECALL/CALL: 170-185 vs reth 1572-1976 (x0.09-0.11)", "EVM instruction/storage_access_cold: 2401 vs revme 45916 (x0.05)", "EVM instruction/ext_account_query_cold: 2547 vs revme 32173 (x0.08)", "EVM instruction/calldatacopy_from_origin: 770 vs nethermind 9600 (x0.08)"], "shipped": ["#25023 vm: use word arithmetic for small EXP results", "#25035 vm: reuse adjacent validated BLS points in MSM", "#24976 execution/stagedsync: stop validation at the first result that cannot commit", "#25025 types/ethutils: reuse the cached sender in receipt responses", "#25024 types: reuse cached Keccak hashes for bloom construction", "#25022 rpc/transactions: skip unused BAL recording during traces", "#25009 vm: avoid redundant zeroing when copying log data"]}, {"date": "2026-10-19", "old": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82", "new": "77d3569d13973ae5e4e8220f5541e670e04bd814", "evm": {"mgas": 1081.3, "ratio": 0.562, "best": "nethermind", "noise": 0.1, "fixtures": "tests-benchmark@v0.0.9"}, "node": {"mgas": 1867.5, "ratio": 0.708, "best": "reth", "noise": 0.5, "fixtures": "tests-benchmark@v0.0.9"}, "rpc": {"main": "77d3569d13973ae5e4e8220f5541e670e04bd814", "noise": 3, "knee": {"qa-mixed": 3000, "qa-getlogs": 5000, "call-mix-33": 1000, "block-receipts": 1000, "getlogs-1block": 3000, "trace-block-33": 50, "trace-tx-33": 200}}, "better": ["EVM tier 1045.9 -> 1081.3 Mgas/s (+3.4%), mostly opcode loops: comparison 1427 -> 1693 (+19%), push 592 -> 680 (+15%), shifts 576 -> 663 (+15%); the two builds differ in EVM.run alignment, layout suspected", "node 1 MiB LOG rows 26k-30k -> 74k-81k Mgas/s (x2.7-x3.1)", "node dup 989 -> 1086 Mgas/s (+9.8%), memory_access 1320 -> 1404 (+6.4%)"], "worse": ["node tload, fresh keys 8258 -> 359 Mgas/s and tstore 4493 -> 3458 (-23%): the previous point carried open #24968, main does not", "EVM instruction/tstore 2010 -> 1493 Mgas/s (-26%), same reason", "node return_revert empty REVERT 427 -> 373 Mgas/s (-13%), identity 756 -> 666 (-12%)", "EVM instruction/call_context.call_frame_context_ops 434 -> 407 Mgas/s (-6%)"], "bottlenecks": ["node tload, fresh keys: 359 vs reth 15237 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)", "EVM instruction/storage_access_cold: 2415 vs revme 45916 (x0.05), no PR; top frame fastkeccak.keccakF1600BMI2 5.8%, then GC 4.3%, go-freelru ShardedLRU.Len 2.0%", "EVM instruction/ext_account_query_cold: 2551 vs revme 32173 (x0.08), no PR; top frame runtime.tryDeferToSpanScan 5.8% (GC), mapaccess2_fast64 4.7%", "EVM scenario/ether_transfers: 555 vs revme 6856 (x0.08), no PR; top frame secp256k1_gej_double 18.9%, sender recovery about 43%", "EVM instruction/calldatacopy_from_origin: 788 vs nethermind 9600 (x0.08), no PR; top frame vm.(*EVM).run 59%, memoryCopierGas 6.5%"], "shipped": ["#25034 vm: reuse address words within a call frame: ADDRESS 852 -> 342 ms (2.49x)", "#25040 execution/stagedsync: schedule transfers after recipient validation: ether_transfers empty cold 1088 -> 402 ms (2.71x)", "#25038 vm: evaluate powers of minus one from exponent parity: EXP all-ones 41x", "#25026 types/ethutils: batch timestamped receipt log allocations: 100-log receipt -64%"]}, {"date": "2026-10-20", "old": "77d3569d13973ae5e4e8220f5541e670e04bd814", "new": "228c92c7c4c42aa4e660586b994fb26278dfdd51", "evm": {"mgas": 1083.7, "ratio": 0.634, "best": "revme", "noise": 0.4, "fixtures": "tests-benchmark@v0.0.9"}, "node": {"mgas": 1910.0, "ratio": 0.492, "best": "nethermind", "noise": 0.5, "fixtures": "tests-benchmark@v0.0.9"}, "rpc": {"main": "228c92c7c4c42aa4e660586b994fb26278dfdd51", "noise": 3, "knee": {"qa-mixed": 3000, "qa-getlogs": 5000, "call-mix-33": 1000, "block-receipts": 1000, "getlogs-1block": 3000, "trace-block-33": 50, "trace-tx-33": 200}}, "better": ["node callvalue_from_call +93%, callvalue_from_origin +58%; EVM +85% / +65% (#25089)", "node mcopy +58% over 48 tests (#25071)", "node tload +102%, tstore +29%; EVM tstore +36% (#24968, in main again)", "node calldataload +11% over 8 tests"], "worse": ["EVM ops off the fast path: blobhash -11%, returndatasize_zero -9%, push -8%, calldatasize -7%, shifts -7%, not -6%: the fast-op switch is still a binary search, not a jump table", "node iszero -19%, return_revert -16% over 10 tests, jumpdests -13%"], "bottlenecks": ["node ether_transfers: 60 tests at x0.32 of reth; one-account case 36 ms vs 5.5 ms per block", "node log and log_benchmark: 140 tests at x0.35-0.49 of reth; the 1 MiB LOG rows flip between ~25k and ~75k Mgas/s run to run", "node vs nethermind: 2.2.0 is x2 faster than 2.1.0 here; erigon / nethermind 0.49 without precompiles"], "shipped": ["#25071 vm: run MCOPY on the fast path when memory need not grow", "#25089 vm: run CALLVALUE on the fast path", "#25017 #24991 #24966 #24961 (lupin012, RPC)"], "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs"}, {"date": "2026-10-20", "old": "228c92c7c4c42aa4e660586b994fb26278dfdd51", "new": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81", "evm": {"mgas": 1091.3, "ratio": 0.639, "best": "revme", "noise": 0.2, "fixtures": "tests-benchmark@v0.0.9"}, "node": {"mgas": 2012.1, "ratio": 0.503, "best": "nethermind", "noise": 1.1, "fixtures": "tests-benchmark@v0.0.9"}, "rpc": {"main": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81", "noise": 3, "knee": {"qa-mixed": 3000, "qa-getlogs": 5000, "call-mix-33": 1000, "block-receipts": 1000, "getlogs-1block": 3000, "trace-block-33": 50, "trace-tx-33": 200}}, "shipped": ["#25109 execution/execmodule: answer a re-sent validated side-fork payload as VALID without an unwind", "#25100 exec: evmone_precompiles v0.25.0", "#25072 execution/cache: faster code-cache fill when loading cold contracts", "#25091 execution/cache: no copy for a state-cache fill that is refused (merged)", "#25103 execution/state: higher logArena limits", "main up to e8222a2356 (#25094)"], "better": ["node suite +4.8% (noise 1.1%), EVM tier +0.8% (noise 0.2%); RPC knees the same on 7 of 7 workloads, p99 one rate below the knee within noise", "node modexp x1.41 over 89 tests, 33 of them x2.8-x4.2; EVM precompile/modexp_uncachable 5306 -> 8637 Mgas/s (+63%) (#25100)", "node ether_transfers to self (a_to_a), empty and non-empty account: 8 tests at x2.5-x3.3, now 13-16k Mgas/s", "node bls12_pairing x1.32 over 5 tests, block_full_data +19%, unchunkified_bytecode +14%", "EVM push +12%, blobhash +9%, returndatasize_zero +7%, calldatasize +6%; the two EVM builds differ in EVM.run alignment, so single-opcode rows can move by layout"], "worse": ["node auth_transaction (empty account) -30%, SWAP16 -16%, DUP9 -11%, calldatasize 1024 bytes -11%, COINBASE -11%, iszero -13%", "EVM jumpdests 861 -> 739 Mgas/s (-14%), memory_access -9%, return_revert -5%"], "bottlenecks": ["node block_full_data[zero_byte_True]: dbg is ~10% slower than main here (1538 vs 1707 Mgas/s when only this family runs)", "node block_full_data[zero_byte_True]: the full-suite number (~880) is about half of a family-only run; earlier tests in the same process slow it down, a harness effect", "eth_call per transaction: erigon / reth 1.43 over 24 transactions, behind only on transferFrom x262 (0.86) and the modexp proof verify (0.92)"], "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; gevm added to the EVM tier"}, {"date": "2026-10-21", "old": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81", "new": "b03dee1904f6a01c43d9acf95c19d284382a6ba8", "evm": {"mgas": 1169.0, "ratio": 0.708, "best": "revme", "noise": 0.13, "fixtures": "tests-benchmark@v0.0.9"}, "node": {"mgas": 2012.1, "ratio": 0.503, "best": "nethermind", "noise": 1.1, "fixtures": "tests-benchmark@v0.0.9"}, "rpc": {"main": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81", "noise": 3, "knee": {"qa-mixed": 3000, "qa-getlogs": 5000, "call-mix-33": 1000, "block-receipts": 1000, "getlogs-1block": 3000, "trace-block-33": 50, "trace-tx-33": 200}}, "shipped": ["#25164 execution/vm: run cheap context, bitwise, DUP9-16 and SWAP5-16 ops inline", "#25155 execution/vm: reuse an output buffer for the identity precompile", "#25160 execution/state: emit no writes for an account created and destroyed in one tx", "#25153 execution/types: keep BAL storage reads as raw hashes", "#25146 execution/vm: MULMOD with a cached reciprocal", "#25118 execution/vm: push-free JUMPDEST analysis step", "#25145 rpc/ethapi: fastjson accessList", "#25116 execution: keep the executed state of a re-sent head payload", "main merged"], "better": ["EVM tier +10.7% (noise 0.13%); node and RPC tiers not re-measured in this snapshot", "EVM identity x4.7, identity_uncachable x2.0 (#25155)", "EVM block_context_ops +48%, call_frame_context +48%, returndatasize +50..56%, calldatasize +44%, codesize +45%, not +53%, jumpdest_analysis +45% (#25164, #25118)"], "worse": ["EVM clz_same -20%, selfbalance -13%, clz_diff -6%: ops left on the generic path pay one more taken branch (#25164)"], "bottlenecks": [], "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; node and RPC numbers are from the 2026-10-20 snapshot"}]
+[
+ {
+  "date": "2026-10-16",
+  "old": null,
+  "new": "670e20e109af4f66528c05661d6c446d4551aeee",
+  "evm": {
+   "mgas": 1082.2,
+   "ratio": 0.632,
+   "best": "nethermind",
+   "noise": 0.7,
+   "fixtures": "benchmark@v0.0.7"
+  },
+  "node": {
+   "mgas": 1844.6,
+   "ratio": 0.713,
+   "best": "reth",
+   "noise": 1.0,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "39cd621455a4b69c9e9f2474e2726f8e7b5b7a29",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 200,
+    "trace-tx-33": 200
+   }
+  },
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-17",
+  "old": "670e20e109af4f66528c05661d6c446d4551aeee",
+  "new": "6540ff4718d3d7285a76fed017c092d581c19e98",
+  "evm": {
+   "mgas": 1086.6,
+   "ratio": 0.634,
+   "best": "nethermind",
+   "noise": 0.7,
+   "fixtures": "benchmark@v0.0.7"
+  },
+  "node": {
+   "mgas": 1803.9,
+   "ratio": 0.694,
+   "best": "reth",
+   "noise": 1.0,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "6540ff4718d3d7285a76fed017c092d581c19e98",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "better": [
+   "node return_revert 1 MiB RETURN 5198 -> 22019 Mgas/s (+324%)",
+   "node ether_transfers diff_acc_to_b, empty account 49 -> 148 Mgas/s (+203%)",
+   "RPC getlogs-1block p99 at 3000 rps 64 -> 46 ms (-28%)",
+   "EVM instruction/bitwise 1875 -> 1932 Mgas/s (+3.1%)",
+   "EVM instruction/storage_access_cold_benchmark 2721 -> 2784 Mgas/s (+2.3%)"
+  ],
+  "worse": [
+   "RPC trace-block-33 knee 200 -> 50 rps; p99 at 10 rps 87 -> 101 ms (+16%)",
+   "RPC qa-mixed p99 at 1000 rps 49 -> 61 ms (+24%)",
+   "node ether_transfers a_to_a, empty account 5385 -> 2846 Mgas/s (-47%)",
+   "node shifts 674 -> 542 Mgas/s (-20%), jumpdests 852 -> 744 (-13%), create 33828 -> 30006 (-11%)",
+   "node suite 1844.6 -> 1803.9 Mgas/s (-2.2%), in compute loops; the EVM tier on the same code is flat, code layout suspected",
+   "RPC block-receipts p99 at 300 rps 9.3 -> 9.8 ms (+4%)",
+   "EVM instruction/comparison 1729 -> 1697 Mgas/s (-1.8%)"
+  ],
+  "bottlenecks": [
+   "node tload, fresh keys: 359 vs reth 15757 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)",
+   "node ether_transfers diff_acc_to_b, empty account: 41 vs nethermind 1752 (x0.02), #24976; top frame runtime.cgocall 12.1% (secp256k1 recover), then the validation loop",
+   "node ether_transfers diff_acc_to_b, non-empty account: 72 vs reth 1543 (x0.05), #24976; same path",
+   "node ether_transfers diff_acc_to_b, delegated account: 114 vs reth 1402 (x0.08), #24976; same path",
+   "node EXP: 1124 vs nethermind 13230 (x0.08), no PR; top frame runtime.cgocall 6.1% (MDBX put), uint256.(*Int).Mul 4.6%"
+  ],
+  "shipped": [
+   "#24957 execution/state: setCreatedCode reads the created account's code writes once: tx time -5.7%",
+   "#24963 node: buffer gzip output before the response writer: qa-getlogs CPU per request -11.3% at 3000 rps",
+   "#24914 go.mod: otter main, with the in-place replacement of a live key: exec cold-account family -1.4%",
+   "#24920 rpc: the replay methods use eth_call's state path: debug_traceBlockByNumber 252 -> 221 rps",
+   "#24916 rpc: eth_estimateGas, eth_createAccessList and debug_traceCall run on the versioned state path: eth_estimateGas 964 -> 908 rps",
+   "#24915 execution: benchmarks run on the versioned noMaterialize state, as eth_call does",
+   "#24892 cl: close the persistent block collector when the stage loop exits",
+   "#24891 cl/beacon/handler: proposer_lookahead reads epoch data by slot"
+  ]
+ },
+ {
+  "date": "2026-10-17",
+  "old": "6540ff4718d3d7285a76fed017c092d581c19e98",
+  "new": "df6a0a67cdcb4f2bd509bdb4f1d5a8ff1849ad14",
+  "evm": {
+   "mgas": 1016.2,
+   "ratio": 0.528,
+   "best": "nethermind",
+   "noise": 0.7,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 1848.8,
+   "ratio": 0.699,
+   "best": "reth",
+   "noise": 1.0,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "better": [],
+  "worse": [],
+  "bottlenecks": [
+   "node ether_transfers diff_acc_to_b, amount 1 (4 rows): 34-54 vs nethermind 1603-1854 (x0.02-0.03), #24976; top frame runtime.cgocall 12.1% (secp256k1 recover), then the validation loop",
+   "node tload, fresh keys: 360 vs reth 15237 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)",
+   "EVM instruction/storage_access_cold: 2389 vs revme 45916 (x0.05), no PR, not profiled yet",
+   "EVM instruction/calldatacopy_from_origin: 731 vs nethermind 9600 (x0.08), no PR, not profiled yet",
+   "EVM instruction/ext_account_query_cold: 2517 vs revme 32173 (x0.08), no PR, not profiled yet"
+  ],
+  "shipped": [
+   "#24960 rpc: calls with state overrides run on the versioned state path"
+  ]
+ },
+ {
+  "date": "2026-10-19",
+  "old": "df6a0a67cdcb4f2bd509bdb4f1d5a8ff1849ad14",
+  "new": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82",
+  "evm": {
+   "mgas": 1046.3,
+   "ratio": 0.544,
+   "best": "nethermind",
+   "noise": 0.2,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 1856.4,
+   "ratio": 0.703,
+   "best": "reth",
+   "noise": 1.1,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "better": [
+   "erigon here is main 6f95064a20 plus open PRs #25040 #25038 #25034 #25026 #24968; EVM tier +3.0% (noise 0.2%), node tier +1.3% (noise 1.1%), RPC knees unchanged",
+   "node EXP 1135 -> 61098, bls12 g1msm/g2msm x11-x29 (#25023, #25035)",
+   "node tload fresh keys 357 -> 8381 (#24968)",
+   "node ether_transfers diff_acc_to_b, amount 1: 18-66 -> 363-415 (#24976)",
+   "EVM call_frame_context_ops 176 -> 433 (#25034), tstore +32%",
+   "RPC block-receipts p99 -31% at every rate (#25026, #25025)"
+  ],
+  "worse": [
+   "node ether_transfers_to_precompile, amount 1 (17 rows): ~740 -> ~465 (-36%); amount 0 unchanged; suspect #25040",
+   "node 1MiB zero-data REVERT 22414 -> 5278 (cell noise 27%)",
+   "EVM dup/bitwise/swap/push -5..-8% (same code alignment in both builds)"
+  ],
+  "bottlenecks": [
+   "node 1MiB zero-data REVERT/RETURN: 5278/6896 vs reth 62927/65212 (x0.08-0.11)",
+   "node unchunkified_bytecode EXTCODECOPY/DELEGATECALL/CALL: 170-185 vs reth 1572-1976 (x0.09-0.11)",
+   "EVM instruction/storage_access_cold: 2401 vs revme 45916 (x0.05)",
+   "EVM instruction/ext_account_query_cold: 2547 vs revme 32173 (x0.08)",
+   "EVM instruction/calldatacopy_from_origin: 770 vs nethermind 9600 (x0.08)"
+  ],
+  "shipped": [
+   "#25023 vm: use word arithmetic for small EXP results",
+   "#25035 vm: reuse adjacent validated BLS points in MSM",
+   "#24976 execution/stagedsync: stop validation at the first result that cannot commit",
+   "#25025 types/ethutils: reuse the cached sender in receipt responses",
+   "#25024 types: reuse cached Keccak hashes for bloom construction",
+   "#25022 rpc/transactions: skip unused BAL recording during traces",
+   "#25009 vm: avoid redundant zeroing when copying log data"
+  ]
+ },
+ {
+  "date": "2026-10-19",
+  "old": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82",
+  "new": "77d3569d13973ae5e4e8220f5541e670e04bd814",
+  "evm": {
+   "mgas": 1081.3,
+   "ratio": 0.562,
+   "best": "nethermind",
+   "noise": 0.1,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 1867.5,
+   "ratio": 0.708,
+   "best": "reth",
+   "noise": 0.5,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "77d3569d13973ae5e4e8220f5541e670e04bd814",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "better": [
+   "EVM tier 1045.9 -> 1081.3 Mgas/s (+3.4%), mostly opcode loops: comparison 1427 -> 1693 (+19%), push 592 -> 680 (+15%), shifts 576 -> 663 (+15%); the two builds differ in EVM.run alignment, layout suspected",
+   "node 1 MiB LOG rows 26k-30k -> 74k-81k Mgas/s (x2.7-x3.1)",
+   "node dup 989 -> 1086 Mgas/s (+9.8%), memory_access 1320 -> 1404 (+6.4%)"
+  ],
+  "worse": [
+   "node tload, fresh keys 8258 -> 359 Mgas/s and tstore 4493 -> 3458 (-23%): the previous point carried open #24968, main does not",
+   "EVM instruction/tstore 2010 -> 1493 Mgas/s (-26%), same reason",
+   "node return_revert empty REVERT 427 -> 373 Mgas/s (-13%), identity 756 -> 666 (-12%)",
+   "EVM instruction/call_context.call_frame_context_ops 434 -> 407 Mgas/s (-6%)"
+  ],
+  "bottlenecks": [
+   "node tload, fresh keys: 359 vs reth 15237 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)",
+   "EVM instruction/storage_access_cold: 2415 vs revme 45916 (x0.05), no PR; top frame fastkeccak.keccakF1600BMI2 5.8%, then GC 4.3%, go-freelru ShardedLRU.Len 2.0%",
+   "EVM instruction/ext_account_query_cold: 2551 vs revme 32173 (x0.08), no PR; top frame runtime.tryDeferToSpanScan 5.8% (GC), mapaccess2_fast64 4.7%",
+   "EVM scenario/ether_transfers: 555 vs revme 6856 (x0.08), no PR; top frame secp256k1_gej_double 18.9%, sender recovery about 43%",
+   "EVM instruction/calldatacopy_from_origin: 788 vs nethermind 9600 (x0.08), no PR; top frame vm.(*EVM).run 59%, memoryCopierGas 6.5%"
+  ],
+  "shipped": [
+   "#25034 vm: reuse address words within a call frame: ADDRESS 852 -> 342 ms (2.49x)",
+   "#25040 execution/stagedsync: schedule transfers after recipient validation: ether_transfers empty cold 1088 -> 402 ms (2.71x)",
+   "#25038 vm: evaluate powers of minus one from exponent parity: EXP all-ones 41x",
+   "#25026 types/ethutils: batch timestamped receipt log allocations: 100-log receipt -64%"
+  ]
+ },
+ {
+  "date": "2026-10-20",
+  "old": "77d3569d13973ae5e4e8220f5541e670e04bd814",
+  "new": "228c92c7c4c42aa4e660586b994fb26278dfdd51",
+  "evm": {
+   "mgas": 1083.7,
+   "ratio": 0.634,
+   "best": "revme",
+   "noise": 0.4,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 1910.0,
+   "ratio": 0.492,
+   "best": "nethermind",
+   "noise": 0.5,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "228c92c7c4c42aa4e660586b994fb26278dfdd51",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "better": [
+   "node callvalue_from_call +93%, callvalue_from_origin +58%; EVM +85% / +65% (#25089)",
+   "node mcopy +58% over 48 tests (#25071)",
+   "node tload +102%, tstore +29%; EVM tstore +36% (#24968, in main again)",
+   "node calldataload +11% over 8 tests"
+  ],
+  "worse": [
+   "EVM ops off the fast path: blobhash -11%, returndatasize_zero -9%, push -8%, calldatasize -7%, shifts -7%, not -6%: the fast-op switch is still a binary search, not a jump table",
+   "node iszero -19%, return_revert -16% over 10 tests, jumpdests -13%"
+  ],
+  "bottlenecks": [
+   "node ether_transfers: 60 tests at x0.32 of reth; one-account case 36 ms vs 5.5 ms per block",
+   "node log and log_benchmark: 140 tests at x0.35-0.49 of reth; the 1 MiB LOG rows flip between ~25k and ~75k Mgas/s run to run",
+   "node vs nethermind: 2.2.0 is x2 faster than 2.1.0 here; erigon / nethermind 0.49 without precompiles"
+  ],
+  "shipped": [
+   "#25071 vm: run MCOPY on the fast path when memory need not grow",
+   "#25089 vm: run CALLVALUE on the fast path",
+   "#25017 #24991 #24966 #24961 (lupin012, RPC)"
+  ],
+  "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs"
+ },
+ {
+  "date": "2026-10-20",
+  "old": "228c92c7c4c42aa4e660586b994fb26278dfdd51",
+  "new": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
+  "evm": {
+   "mgas": 1091.3,
+   "ratio": 0.639,
+   "best": "revme",
+   "noise": 0.2,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 2012.1,
+   "ratio": 0.503,
+   "best": "nethermind",
+   "noise": 1.1,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "shipped": [
+   "#25109 execution/execmodule: answer a re-sent validated side-fork payload as VALID without an unwind",
+   "#25100 exec: evmone_precompiles v0.25.0",
+   "#25072 execution/cache: faster code-cache fill when loading cold contracts",
+   "#25091 execution/cache: no copy for a state-cache fill that is refused (merged)",
+   "#25103 execution/state: higher logArena limits",
+   "main up to e8222a2356 (#25094)"
+  ],
+  "better": [
+   "node suite +4.8% (noise 1.1%), EVM tier +0.8% (noise 0.2%); RPC knees the same on 7 of 7 workloads, p99 one rate below the knee within noise",
+   "node modexp x1.41 over 89 tests, 33 of them x2.8-x4.2; EVM precompile/modexp_uncachable 5306 -> 8637 Mgas/s (+63%) (#25100)",
+   "node ether_transfers to self (a_to_a), empty and non-empty account: 8 tests at x2.5-x3.3, now 13-16k Mgas/s",
+   "node bls12_pairing x1.32 over 5 tests, block_full_data +19%, unchunkified_bytecode +14%",
+   "EVM push +12%, blobhash +9%, returndatasize_zero +7%, calldatasize +6%; the two EVM builds differ in EVM.run alignment, so single-opcode rows can move by layout"
+  ],
+  "worse": [
+   "node auth_transaction (empty account) -30%, SWAP16 -16%, DUP9 -11%, calldatasize 1024 bytes -11%, COINBASE -11%, iszero -13%",
+   "EVM jumpdests 861 -> 739 Mgas/s (-14%), memory_access -9%, return_revert -5%"
+  ],
+  "bottlenecks": [
+   "node block_full_data[zero_byte_True]: dbg is ~10% slower than main here (1538 vs 1707 Mgas/s when only this family runs)",
+   "node block_full_data[zero_byte_True]: the full-suite number (~880) is about half of a family-only run; earlier tests in the same process slow it down, a harness effect",
+   "eth_call per transaction: erigon / reth 1.43 over 24 transactions, behind only on transferFrom x262 (0.86) and the modexp proof verify (0.92)"
+  ],
+  "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; gevm added to the EVM tier"
+ },
+ {
+  "date": "2026-10-21",
+  "old": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
+  "new": "b03dee1904f6a01c43d9acf95c19d284382a6ba8",
+  "evm": {
+   "mgas": 1169.0,
+   "ratio": 0.708,
+   "best": "revme",
+   "noise": 0.13,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 2012.1,
+   "ratio": 0.503,
+   "best": "nethermind",
+   "noise": 1.1,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "shipped": [
+   "#25164 execution/vm: run cheap context, bitwise, DUP9-16 and SWAP5-16 ops inline",
+   "#25155 execution/vm: reuse an output buffer for the identity precompile",
+   "#25160 execution/state: emit no writes for an account created and destroyed in one tx",
+   "#25153 execution/types: keep BAL storage reads as raw hashes",
+   "#25146 execution/vm: MULMOD with a cached reciprocal",
+   "#25118 execution/vm: push-free JUMPDEST analysis step",
+   "#25145 rpc/ethapi: fastjson accessList",
+   "#25116 execution: keep the executed state of a re-sent head payload",
+   "main merged"
+  ],
+  "better": [
+   "EVM tier +10.7% (noise 0.13%); node and RPC tiers not re-measured in this snapshot",
+   "EVM identity x4.7, identity_uncachable x2.0 (#25155)",
+   "EVM block_context_ops +48%, call_frame_context +48%, returndatasize +50..56%, calldatasize +44%, codesize +45%, not +53%, jumpdest_analysis +45% (#25164, #25118)"
+  ],
+  "worse": [
+   "EVM clz_same -20%, selfbalance -13%, clz_diff -6%: ops left on the generic path pay one more taken branch (#25164)"
+  ],
+  "bottlenecks": [],
+  "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; node and RPC numbers are from the 2026-10-20 snapshot"
+ }
+]
