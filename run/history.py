@@ -51,7 +51,9 @@ gas = {p.parent.name + "/" + p.stem: int(next(iter(json.load(open(p)).values()))
        for p in (root / "fixtures").glob("*/*.json")}
 progress = root / "history" / "runs.json"
 progress = json.load(open(progress)) if progress.exists() else []
-html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "gas": gas, "progress": progress}))
+openprs = root / "history" / "openprs.json"
+openprs = json.load(open(openprs)) if openprs.exists() else None
+html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "gas": gas, "progress": progress, "openprs": openprs}))
 (root / "docs").mkdir(exist_ok=True)
 (root / "docs" / ".nojekyll").touch()
 (root / "docs" / "index.html").write_text(html)

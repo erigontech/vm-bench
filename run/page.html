@@ -128,6 +128,10 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 
 <section class="race" id="race"></section>
 
+<h2 id="prs-title" hidden>erigon + open PRs</h2>
+<div class="note" id="prs-note" hidden></div>
+<div class="wrap" id="prs" hidden></div>
+
 <h2 id="bt-title" hidden>EVM: EEST benchmark blocks</h2>
 <div class="note" id="bt-note" hidden></div>
 <section class="race" id="bt-race" hidden></section>
@@ -411,6 +415,22 @@ nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp,
    `The hero and the family table use the ${hero.length} instruction and scenario tests that ${hc.join(", ")} all passed` +
    (nc.length > hc.length ? `; ${nc.filter(c => !hc.includes(c)).join(", ")} passed fewer than half of the tests and shows in the per-test table only.` : "."),
    ...extra.map(esc), ...(nv["not run"] ? [`Not run: ${esc(nv["not run"])}.`] : [])]));
+
+// erigon + open PRs: one build of main plus open PRs against the main point; never part of the erigon column or Progress.
+if (data.openprs) {
+  const o = data.openprs, pr = n => `<a href="https://github.com/erigontech/erigon/pull/${n}">#${n}</a>`;
+  for (const id of ["prs-title", "prs-note", "prs"]) document.getElementById(id).hidden = false;
+  document.getElementById("prs-note").innerHTML = `<p>Build ${o.build}, ${o.date}: main ${o.base} plus ${o.prs.map(([n, t]) => `${pr(n)} ${esc(t)}`).join("; ")}. ` +
+    `"erigon main" is the erigon column of the sections below (main ${o.mainPoint}). Same tests and hero rules as those sections.</p>` +
+    `<p>Node rows of this build are the previous erigon rows times the per-test new/old ratio from an A/B on a second box of the same class. ` +
+    `${pr(25204)} runs the txs of one sender in parallel and every EEST benchmark block has one sender, so the EVM row of this build is not single-thread EVM speed. ` +
+    `eth_call per transaction (${o.calls.rows} rows): ${o.calls.vsReth.toFixed(2)}x reth, ${o.calls.vsNethermind.toFixed(2)}x nethermind (rps, geometric mean).</p>`;
+  const oc = ["nethermind", "reth", "revme"];
+  document.getElementById("prs").innerHTML = `<table><thead><tr><th>tier</th><th>tests</th><th>erigon main</th><th>erigon + PRs</th><th>change</th>${oc.map(c => `<th>${name(c)}</th>`).join("")}${oc.map(c => `<th>e+PRs/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
+    o.rows.map(r => `<tr><td class="f">${r.tier}</td><td class="gas">${r.n}</td><td>${r.main ? fmt(r.main) : "–"}</td><td>${fmt(r.prs)}</td>` +
+      (r.main ? ratioCell(r.prs / r.main) : `<td class="gas">–</td>`) + oc.map(c => `<td>${fmt(r.others[c] ?? NaN)}</td>`).join("") +
+      oc.map(c => r.others[c] ? ratioCell(r.prs / r.others[c]) : `<td class="gas">–</td>`).join("") + "</tr>").join("") + "</tbody></table>";
+}
 
 // RPC workloads: for every workload and client, the latest snapshot that has it.
 const rpcw = {};
