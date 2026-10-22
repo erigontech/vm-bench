@@ -423,7 +423,7 @@ if (data.openprs) {
   const o = data.openprs, pr = n => `<a href="https://github.com/erigontech/erigon/pull/${n}">#${n}</a>`;
   for (const id of ["prs-title", "prs-note", "prs"]) document.getElementById(id).hidden = false;
   document.getElementById("prs-note").innerHTML = `<p>Build ${o.build}, ${o.date}: main ${o.base} plus ${o.prs.map(([n, t]) => `${pr(n)} ${esc(t)}`).join("; ")}. ` +
-    `"erigon main" is the erigon column of the sections below (main ${o.mainPoint}). Same tests and hero rules as those sections. Full tables of this build: <a href="dbg.html">dbg.html</a>.</p>` +
+    `"erigon main" is the erigon column of the sections below (main ${o.mainPoint}). Same tests and hero rules as those sections.</p>` +
     `<p>Node rows of this build are the previous erigon rows times the per-test new/old ratio from an A/B on a second box of the same class. ` +
     `${pr(25204)} runs the txs of one sender in parallel and every EEST benchmark block has one sender, so its EVM-tier blocks run in parallel: most files fall under the 100 ms / 30% twin floor and the EVM row stays empty when fewer than half of the files are valid. ` +
     `eth_call per transaction (${o.calls.rows} rows): ${o.calls.vsReth.toFixed(2)}x reth, ${o.calls.vsNethermind.toFixed(2)}x nethermind (rps, geometric mean).</p>`;
