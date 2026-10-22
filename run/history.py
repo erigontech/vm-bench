@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Build docs/index.html from history/*/: the latest table and Mgas/s over time per client."""
-import csv, json
+"""Build docs/index.html from history/*/: the latest table and Mgas/s over time per client.
+run/history.py <dir> <page> <branch>: the same page for a branch build, e.g. branches/dbg docs/dbg.html dbg."""
+import csv, json, sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parent.parent
 hidden = {"besu", "ethrex", "nimbus"}
 runs = []
-for d in sorted(p for p in (root / "history").iterdir() if p.is_dir()):
+src, page, branch = (root / sys.argv[1], root / sys.argv[2], sys.argv[3]) if len(sys.argv) > 3 else (root / "history", root / "docs" / "index.html", None)
+for d in sorted(p for p in src.iterdir() if p.is_dir()):
     run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}}
     for f in d.glob("*.csv"):
         if f.name == "versions.csv":
@@ -49,11 +51,11 @@ for k in ("node", "nodePass", "nodebal", "nodebalPass", "bt"):
         run[k] = {}
 gas = {p.parent.name + "/" + p.stem: int(next(iter(json.load(open(p)).values()))["_info"]["gasUsed"], 16)
        for p in (root / "fixtures").glob("*/*.json")}
-progress = root / "history" / "runs.json"
+progress = src / "runs.json"
 progress = json.load(open(progress)) if progress.exists() else []
-openprs = root / "history" / "openprs.json"
+openprs = src / "openprs.json"
 openprs = json.load(open(openprs)) if openprs.exists() else None
-html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "gas": gas, "progress": progress, "openprs": openprs}))
+html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "gas": gas, "progress": progress, "openprs": openprs, "branch": branch}))
 (root / "docs").mkdir(exist_ok=True)
 (root / "docs" / ".nojekyll").touch()
-(root / "docs" / "index.html").write_text(html)
+page.write_text(html)

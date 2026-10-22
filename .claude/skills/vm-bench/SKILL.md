@@ -28,6 +28,10 @@ marked `*` and must never be quoted as an EVM comparison.
   column and never goes into `history/runs.json`. If it is worth showing, it gets its own clearly labelled column or
   section ("erigon + open PRs") that lists the PRs. A journal entry compares main with the previous main point; a
   comparison against a main-plus-PRs build is not a list of regressions.
+- **Branch builds get their own page.** Snapshots of a main-plus-PRs build go to `branches/<name>/<UTC time>/` (same CSV
+  format; erigon rows of the build, other clients copied from the latest main snapshot) and `run/history.py
+  branches/<name> docs/<name>.html <name>` builds `docs/<name>.html` from the same template. The main page shows only a
+  one-table summary in `history/openprs.json` and links the branch page.
 - **Measure only on the bench box, under its lock.** Every measuring script takes the lock in `BENCH_LOCK`
   (`run/all.sh` does it itself). Never build, profile or run anything else on the box while a run holds the lock.
   Numbers taken without the lock are void; delete them from history. Never measure on a laptop.

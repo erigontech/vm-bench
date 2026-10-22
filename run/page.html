@@ -175,7 +175,7 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 const data = /*DATA*/;
 const CSS = getComputedStyle(document.documentElement);
 const colorOf = c => c.startsWith("erigon") ? CSS.getPropertyValue("--erigon") : "#9aa5b8";
-const runs = data.runs.filter(r => Object.keys(r.ns).length), last = runs[runs.length - 1];
+const runs = data.runs.filter(r => Object.keys(r.ns).length), last = runs[runs.length - 1] || { ...data.runs[data.runs.length - 1], ns: {} };
 const rpcRuns = data.runs.filter(r => r.rpc.length);
 const callsLatest = {};
 for (const r of data.runs) for (const [f, byClient] of Object.entries(r.calls || {})) callsLatest[f] = byClient;
@@ -417,19 +417,21 @@ nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp,
    ...extra.map(esc), ...(nv["not run"] ? [`Not run: ${esc(nv["not run"])}.`] : [])]));
 
 // erigon + open PRs: one build of main plus open PRs against the main point; never part of the erigon column or Progress.
+if (data.branch) document.querySelector(".lede").innerHTML = `Branch build <span class="tag">${esc(data.branch)}</span>: erigon is main plus open PRs, the other clients are the same runs as on the <a href="./">main page</a>. ` +
+  `Use it to find the next bottlenecks; the main page and its Progress trend stay main only.`;
 if (data.openprs) {
   const o = data.openprs, pr = n => `<a href="https://github.com/erigontech/erigon/pull/${n}">#${n}</a>`;
   for (const id of ["prs-title", "prs-note", "prs"]) document.getElementById(id).hidden = false;
   document.getElementById("prs-note").innerHTML = `<p>Build ${o.build}, ${o.date}: main ${o.base} plus ${o.prs.map(([n, t]) => `${pr(n)} ${esc(t)}`).join("; ")}. ` +
-    `"erigon main" is the erigon column of the sections below (main ${o.mainPoint}). Same tests and hero rules as those sections.</p>` +
+    `"erigon main" is the erigon column of the sections below (main ${o.mainPoint}). Same tests and hero rules as those sections. Full tables of this build: <a href="dbg.html">dbg.html</a>.</p>` +
     `<p>Node rows of this build are the previous erigon rows times the per-test new/old ratio from an A/B on a second box of the same class. ` +
-    `${pr(25204)} runs the txs of one sender in parallel and every EEST benchmark block has one sender, so the EVM row of this build is not single-thread EVM speed. ` +
+    `${pr(25204)} runs the txs of one sender in parallel and every EEST benchmark block has one sender, so its EVM-tier blocks run in parallel: most files fall under the 100 ms / 30% twin floor and the EVM row stays empty when fewer than half of the files are valid. ` +
     `eth_call per transaction (${o.calls.rows} rows): ${o.calls.vsReth.toFixed(2)}x reth, ${o.calls.vsNethermind.toFixed(2)}x nethermind (rps, geometric mean).</p>`;
   const oc = ["nethermind", "reth", "revme"];
   document.getElementById("prs").innerHTML = `<table><thead><tr><th>tier</th><th>tests</th><th>erigon main</th><th>erigon + PRs</th><th>change</th>${oc.map(c => `<th>${name(c)}</th>`).join("")}${oc.map(c => `<th>e+PRs/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
-    o.rows.map(r => `<tr><td class="f">${r.tier}</td><td class="gas">${r.n}</td><td>${r.main ? fmt(r.main) : "–"}</td><td>${fmt(r.prs)}</td>` +
-      (r.main ? ratioCell(r.prs / r.main) : `<td class="gas">–</td>`) + oc.map(c => `<td>${fmt(r.others[c] ?? NaN)}</td>`).join("") +
-      oc.map(c => r.others[c] ? ratioCell(r.prs / r.others[c]) : `<td class="gas">–</td>`).join("") + "</tr>").join("") + "</tbody></table>";
+    o.rows.map(r => `<tr><td class="f">${r.tier}</td><td class="gas">${r.n}</td><td>${r.main ? fmt(r.main) : "–"}</td><td>${r.prs ? fmt(r.prs) : "–"}</td>` +
+      (r.main && r.prs ? ratioCell(r.prs / r.main) : `<td class="gas">–</td>`) + oc.map(c => `<td>${fmt(r.others[c] ?? NaN)}</td>`).join("") +
+      oc.map(c => r.others[c] && r.prs ? ratioCell(r.prs / r.others[c]) : `<td class="gas">–</td>`).join("") + "</tr>").join("") + "</tbody></table>";
 }
 
 // RPC workloads: for every workload and client, the latest snapshot that has it.
