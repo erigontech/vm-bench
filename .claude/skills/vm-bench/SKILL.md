@@ -24,6 +24,10 @@ marked `*` and must never be quoted as an EVM comparison.
 
 ## Rules that keep the numbers fair
 
+- **The erigon column and the Progress trend are main only.** A build of main plus open PRs never replaces the erigon
+  column and never goes into `history/runs.json`. If it is worth showing, it gets its own clearly labelled column or
+  section ("erigon + open PRs") that lists the PRs. A journal entry compares main with the previous main point; a
+  comparison against a main-plus-PRs build is not a list of regressions.
 - **Measure only on the bench box, under its lock.** Every measuring script takes the lock in `BENCH_LOCK`
   (`run/all.sh` does it itself). Never build, profile or run anything else on the box while a run holds the lock.
   Numbers taken without the lock are void; delete them from history. Never measure on a laptop.

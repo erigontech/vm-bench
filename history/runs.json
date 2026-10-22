@@ -461,20 +461,20 @@
   },
   {
     "date": "2026-10-21",
-    "old": "0d9cecb17a501c44766d8dcf7c04a5f77e0fdbf5",
+    "old": "77d3569d13973ae5e4e8220f5541e670e04bd814",
     "new": "3324fd6b4819011a7bc7b392babbec3a28e3366b",
     "evm": {
-      "mgas": 1057.3,
+      "mgas": 1091.2,
       "ratio": 0.639,
       "best": "revme",
-      "noise": 0.3,
+      "noise": 0.4,
       "fixtures": "tests-benchmark@v0.0.9"
     },
     "node": {
       "mgas": 2037.8,
       "ratio": 0.515,
       "best": "nethermind",
-      "noise": 0.4,
+      "noise": 1.0,
       "fixtures": "tests-benchmark@v0.0.9"
     },
     "rpc": {
@@ -491,13 +491,14 @@
       }
     },
     "better": [
-      "EVM instruction/jumpdests 741 -> 854 Mgas/s (+15%), clz_same 1246 -> 1342 (+7.7%), callvalue_from_origin +4.8%, memory_access +4.7%",
-      "node create 30774 -> 34059 Mgas/s (+11%, 20 rows), block_full_data 1566 -> 1733 (+11%), ripemd160_uncachable +9.6%"
+      "node identity 666 -> 6422 Mgas/s (x9.6, #25155), tload 12527 -> 27774 (x2.2, #24968), callvalue 925-1118 -> 1598-2066 (+73..85%, #25089)",
+      "node mcopy 1477 -> 2319 Mgas/s (+57%, 48 rows, #25071), modexp 1039 -> 1468 (+41%, 89 rows, #25100), bls12_pairing 645 -> 923 (+43%)",
+      "EVM callvalue_from_call 597 -> 1139 Mgas/s (x1.9), callvalue_from_origin 937 -> 1560 (+67%, #25089), return_revert 796 -> 1174 (+47%), tstore 1493 -> 1970 (+32%, #24968), call_context.call_frame_context_ops 407 -> 498 (+22%)",
+      "node suite 1867.5 -> 2037.8 Mgas/s (+9.1%), EVM suite 1081.3 -> 1091.2 (+0.9%)"
     ],
     "worse": [
-      "vs the previous point, a dbg build with open VM PRs (cold switch behind an op table, SLT..SAR inline, PREVRANDAO into its slot, address words): EVM 1142.6 -> 1057.3 Mgas/s (-7.5%), node 2113.8 -> 2037.8 (-3.6%); main does not have those PRs yet",
-      "EVM not_op 1342 -> 837 (-38%), returndatasize_zero 865 -> 550 (-36%), block_context_ops 725 -> 506 (-30%), pc_op 768 -> 537 (-30%), gas_op 764 -> 539 (-30%)",
-      "node returndatasize_zero 936 -> 549 (-41%), shifts 902 -> 548 (-39%), selfdestruct_created 3665 -> 2348 (-36%)"
+      "EVM blobhash 780 -> 687 Mgas/s (-12%), push 680 -> 605 (-11%), returndatasize_zero 615 -> 550 (-11%), shifts 663 -> 594 (-10%), msize -9%, pc_op -9%, gas_op -8%, not_op -7%, selfbalance -7%",
+      "node unchunkified_bytecode 269 -> 237 Mgas/s (-12%, 7 rows), codesize 595 -> 553 (-7%), msize -5%, pc_op -4%, dup -4%"
     ],
     "bottlenecks": [
       "node unchunkified_bytecode CALL/CALLCODE/DELEGATECALL/STATICCALL/EXTCODECOPY: 150-194 vs reth 1540-1924 (x0.09-0.11), no PR; top frame runtime.memmove 27.0% (code copy), madvise 8.1%",
