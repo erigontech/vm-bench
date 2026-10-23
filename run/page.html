@@ -84,8 +84,7 @@ td.ratio span.n{display:inline-block;width:3em;text-align:right;margin-left:4px;
 td.ratio .win{color:var(--win);font-weight:600}td.ratio .loss{color:var(--loss);font-weight:600}td.ratio .even{color:var(--ink-2)}
 
 
-.rpc{display:grid;grid-template-columns:1fr 1fr;gap:28px 40px;align-items:start;margin-top:16px}
-@media (max-width:900px){.rpc{grid-template-columns:1fr}.charts{grid-template-columns:1fr}}
+@media (max-width:900px){.charts{grid-template-columns:1fr}}
 :focus-visible{outline:2px solid var(--erigon);outline-offset:2px}
 @media (prefers-reduced-motion:no-preference){.bars .b i{transition:width .5s ease}}
 
@@ -100,7 +99,6 @@ tr.more td{padding:10px 0;text-align:left}
 tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(--rule);color:var(--ink);padding:6px 14px;cursor:pointer}
 #tip{position:fixed;left:12px;right:12px;bottom:12px;z-index:9;background:var(--ink);color:var(--paper);padding:10px 12px;font-size:14px;white-space:pre-line}
 #tip[hidden]{display:none}
-.rpc>*{min-width:0}
 @media (max-width:600px){
   body{padding:24px 14px 64px}
   h1{font-size:26px}
@@ -151,8 +149,8 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <div id="rpcw" hidden></div>
 
 <h2>JSON-RPC throughput</h2>
-<p class="note">Requests per second against one mainnet datadir, 33 recorded requests per method, 16 connections. The chart indexes each scenario to its first measurement.</p>
-<div class="rpc"><div class="wrap" id="rpc"></div><div id="rpc-chart"></div></div>
+<p class="note">Requests per second against one mainnet datadir, 33 recorded requests per method, 16 connections. trend = erigon rps per day, drawn once a scenario has two days.</p>
+<div class="wrap" id="rpc"></div>
 
 <h2 id="bt-title" hidden>EVM: EEST benchmark blocks</h2>
 <div class="note" id="bt-note" hidden></div>
@@ -167,8 +165,6 @@ const CSS = getComputedStyle(document.documentElement);
 const colorOf = c => c.startsWith("erigon") ? CSS.getPropertyValue("--erigon") : "#9aa5b8";
 const runs = data.runs.filter(r => Object.keys(r.ns).length);
 const rpcRuns = data.runs.filter(r => r.rpc.length);
-const clients = [...new Set(runs.flatMap(r => Object.values(r.ns).flatMap(Object.keys)))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || a.localeCompare(b));
-const base = clients.find(c => c.startsWith("erigon"));
 const geomean = xs => { xs = xs.filter(x => x > 0); return xs.length ? Math.exp(xs.reduce((s, x) => s + Math.log(x), 0) / xs.length) : NaN; };
 const cls = r => r > 1.02 ? "win" : r < 0.98 ? "loss" : "even";
 const name = c => ({ revme: "revm", nethermind: "neth" })[c] || c;
@@ -245,31 +241,6 @@ if (prog.length) {
     sec("Shipped", r.shipped) + sec("Better", r.better) + sec("Worse", r.worse) + sec("Bottlenecks", r.bottlenecks) + "</details>").join("");
 }
 
-// line chart: series = [{name, values}], one value per date
-function chart(series, dates, unit) {
-  const w = 560, h = 230, pl = 44, pr = 84, pt = 10, pb = 28;
-  const ys = series.flatMap(s => s.values).filter(v => v > 0);
-  if (!ys.length) return "";
-  let lo = Math.min(...ys), hi = Math.max(...ys); if (lo === hi) { lo *= .9; hi *= 1.1; }
-  const pad = (hi - lo) * .08; lo = Math.max(0, lo - pad); hi += pad;
-  const n = Math.max(2, dates.length);
-  const x = i => pl + i * (w - pl - pr) / (n - 1), y = v => pt + (h - pt - pb) * (1 - (v - lo) / (hi - lo));
-  let s = `<svg viewBox="0 0 ${w} ${h}" role="img">`;
-  for (let k = 0; k <= 3; k++) { const v = lo + (hi - lo) * k / 3; s += `<line class="ax" x1="${pl}" x2="${w - pr}" y1="${y(v)}" y2="${y(v)}"/><text class="tick" x="${pl - 6}" y="${y(v) + 4}" text-anchor="end">${v.toFixed(v < 10 ? 1 : 0)}</text>`; }
-  const step = Math.ceil(dates.length / 6);
-  let prev = ""; dates.forEach((d, i) => { if ((i % step === 0 || i === dates.length - 1) && short(d) !== prev) { prev = short(d); s += `<text class="tick" x="${x(i)}" y="${h - 8}" text-anchor="middle">${prev}</text>`; } });
-  const ends = [];
-  for (const sr of [...series].sort((a, b) => (a.name === base) - (b.name === base))) {
-    const pts = sr.values.map((v, i) => v > 0 ? [x(i), y(v), i] : null).filter(Boolean);
-    const k = sr.name === base ? "erigon" : "";
-    s += `<polyline class="ln ${k}" points="${pts.map(p => p[0] + "," + p[1]).join(" ")}"/>`;
-    pts.forEach(p => s += `<circle class="dot ${k}" cx="${p[0]}" cy="${p[1]}"/>`);
-    const e = pts[pts.length - 1]; ends.push({ name: sr.name, k, y: e[1], v: sr.values[e[2]] });
-  }
-  ends.sort((a, b) => a.y - b.y); for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 13) ends[i].y = ends[i - 1].y + 13;
-  for (const e of ends) s += `<text class="end ${e.k}" x="${w - pr + 8}" y="${e.y + 4}">${name(e.name)} ${fmt(e.v)}</text>`;
-  return s + "</svg>";
-}
 function ratioCell(k) {
   if (isNaN(k)) return `<td class="ratio"><span class="n even">–</span></td>`;
   const pct = Math.min(100, Math.abs(Math.log2(k)) * 50);
@@ -383,9 +354,9 @@ if (callRuns.length) {
   const nr = data.runs.filter(r => Object.keys(r.callsneth || {}).length).pop();
   const [ec] = pick(Object.values(cr.calls)[0], "erigon"), [rc] = pick(Object.values(cr.calls)[0], "reth"), [pc] = pick(prev && Object.values(prev.calls)[0], "erigon");
   document.getElementById("calls-note").innerHTML = buildTag(ec && (ec.includes("dbg") ? ec.replace(/^erigon-/, "") : "main-" + ec.replace(/^erigon-/, ""))) + "<p>" + esc(`One mainnet transaction per row, replayed as eth_call at its own block on the same node and datadir window, 16 connections. ` +
-    `${ec} against ${rc}, measured ${short(cr.date)}; change = erigon rps against ${pc ? pc + " on " + short(prev.date) : "nothing yet"}. Transactions whose call fails on the node are left out.` +
+    `${ec} against ${rc}, measured ${short(cr.date)}; change = erigon rps against ${pc ? pc + " on " + short(prev.date) : "nothing yet"}. A row without numbers is a transaction the node cannot run: its block is older than the state the node keeps, or the call fails.` +
     (nr ? ` neth = Nethermind 2.2.0, measured ${short(nr.date)} in a separate run at "latest" with both clients on the same machine; e/n compares erigon and neth from that run by gas per second, since the heads are about 149k blocks apart and a call can take a different path on each (swap-route: 1.47M gas on erigon, 0.24M on neth); – = the call reverted or errored on one of them.` : "")) + "</p>";
-  const rows = Object.keys(cr.calls).sort().map(f => {
+  const rows = Object.keys(cr.calls).map(f => {
     const [, e] = pick(cr.calls[f], "erigon"), [, r] = pick(cr.calls[f], "reth"), [, p] = pick(prev?.calls[f], "erigon");
     const [, ne] = pick(nr?.callsneth[f], "erigon"), [, nn] = pick(nr?.callsneth[f], "nethermind");
     return { f, e: e?.rps, r: r?.rps, ch: e && p ? e.rps / p.rps : NaN, en: ne && nn ? (ne.rps * (ne.gas || 1)) / (nn.rps * (nn.gas || 1)) : NaN, n: nn?.rps };
@@ -393,21 +364,25 @@ if (callRuns.length) {
   const chCell = k => { if (isNaN(k)) return `<td class="gas">–</td>`; const s = (100 * (k - 1)).toFixed(1).replace(/^-0\.0$/, "0.0"); return `<td class="${k > 1.03 ? "up" : k < 0.97 ? "down" : ""}">${s.startsWith("-") ? s : "+" + s}%</td>`; };
   const tot = { e: geomean(rows.map(x => x.e)), r: geomean(rows.map(x => x.r)), ch: geomean(rows.map(x => x.ch)), en: geomean(rows.map(x => x.en)), n: geomean(rows.map(x => x.n)) };
   const enCell = k => isNaN(k) ? `<td class="gas">–</td>` : ratioCell(k);
+  const byF = Object.fromEntries(rows.map(x => [x.f, x])), oldest = Math.min(...rows.map(x => data.callFixtures[x.f]));
   document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>reth rps</th><th>e/r</th><th>neth rps</th><th>e/n</th><th>change</th></tr></thead><tbody>` +
-    rows.map(x => `<tr><td class="f" title="${x.f}">${x.f}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}<td>${fmt(x.n, 0)}</td>${enCell(x.en)}${chCell(x.ch)}</tr>`).join("") +
+    Object.keys({ ...data.callFixtures, ...cr.calls }).sort((a, b) => a.localeCompare(b, "en", { numeric: true })).map(f => { const x = byF[f];
+      return x ? `<tr><td class="f" title="${x.f}">${x.f}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}<td>${fmt(x.n, 0)}</td>${enCell(x.en)}${chCell(x.ch)}</tr>`
+        : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="6">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
     `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.r, 0)}</b></td>${ratioCell(tot.e / tot.r)}<td><b>${fmt(tot.n, 0)}</b></td>${enCell(tot.en)}${chCell(tot.ch)}</tr></tbody></table></div>`;
 }
 
 // RPC
-const rpcLatest = {};
-for (const r of rpcRuns) for (const row of r.rpc) rpcLatest[row.scenario] = { ...row, date: r.date };
+const rpcLatest = {}, rpcDays = {};
+for (const r of rpcRuns) for (const row of r.rpc) { rpcLatest[row.scenario] = { ...row, date: r.date }; (rpcDays[row.scenario] ??= {})[short(r.date)] = row.rps; }
 const scenarios = Object.keys(rpcLatest).sort();
 if (scenarios.length) {
-  document.getElementById("rpc").innerHTML = `<table><thead><tr><th>scenario</th><th>erigon</th><th>rps</th><th>p50 ms</th><th>p99 ms</th><th>measured</th></tr></thead><tbody>` +
-    scenarios.map(s => { const r = rpcLatest[s]; return `<tr><td>${s}</td><td>${r.client.replace(/^erigon-/, "")}</td><td>${r.rps.toFixed(0)}</td><td>${r.p50.toFixed(2)}</td><td>${r.p99.toFixed(2)}</td><td>${short(r.date)}</td></tr>`; }).join("") + "</tbody></table>";
-  const first = {};
-  const series = scenarios.map(s => ({ name: s, values: rpcRuns.map(r => { const row = r.rpc.find(x => x.scenario === s); if (!row) return 0; first[s] ??= row.rps; return 100 * row.rps / first[s]; }) }));
-  document.getElementById("rpc-chart").innerHTML = `<div class="chart"><h3>rps, first point = 100</h3>` + chart(series, rpcRuns.map(r => r.date), "%") + "</div>";
+  // One small line per scenario row, never several scenarios on one axis.
+  const trend = s => Object.entries(rpcDays[s]), hasTrend = scenarios.some(s => trend(s).length > 1);
+  const tinyLine = t => { const vs = t.map(e => e[1]), lo = Math.min(...vs), hi = Math.max(...vs), x = i => 2 + 76 * i / (vs.length - 1), y = v => 18 - 16 * (v - lo) / (hi - lo || 1);
+    return `<svg width="80" height="20" role="img"><title>${t.map(([d, v]) => d + " " + v.toFixed(0)).join(", ")}</title><polyline fill="none" stroke="var(--erigon)" stroke-width="1.5" points="${vs.map((v, i) => x(i) + "," + y(v)).join(" ")}"/></svg>`; };
+  document.getElementById("rpc").innerHTML = `<table><thead><tr><th>scenario</th><th>erigon</th><th>rps</th><th>p50 ms</th><th>p99 ms</th><th>measured</th>${hasTrend ? "<th>trend</th>" : ""}</tr></thead><tbody>` +
+    scenarios.map(s => { const r = rpcLatest[s]; return `<tr><td>${s}</td><td>${r.client.replace(/^erigon-/, "")}</td><td>${r.rps.toFixed(0)}</td><td>${r.p50.toFixed(2)}</td><td>${r.p99.toFixed(2)}</td><td>${short(r.date)}</td>${hasTrend ? `<td>${trend(s).length > 1 ? tinyLine(trend(s)) : ""}</td>` : ""}</tr>`; }).join("") + "</tbody></table>";
 }
 // Every table but the client tables folds.
 for (const t of document.querySelectorAll("table:not(.cl)")) {

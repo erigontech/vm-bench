@@ -57,7 +57,9 @@ for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",)):
                 run[k] = {}
 progress = src / "runs.json"
 progress = json.load(open(progress)) if progress.exists() else []
-html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "branch": branch}))
+# eth_call fixture -> block, so the page can list the fixtures a node could not run.
+callFixtures = {f"{p.parent.name}/{p.stem}": int(next(iter(json.load(open(p)).values()))["env"]["currentNumber"], 16) for p in root.glob("fixtures/mainnet*/*.json")}
+html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "branch": branch, "callFixtures": callFixtures}))
 (root / "docs").mkdir(exist_ok=True)
 (root / "docs" / ".nojekyll").touch()
 page.write_text(html)
