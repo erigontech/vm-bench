@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build docs/index.html from history/*/: the latest table and Mgas/s over time per client.
+"""Build docs/index.html from history/*/.
 run/history.py <dir> <page> <branch>: the same page for a branch build, e.g. branches/dbg docs/dbg.html dbg."""
 import csv, json, sys
 from pathlib import Path
@@ -49,11 +49,9 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
 for k in ("node", "nodePass", "nodebal", "nodebalPass", "bt"):
     for run in [r for r in runs if r[k]][:-1]:
         run[k] = {}
-gas = {p.parent.name + "/" + p.stem: int(next(iter(json.load(open(p)).values()))["_info"]["gasUsed"], 16)
-       for p in (root / "fixtures").glob("*/*.json")}
 progress = src / "runs.json"
 progress = json.load(open(progress)) if progress.exists() else []
-html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "gas": gas, "progress": progress, "branch": branch}))
+html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "branch": branch}))
 (root / "docs").mkdir(exist_ok=True)
 (root / "docs" / ".nojekyll").touch()
 page.write_text(html)

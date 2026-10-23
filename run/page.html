@@ -72,7 +72,6 @@ td.gas{color:var(--ink-2)}
 tr.group td{padding:22px 0 6px;border-bottom:1px solid var(--ink);font-weight:600;color:var(--ink);text-align:left}
 tbody tr:not(.group){cursor:pointer}
 tbody tr:not(.group):hover td{background:var(--tint)}
-tbody tr.sel td{background:var(--tint)}
 td.ratio{padding:5px 0 5px 6px;width:5.4em}
 .rb{display:inline-grid;grid-template-columns:1fr 1fr;width:2.6em;height:16px;position:relative;vertical-align:middle}
 .rb::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--rule)}
@@ -82,12 +81,6 @@ td.ratio{padding:5px 0 5px 6px;width:5.4em}
 td.ratio span.n{display:inline-block;width:3em;text-align:right;margin-left:4px;vertical-align:middle}
 td.ratio .win{color:var(--win);font-weight:600}td.ratio .loss{color:var(--loss);font-weight:600}td.ratio .even{color:var(--ink-2)}
 
-#series{margin-top:16px}
-#series:empty{display:none}
-.series-head[hidden]{display:none}
-.series-head{display:flex;justify-content:space-between;align-items:baseline;margin:40px 0 0}
-.series-head button{font:inherit;background:none;border:1px solid var(--rule);color:var(--ink-2);padding:3px 10px;cursor:pointer}
-.series-head button:hover{border-color:var(--ink);color:var(--ink)}
 
 .rpc{display:grid;grid-template-columns:1fr 1fr;gap:28px 40px;align-items:start;margin-top:16px}
 @media (max-width:900px){.rpc{grid-template-columns:1fr}.charts{grid-template-columns:1fr}}
@@ -128,7 +121,6 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <nav id="toc" aria-label="Sections"></nav>
 <h1>vm-bench <a href="https://github.com/erigontech/vm-bench" style="font-size:15px;font-weight:500;color:var(--ink-2);margin-left:10px;vertical-align:middle">github.com/erigontech/vm-bench</a></h1>
 <p class="lede">How fast <span class="tag">erigon</span> executes EVM transactions compared with geth, revm, evmone and Nethermind, on the same state-test fixtures, re-measured on every change to main.</p>
-<p class="note" id="when"></p>
 
 <h2 id="prog-title" hidden>Progress</h2>
 <p class="note" id="prog-note" hidden></p>
@@ -148,10 +140,6 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <div class="wrap" id="nodebal-fam" hidden></div>
 <div class="wrap" id="nodebal" hidden></div>
 
-<h2>Over time</h2>
-<p class="note">Geometric mean of Mgas/s across the fixtures of each group, execution-only harnesses: erigon in green, revm in grey. Points before the first cross-client run are erigon only.</p>
-<div class="charts" id="charts"></div>
-
 <h2 id="calls-title" hidden>eth_call per transaction</h2>
 <p class="note" id="calls-note" hidden></p>
 <div id="calls" hidden></div>
@@ -169,38 +157,17 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <section class="race" id="bt-race" hidden></section>
 <div class="wrap" id="bt" hidden></div>
 
-<h2>Every fixture, latest run</h2>
-<p class="note">Mgas/s per client and the ratio erigon / client. The bar extends right when erigon is faster, left when slower, from the 1.0 line. eth_call rps and Mgas/s: the same transaction as an eth_call against erigon on one mainnet node, 16 connections, Mgas/s = rps × gas; e/reth call = erigon rps / reth rps on the same box and datadir window; hover or tap for p50/p99 of both. Click a row for its history. * geth times the pre-state setup with the execution, evmone and neth are process wall time, so their columns are not comparable; erigon and revm are execution only.</p>
-<section class="race" id="race"></section>
-<div class="wrap" id="latest"></div>
-<div class="series-head" id="series-head" hidden><h3 id="series-title"></h3><button id="series-close">Close</button></div>
-<div id="series"></div>
 <div id="tip" hidden></div>
 
 <script>
 const data = /*DATA*/;
 const CSS = getComputedStyle(document.documentElement);
 const colorOf = c => c.startsWith("erigon") ? CSS.getPropertyValue("--erigon") : "#9aa5b8";
-const runs = data.runs.filter(r => Object.keys(r.ns).length), last = runs[runs.length - 1] || { ...data.runs[data.runs.length - 1], ns: {} };
+const runs = data.runs.filter(r => Object.keys(r.ns).length);
 const rpcRuns = data.runs.filter(r => r.rpc.length);
-const callsLatest = {};
-for (const r of data.runs) for (const [f, byClient] of Object.entries(r.calls || {})) callsLatest[f] = byClient;
-const execOnly = c => c.startsWith("erigon") || c === "revme";
-const callsCell = f => {
-  const by = callsLatest[f] || {}, ek = Object.keys(by).find(c => c.startsWith("erigon")), rk = Object.keys(by).find(c => c.startsWith("reth"));
-  const tip = Object.entries(by).map(([c, x]) => `${c}: ${x.rps.toFixed(0)} rps, p50 ${x.p50} ms, p99 ${x.p99} ms${x.err ? ", " + x.err + " errors" : ""}`).join("\n");
-  if (!ek) return `<td class="gas">–</td><td class="gas">–</td><td class="ratio"><span class="n even">–</span></td>`;
-  const e = by[ek];
-  return `<td class="gas" title="${tip}">${e.rps.toFixed(0)}${e.err ? " !" : ""}</td><td title="${tip}">${(e.rps * data.gas[f] / 1e6).toFixed(1)}</td>` + (rk ? ratioCell(e.rps / by[rk].rps).replace("<td ", `<td title="${tip}" `) : `<td class="ratio"><span class="n even">–</span></td>`);
-};
 const clients = [...new Set(runs.flatMap(r => Object.values(r.ns).flatMap(Object.keys)))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || a.localeCompare(b));
 const base = clients.find(c => c.startsWith("erigon"));
-const fixtures = Object.keys(data.gas).sort();
-const groups = [...new Set(fixtures.map(f => f.split("/")[0]))];
-const title = g => g.replace(/^mainnet-/, "mainnet: ").replace(/-/g, " ");
-const mgas = (run, f, c) => run.ns[f] && run.ns[f][c] ? data.gas[f] / run.ns[f][c] * 1e3 : NaN;
 const geomean = xs => { xs = xs.filter(x => x > 0); return xs.length ? Math.exp(xs.reduce((s, x) => s + Math.log(x), 0) / xs.length) : NaN; };
-const groupMean = (run, g, c) => geomean(fixtures.filter(f => f.startsWith(g + "/")).map(f => mgas(run, f, c)));
 const cls = r => r > 1.02 ? "win" : r < 0.98 ? "loss" : "even";
 const name = c => ({ revme: "revm", nethermind: "neth" })[c] || c;
 const fmt = (v, d = 1) => isNaN(v) ? "–" : v.toFixed(d);
@@ -224,8 +191,6 @@ document.addEventListener("click", e => {
   tip.textContent = t.title; tip.hidden = false;
 });
 
-document.getElementById("when").textContent = "Latest run " + last.date.replace("T", " ") + " UTC. " +
-  Object.entries(last.versions).map(([c, v]) => name(c) + " " + v.replace(/^v\d+\.\d+\.\d+-\d+\.\d{14}-/, "").replace(/\+.*/, "")).join(", ") + ".";
 
 // progress: one entry per measured main in history/runs.json, oldest first
 const prog = data.progress || [];
@@ -270,17 +235,6 @@ if (prog.length) {
     sec("Shipped", r.shipped) + sec("Better", r.better) + sec("Worse", r.worse) + sec("Bottlenecks", r.bottlenecks) + "</details>").join("");
 }
 
-// hero
-document.getElementById("race").innerHTML = groups.map(g => {
-  const rows = clients.filter(execOnly).map(c => ({ c, v: groupMean(last, g, c) })).filter(r => !isNaN(r.v));
-  const ref = rows.find(r => r.c === base)?.v;
-  if (!ref) return "";
-  const max = Math.max(...rows.map(r => r.v));
-  return `<div><h3>${title(g)}: ${fixtures.filter(f => f.startsWith(g + "/")).length} fixtures, geometric mean Mgas/s</h3><div class="bars">` +
-    rows.map(r => { const k = ref / r.v; return `<div class="c">${name(r.c)}</div><div class="b ${r.c === base ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div>` +
-      `<div class="v">${fmt(r.v)}</div><div class="r ${r.c === base ? "" : cls(k)}">${r.c === base ? "" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>";
-}).join("");
-
 // line chart: series = [{name, values}], one value per date
 function chart(series, dates, unit) {
   const w = 560, h = 230, pl = 44, pr = 84, pt = 10, pb = 28;
@@ -306,42 +260,12 @@ function chart(series, dates, unit) {
   for (const e of ends) s += `<text class="end ${e.k}" x="${w - pr + 8}" y="${e.y + 4}">${name(e.name)} ${fmt(e.v)}</text>`;
   return s + "</svg>";
 }
-const dates = runs.map(r => r.date);
-document.getElementById("charts").innerHTML = groups.map(g => `<div class="chart"><h3>${title(g)}, Mgas/s</h3>` +
-  chart(clients.filter(execOnly).map(c => ({ name: c, values: runs.map(r => groupMean(r, g, c)) })).filter(s => s.values.some(v => v > 0)), dates, "Mgas/s") + "</div>").join("");
-
-// table
 function ratioCell(k) {
   if (isNaN(k)) return `<td class="ratio"><span class="n even">–</span></td>`;
   const pct = Math.min(100, Math.abs(Math.log2(k)) * 50);
   const bar = k >= 1 ? `<i></i><i class="w" style="width:${pct}%"></i>` : `<i class="l" style="width:${pct}%"></i><i></i>`;
   return `<td class="ratio"><span class="rb">${bar}</span><span class="n ${cls(k)}">${k.toFixed(2)}</span></td>`;
 }
-const others = clients.filter(c => c !== base && execOnly(c));
-const latestRows = [];
-let html = `<table><thead><tr><th>fixture</th><th>gas</th><th>eth_call rps</th><th>eth_call Mgas/s</th><th>e/reth call</th>${clients.map(c => `<th>${name(c)}${execOnly(c) ? "" : "*"}</th>`).join("")}${others.map(c => `<th>e/${name(c)}${execOnly(c) ? "" : "*"}</th>`).join("")}</tr></thead><tbody>`;
-for (const g of groups) {
-  latestRows.push(`<tr class="group"><td colspan="${5 + clients.length + others.length}">${title(g)}</td></tr>`);
-  for (const f of fixtures.filter(f => f.startsWith(g + "/") && last.ns[f])) {
-    const v = c => mgas(last, f, c);
-    latestRows.push(`<tr data-f="${f}" tabindex="0"><td class="f" title="${f}">${f.slice(g.length + 1)}</td><td class="gas">${(data.gas[f] / 1e6).toFixed(2)}M</td>${callsCell(f)}` +
-      clients.map(c => `<td>${fmt(v(c))}</td>`).join("") + others.map(c => ratioCell(v(base) / v(c))).join("") + "</tr>");
-  }
-}
-document.getElementById("latest").innerHTML = html + body(latestRows) + "</tbody></table>";
-
-const show = f => {
-  document.querySelectorAll("tr.sel").forEach(t => t.classList.remove("sel"));
-  document.querySelector(`tr[data-f="${f}"]`).classList.add("sel");
-  document.getElementById("series-head").hidden = false;
-  document.getElementById("series-title").textContent = f + ", Mgas/s";
-  document.getElementById("series").innerHTML = `<div class="chart">` + chart(clients.map(c => ({ name: c, values: runs.map(r => mgas(r, f, c)) })).filter(s => s.values.some(v => v > 0)), dates, "Mgas/s") + "</div>";
-  document.getElementById("series-head").scrollIntoView({ block: "nearest" });
-};
-document.getElementById("latest").addEventListener("click", e => { const f = e.target.closest("tr")?.dataset.f; if (f) show(f); });
-document.getElementById("latest").addEventListener("keydown", e => { const f = e.target.closest("tr")?.dataset.f; if (f && e.key === "Enter") show(f); });
-document.getElementById("series-close").onclick = () => { document.getElementById("series-head").hidden = true; document.getElementById("series").innerHTML = ""; document.querySelectorAll("tr.sel").forEach(t => t.classList.remove("sel")); };
-
 // EEST benchmark blocks: latest snapshot that has them.
 const btRun = [...data.runs].reverse().find(r => Object.keys(r.bt).length);
 if (btRun) {
@@ -483,7 +407,6 @@ for (const t of document.querySelectorAll("table:not(.cl)")) {
 // Every section and chart title links to itself.
 const slugs = new Set();
 for (const h of document.querySelectorAll("h2, h3")) {
-  if (h.id === "series-title") continue;
   // Text before the first comma or parenthesis, without counts or dates, so the anchor survives new runs.
   let id = h.textContent.split(/[,(]/)[0].toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^|-)\d+(?=-|$)/g, "").replace(/^-+|-+$/g, "");
   for (let n = 2; slugs.has(id) || document.getElementById(id); n++) id = id.replace(/-\d+$/, "") + "-" + n;
