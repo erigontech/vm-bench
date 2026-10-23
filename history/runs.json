@@ -520,7 +520,14 @@
       "#25155 execution/vm: reuse an output buffer for the identity precompile",
       "#25089 vm: run CALLVALUE on the fast path",
       "#25091 execution/cache: no copy for a state-cache fill that is refused"
-    ]
+    ],
+    "nodebal": {
+      "mgas": 3941.6,
+      "ratio": 0.742,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    }
   },
   {
     "date": "2026-10-23",
@@ -563,6 +570,13 @@
       "#24033 execution: recover senders while newPayload decodes the payload",
       "#25160 execution/state: emit no writes for an account created and destroyed in one tx",
       "#25219 execution/engineapi: look up a new payload's header by hash and number"
-    ]
+    ],
+    "nodebal": {
+      "mgas": 3971.4,
+      "ratio": 0.75,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    }
   }
 ]
