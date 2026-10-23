@@ -114,8 +114,18 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
   .chart .tick,.chart .end{font-size:14px}
   td.f{max-width:12em}
 }
+/* section menu, right side */
+#toc{display:none}
+@media (min-width:1200px){
+  body{margin-right:240px}
+  #toc{display:block;position:fixed;top:48px;right:24px;width:200px;max-height:calc(100vh - 96px);overflow-y:auto;font-size:13px;line-height:1.35}
+  #toc a{display:block;padding:4px 0 4px 10px;border-left:2px solid var(--rule);color:var(--ink-2);text-decoration:none}
+  #toc a:hover{color:var(--ink);border-left-color:var(--ink)}
+  #toc a.on{color:var(--erigon);border-left-color:var(--erigon);font-weight:600}
+}
 </style>
 <body>
+<nav id="toc" aria-label="Sections"></nav>
 <h1>vm-bench <a href="https://github.com/erigontech/vm-bench" style="font-size:15px;font-weight:500;color:var(--ink-2);margin-left:10px;vertical-align:middle">github.com/erigontech/vm-bench</a></h1>
 <p class="lede">How fast <span class="tag">erigon</span> executes EVM transactions compared with geth, revm, evmone and Nethermind, on the same state-test fixtures, re-measured on every change to main.</p>
 <p class="note" id="when"></p>
@@ -501,6 +511,20 @@ for (const h of document.querySelectorAll("h2, h3")) {
   // A heading the script finds by its own id keeps it, so old links still work; the slug goes on the link.
   h.innerHTML = `<a class="anchor" id="${id}" href="#${id}">${h.innerHTML}</a>`;
 }
+// Right-side menu: one link per visible section, the one in view highlighted.
+const tocLinks = [...document.querySelectorAll("h2")].filter(h => !h.hidden && h.querySelector(".anchor")).map(h => {
+  const id = h.querySelector(".anchor").id, a = document.createElement("a");
+  a.href = "#" + id, a.textContent = h.textContent;
+  document.getElementById("toc").append(a);
+  return [h, a];
+});
+const markToc = () => {
+  let cur = tocLinks[0];
+  for (const t of tocLinks) if (t[0].getBoundingClientRect().top < 120) cur = t;
+  for (const t of tocLinks) t[1].classList.toggle("on", t === cur);
+};
+addEventListener("scroll", markToc, { passive: true });
+markToc();
 // Slugs of renamed headings, so links shared before the rename still land.
 const oldSlugs = { "node-newpayload-mgas-s": "newpayload-bal-off", "node-bal-off-newpayload-mgas-s": "newpayload-bal-off", "node-bal-on-newpayload-mgas-s": "newpayload-bal-on" };
 if (globalThis.location?.hash) { const h = location.hash.slice(1); document.getElementById(oldSlugs[h] ?? h)?.scrollIntoView(); }
