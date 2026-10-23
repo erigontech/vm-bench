@@ -9,8 +9,9 @@ cd "$(dirname "$0")/.."
 client=$1
 case $client in
 	# erigon's Close waits for background file builds in 3 s ticks, which added 0-12 s to a file at random; the builds are node
-	# maintenance, not block execution
-	erigon)     cmd=(env NO_BACKGROUND_E3_BUILD=true "${ERIGON_EVM:-$HOME/bin/erigon-evm}" blocktest) ;;
+	# maintenance, not block execution. One exec worker: this tier compares interpreters, and erigon's parallel executor would
+	# spread a one-sender block over several cores
+	erigon)     cmd=(env NO_BACKGROUND_E3_BUILD=true EXEC3_WORKERS=1 "${ERIGON_EVM:-$HOME/bin/erigon-evm}" blocktest) ;;
 	geth)       cmd=(evm blocktest) ;;
 	revme)      cmd=(revme blockchaintest) ;;
 	nethermind) cmd=("${NETHTEST:-$HOME/nethtest/nethtest}" -b --parallelExecution false -x -j -n) ;;  # sequential EVM, like the others; file names on stdin

@@ -41,6 +41,9 @@ marked `*` and must never be quoted as an EVM comparison.
   nethtest runs with `--parallelExecution false` (no BAL parallel execution). nethtest's ~3 s dotnet start-up is
   cancelled by timing the file and the twin in one process after a warm pass; so its twin/T is always high and only
   the 100 ms floor greys its cells.
+- **The EVM tier compares interpreters: one thread per client.** erigon runs with one exec worker (`EXEC3_WORKERS=1`
+  in `run/blocktest.sh`), like the serial path; its default parallel executor would spread a one-sender block over
+  several cores. The node tier keeps every client's default multi-core node.
 - **Precompile groups compare caches.** EEST precompile tests repeat one input and geth and nethermind cache precompile
   results, so precompile rows stay in the tables but never in a hero.
 - **Reproducibility is part of the result.** Rerun the same binaries: the EVM tier reproduces within 0.4% (nethermind ±4%: quote its geomean with that, never one cell), the node
@@ -78,7 +81,7 @@ After any change to `run/page.html` or a snapshot:
 
 ```
 run/history.py
-node -e 'const fs=require("fs");const h=fs.readFileSync("docs/index.html","utf8");const m=h.match(/<script>([\s\S]*)<\/script>/);const document={getElementById:()=>({set innerHTML(v){},set textContent(v){},addEventListener(){},set hidden(v){},scrollIntoView(){}}),querySelectorAll:()=>[],querySelector:()=>({classList:{add(){}}}),documentElement:{},addEventListener(){}};globalThis.document=document;globalThis.getComputedStyle=()=>({getPropertyValue:()=>"#000"});eval(m[1]);console.log("JS OK")'
+node -e 'const fs=require("fs");const h=fs.readFileSync("docs/index.html","utf8");const m=h.match(/<script>([\s\S]*)<\/script>/);const document={getElementById:()=>({set innerHTML(v){},set textContent(v){},addEventListener(){},set hidden(v){},scrollIntoView(){},getBoundingClientRect:()=>({top:0})}),querySelectorAll:()=>[],querySelector:()=>({classList:{add(){}}}),documentElement:{},addEventListener(){}};globalThis.document=document;globalThis.addEventListener=()=>{};globalThis.getComputedStyle=()=>({getPropertyValue:()=>"#000"});eval(m[1]);console.log("JS OK")'
 ```
 
 One JS error blanks the whole page, so never push `docs/` without the `JS OK` line. Screenshot with headless Chrome

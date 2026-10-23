@@ -534,10 +534,10 @@
     "old": "3324fd6b4819011a7bc7b392babbec3a28e3366b",
     "new": "2cedbabffc5e2e598e5c723d12bc5a0bad05ed01",
     "evm": {
-      "mgas": 2136.3,
-      "ratio": 1.21,
+      "mgas": 1029.6,
+      "ratio": 0.583,
       "best": "nethermind",
-      "noise": 0.2,
+      "noise": 0.8,
       "fixtures": "tests-benchmark@v0.0.9"
     },
     "node": {
@@ -547,11 +547,11 @@
       "noise": 0.9,
       "fixtures": "tests-benchmark@v0.0.9"
     },
-    "note": "EVM: since #25204 erigon runs the txs of one sender in parallel; 49 of 68 erigon blocks fall under the 100 ms / 30% twin floor, so this EVM point uses the 19 valid blocks and is not comparable with earlier points",
+    "note": "EVM: from this point erigon runs with one exec worker, as the tier compares interpreters; with its default workers the same build runs the EVM blocks x2.08 faster (15 blocks valid in both)",
     "better": [
       "node suite 2046.3 -> 4314.5 Mgas/s (x2.11, #25204: txs of one sender run in parallel): sha256 941 -> 3923 (x4.2), blake2f 131 -> 508 (x3.9), unchunkified_bytecode 267 -> 929 (x3.5, 7 rows), mod_arithmetic 253 -> 789 (x3.1), mod 252 -> 749 (x3.0)",
-      "EVM, 19 blocks valid in all runs: 908.9 -> 2127.4 Mgas/s (x2.34, #25204): mod_arithmetic 282 -> 1758 (x6.2), keccak_max_permutations 113 -> 698 (x6.2), mod 223 -> 1360 (x6.1)",
-      "node erigon / nethermind on the instruction and scenario tests 0.515 -> 1.123"
+      "node erigon / nethermind on the instruction and scenario tests 0.515 -> 1.123",
+      "EVM with one exec worker vs the previous main: 1025.5 -> 1029.6 Mgas/s on 53 blocks (x1.004, flat)"
     ],
     "worse": [
       "node keccak mem_update_False 1641-1836 -> 1205-1362 Mgas/s (-25..29%, 4 rows), mem_update_True offset_1024 1611 -> 1362 (-15%)",

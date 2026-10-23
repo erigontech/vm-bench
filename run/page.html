@@ -280,6 +280,7 @@ if (btRun) {
     btClients.map(c => [c, btRun.versions[c + "-evm"] || btRun.versions[c], btTool[c]]),
     [`gevm is the exception: it has no trie, computes no state root and checks the post-state account by account, from geth's dump of the same block; read its column as an upper bound.`,
      `Grey = the no-block twin is more than 30% of the run or the net time is under 100 ms: setup-dominated or too short for a wall clock.`,
+     `This tier compares interpreters: every client executes the block on one thread, so erigon runs with one exec worker. With its default workers erigon runs the txs of one sender in parallel, about x2 on these blocks. The node tier runs each client's default node.`,
      `nethtest's dotnet start-up is ~3 s, so nethermind runs the file and the twin second in one process after a pass of the file: start-up and JIT warm-up cancel, nethermind is measured warm, and only the 100 ms floor greys its cells.`,
      `A client with fewer than half of its blocks valid is left out of the hero.`,
      `The precompile tests repeat one input, and geth and neth serve repeated precompile calls from a result cache, so that group compares caches, not precompiles; the hero uses instruction and scenario only.`,
