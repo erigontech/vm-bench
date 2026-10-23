@@ -60,6 +60,8 @@ a{color:inherit}
 .chart .end{font-size:12px;font-weight:500}
 .chart .end.erigon{fill:var(--erigon);font-weight:600}
 .chart .dot{r:2.5;fill:#9aa5b8}.chart .dot.erigon{fill:var(--erigon)}
+.chart .dot.dbg{r:4;fill:#fff;stroke:#c2410c;stroke-width:2}.chart .ln.dbg{stroke:#c2410c;stroke-width:1.5;stroke-dasharray:4 3}.chart .end.dbg,.chart .tick.dbg{fill:#c2410c;font-weight:600}
+.build{margin:4px 0 8px;font-size:13px}.build b{color:#c2410c}
 
 /* fixture table */
 .wrap{margin-top:14px;overflow-x:auto;scrollbar-width:thin;padding-bottom:6px}
@@ -141,7 +143,7 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <div class="wrap" id="nodebal" hidden></div>
 
 <h2 id="calls-title" hidden>eth_call per transaction</h2>
-<p class="note" id="calls-note" hidden></p>
+<div class="note" id="calls-note" hidden></div>
 <div id="calls" hidden></div>
 
 <h2 id="rpcw-title" hidden>RPC workloads</h2>
@@ -177,6 +179,8 @@ const clientNote = (desc, rows, facts, head = "run parameters") => `<p>${desc}</
   `<div class="wrap"><table class="cl"><thead><tr><th>client</th><th>version</th>${rows.some(r => r[2]) ? `<th>${head}</th>` : ""}</tr></thead><tbody>` +
   rows.map(([c, v, p]) => `<tr><td>${name(c)}</td><td>${esc(v)}</td>${p ? `<td>${head === "tool" ? `<span class="fl">${esc(p)}</span>` : flags(p)}</td>` : rows.some(r => r[2]) ? "<td></td>" : ""}</tr>`).join("") + "</tbody></table></div>" +
   `<ul>${facts.map(f => `<li>${f}</li>`).join("")}</ul>`;
+// which erigon build a table shows: "dbg-<sha>" (main + open PRs) or "main-<sha>"
+const buildTag = v => v ? `<div class="build">erigon build: ${v.startsWith("dbg") ? `<b>dbg ${esc(v.replace(/^dbg-/, ""))}</b> (main + open PRs)` : `main ${esc(v.replace(/^main-/, ""))}`}</div>` : "";
 const modeMap = m => Object.fromEntries((m ? m.split("; ") : []).map(x => [x.split(" ")[0], x.slice(x.indexOf(" ") + 1)]));
 const short = d => d.slice(5, 10);
 // A big table renders its first rows; the rest stay a string until "show all", so a phone does not lay out thousands of rows.
@@ -193,7 +197,9 @@ document.addEventListener("click", e => {
 
 
 // progress: one entry per measured main in history/runs.json, oldest first
-const prog = data.progress || [];
+const allProg = data.progress || [], prog = allProg.filter(r => !r.dbg);
+// today's dbg build (main + open PRs): drawn only while no main point is newer
+const dbgPt = allProg.filter(r => r.dbg && prog.length && r.date >= prog[prog.length - 1].date).pop();
 if (prog.length) {
   for (const id of ["prog-title", "prog-note"]) document.getElementById(id).hidden = false;
   const pl = prog[prog.length - 1];
@@ -202,24 +208,27 @@ if (prog.length) {
   document.getElementById("prog-note").textContent = `Erigon on each measured main; other clients keep their published numbers. ` +
     `EVM: geometric mean over the instruction and scenario blocks, noise ±${pl.evm.noise}%. Node: geometric mean over all tests, noise ±${pl.node.noise}%. ` +
     `Erigon / best client: erigon's geometric mean over the instruction and scenario cells divided by the best other client's on the same cells. ` +
-    `RPC: knee = the highest rate served in full without errors; latency one rate below the knee moves ±${prog.filter(r => r.rpc).pop().rpc.noise}%. Better and worse list only cells that moved past their noise.`;
+    `RPC: knee = the highest rate served in full without errors; latency one rate below the knee moves ±${prog.filter(r => r.rpc).pop().rpc.noise}%. Better and worse list only cells that moved past their noise.` +
+    (dbgPt ? ` The hollow last point is today's dbg build (main + open PRs, ${dbgPt.new.slice(0, 10)}); the next main point replaces it.` : "");
   // one series per fixture tag: a fixture change starts a new line, the old points stay, a dashed rule marks the break
-  const spark = (vals, f, fx, rows = prog) => {
+  const spark = (vals, f, fx, rows = prog, dv) => {
     // the y range spans at least 10% of the value, so a move inside the noise stays a flat line
-    const w = 420, h = 110, p = 40, lo = Math.min(...vals), hi = Math.max(...vals), sp = Math.max(hi - lo, hi * 0.1) || 1, mid = (hi + lo) / 2;
-    const x = i => p + i * (w - 2 * p) / Math.max(1, vals.length - 1), y = v => 22 + (h - 46) * (0.5 - (v - mid) / sp);
+    const all = dv ? [...vals, dv.v] : vals, w = 420, h = 110, p = 40, lo = Math.min(...all), hi = Math.max(...all), sp = Math.max(hi - lo, hi * 0.1) || 1, mid = (hi + lo) / 2;
+    const x = i => p + i * (w - 2 * p) / Math.max(1, all.length - 1), y = v => 22 + (h - 46) * (0.5 - (v - mid) / sp), n = vals.length;
     const segs = [];
     vals.forEach((v, i) => (i && fx[i] === fx[i - 1] ? segs[segs.length - 1] : segs[segs.push([]) - 1]).push(i));
     return `<svg viewBox="0 0 ${w} ${h}" role="img">` + segs.map(s => `<polyline class="ln erigon" points="${s.map(i => x(i) + "," + y(vals[i])).join(" ")}"/>`).join("") +
       segs.slice(1).map(s => { const bx = (x(s[0] - 1) + x(s[0])) / 2; return `<line class="ax" x1="${bx}" x2="${bx}" y1="8" y2="${h - 18}" stroke-dasharray="3 3"/><text class="tick" x="${bx + 4}" y="12">${fx[s[0]]}</text>`; }).join("") +
       vals.map((v, i) => `<circle class="dot erigon" cx="${x(i)}" cy="${y(v)}"/><text class="end erigon" x="${x(i)}" y="${y(v) - 8}" text-anchor="middle">${f(v)}</text>`).join("") +
-      rows.map((r, i) => `<text class="tick" x="${x(i)}" y="${h - 4}" text-anchor="middle">${r.date.slice(5)}</text>`).join("") + "</svg>";
+      rows.map((r, i) => `<text class="tick" x="${x(i)}" y="${h - 4}" text-anchor="middle">${r.date.slice(5)}</text>`).join("") +
+      (dv ? `<line class="ln dbg" x1="${x(n - 1)}" y1="${y(vals[n - 1])}" x2="${x(n)}" y2="${y(dv.v)}"/><circle class="dot dbg" cx="${x(n)}" cy="${y(dv.v)}"/>` +
+        `<text class="end dbg" x="${x(n)}" y="${y(dv.v) - 9}" text-anchor="middle">${f(dv.v)}</text><text class="tick dbg" x="${x(n)}" y="${h - 4}" text-anchor="middle">dbg ${dv.sha.slice(0, 8)}</text>` : "") + "</svg>";
   };
   document.getElementById("prog-trend").innerHTML = [["evm", "EVM"], ["node", "Node BAL-off"], ["nodebal", "Node BAL-on"]].map(([k, t]) => {
-    const rs = prog.filter(r => r[k]), l = rs[rs.length - 1];
+    const rs = prog.filter(r => r[k]), l = rs[rs.length - 1], dk = dbgPt?.[k], dv = m => dk && { v: dk[m], sha: dbgPt.new };
     return !l ? "" :
-    `<div class="chart"><h3>${t}: erigon Mgas/s, ${l[k].fixtures}</h3>${spark(rs.map(r => r[k].mgas), v => v.toFixed(0), rs.map(r => r[k].fixtures), rs)}</div>` +
-    `<div class="chart"><h3>${t}: erigon / best client (${l[k].best})</h3>${spark(rs.map(r => r[k].ratio), v => "×" + v.toFixed(2), rs.map(r => r[k].fixtures), rs)}</div>`; }).join("");
+    `<div class="chart"><h3>${t}: erigon Mgas/s, ${l[k].fixtures}</h3>${spark(rs.map(r => r[k].mgas), v => v.toFixed(0), rs.map(r => r[k].fixtures), rs, dv("mgas"))}</div>` +
+    `<div class="chart"><h3>${t}: erigon / best client (${l[k].best})</h3>${spark(rs.map(r => r[k].ratio), v => "×" + v.toFixed(2), rs.map(r => r[k].fixtures), rs, dv("ratio"))}</div>`; }).join("");
   const rp = prog.filter(r => r.rpc);
   const wls = [...new Set(rp.flatMap(r => Object.keys(r.rpc.knee)))];
   document.getElementById("prog-rpc").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">RPC: erigon knee per workload, rps</h3><div class="wrap"><table><thead><tr><th>workload</th>` +
@@ -227,11 +236,11 @@ if (prog.length) {
     wls.map(w => `<tr><td>${w}</td>` + rp.map((r, i) => { const v = r.rpc.knee[w], q = i ? rp[i - 1].rpc.knee[w] : v;
       return `<td class="${v < q ? "down" : v > q ? "up" : ""}">${v ?? "–"}</td>`; }).join("") + "</tr>").join("") + "</tbody></table></div>";
   const sec = (h, xs) => xs.length ? `<h4>${h}</h4><ul>${xs.map(x => `<li>${link(x)}</li>`).join("")}</ul>` : "";
-  document.getElementById("prog-journal").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">Journal</h3>` + [...prog].reverse().map((r, i) =>
-    `<details class="card"${i ? "" : " open"}><summary><b>${r.date}</b> · ` +
+  document.getElementById("prog-journal").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">Journal</h3>` + [...prog, ...(dbgPt ? [dbgPt] : [])].reverse().map((r, i) =>
+    `<details class="card"${i ? "" : " open"}><summary><b>${r.date}</b>${r.dbg ? ` · <b class="tag" style="color:#c2410c">dbg (main + open PRs) ${sha(r.new)}</b>` : ""} · ` +
     (r.old ? `<a href="https://github.com/erigontech/erigon/compare/${r.old}...${r.new}">${sha(r.old)}..${sha(r.new)}</a>` : `main ${sha(r.new)}, first point`) +
     ` · EVM ${r.evm.mgas.toFixed(1)}, node ${r.node.mgas.toFixed(1)} Mgas/s` +
-    (i < prog.length - 1 && r.evm.fixtures !== prog[prog.length - 2 - i].evm.fixtures ? ` · EVM fixtures now ${r.evm.fixtures}, not comparable with earlier points` : "") + (r.note ? ` · ${r.note}` : "") + `</summary>` +
+    (prog.indexOf(r) > 0 && r.evm.fixtures !== prog[prog.indexOf(r) - 1].evm.fixtures ? ` · EVM fixtures now ${r.evm.fixtures}, not comparable with earlier points` : "") + (r.note ? ` · ${r.note}` : "") + `</summary>` +
     sec("Shipped", r.shipped) + sec("Better", r.better) + sec("Worse", r.worse) + sec("Bottlenecks", r.bottlenecks) + "</details>").join("");
 }
 
@@ -273,7 +282,7 @@ if (btRun) {
   const files = Object.keys(btRun.bt).sort();
   const btClients = [...new Set(files.flatMap(f => Object.keys(btRun.bt[f])))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || a.localeCompare(b));
   const btTool = { geth: "evm blocktest", erigon: "evm blocktest", revme: "revme blockchaintest", nethermind: "nethtest -b", evmone: "evmone test", gevm: "RunBlockchainTestFile" };
-  document.getElementById("bt-note").innerHTML = clientNote(
+  document.getElementById("bt-note").innerHTML = buildTag(btRun.versions["erigon-evm"] || btRun.versions.erigon) + clientNote(
     `Eight copies of one 150M-gas block per file, run one after another through each client's own blockchain-test tool, one block per process. ` +
     `Mgas/s = gas / (wall time of the file − wall time of the same file with no blocks), best of 3. ` +
     `Every client parses the fixture, executes the block and checks the state root, so the number is comparable across clients.`,
@@ -315,7 +324,7 @@ function nodeSection(id, key, passKey, note) {
   const hc = nc.filter(c => tests.filter(t => res[t][c]).length * 2 >= tests.length);
   const hero = tests.filter(t => cat(t) !== "precompile" && hc.every(c => res[t][c]));
   const pp = (100 * Math.max(...Object.values(run[passKey]).map(r => Math.abs(r - 1)))).toFixed(1);
-  document.getElementById(id + "-note").innerHTML = note({ tests, nc, hc, hero, nv, pp, rows: nc.map(c => [c, nv[c], modeMap(nv.modes)[c]]), extra: Object.entries(modeMap(nv.modes)).filter(([c]) => !nc.includes(c)).map(([c, m]) => c + " " + m) });
+  document.getElementById(id + "-note").innerHTML = buildTag(nv.erigon) + note({ tests, nc, hc, hero, nv, pp, rows: nc.map(c => [c, nv[c], modeMap(nv.modes)[c]]), extra: Object.entries(modeMap(nv.modes)).filter(([c]) => !nc.includes(c)).map(([c, m]) => c + " " + m) });
   const means = hc.map(c => ({ c, v: geomean(hero.map(t => res[t][c])) }));
   const ref = means.find(r => r.c === "erigon").v, max = Math.max(...means.map(r => r.v));
   document.getElementById(id + "-race").innerHTML = `<div><h3>${hero.length} instruction and scenario tests, ${run.date.slice(0, 10)}, geometric mean Mgas/s</h3><div class="bars">` +
@@ -356,7 +365,8 @@ const rpcw = {};
 for (const r of data.runs) for (const row of r.rpcw || []) (rpcw[row.workload] ??= {})[row.client.split("-")[0] + "@" + row.rate] = { ...row, date: r.date };
 if (Object.keys(rpcw).length) {
   for (const id of ["rpcw-title", "rpcw-note", "rpcw"]) document.getElementById(id).hidden = false;
-  document.getElementById("rpcw").innerHTML = Object.keys(rpcw).sort().map(w => {
+  const rpcwBuild = [...new Set(Object.values(rpcw).flatMap(w => Object.values(w)).map(x => x.client).filter(c => c.startsWith("erigon")))];
+  document.getElementById("rpcw").innerHTML = rpcwBuild.map(c => buildTag(c.includes("dbg") ? c.replace(/^erigon-/, "") : "main-" + c.replace(/^erigon-/, ""))).join("") + Object.keys(rpcw).sort().map(w => {
     const rows = Object.values(rpcw[w]).sort((a, b) => a.rate - b.rate || a.client.localeCompare(b.client));
     return `<h3 style="margin:28px 0 6px;font-size:15px">${w}</h3><div class="wrap"><table><thead><tr><th>rate</th><th>client</th><th>rps</th><th>p50</th><th>p95</th><th>p99</th><th>err</th><th>measured</th></tr></thead><tbody>` +
       rows.map(x => `<tr><td>${x.rate}</td><td>${x.client}</td><td>${x.rps.toFixed(0)}</td><td>${x.p50}</td><td>${x.p95}</td><td class="${x.p99 > 100 ? "loss" : ""}">${x.p99}</td><td class="${x.err ? "loss" : "gas"}">${x.err}</td><td class="gas">${short(x.date)}</td></tr>`).join("") + "</tbody></table></div>";
@@ -371,9 +381,9 @@ if (callRuns.length) {
   const pick = (by, p) => Object.entries(by || {}).find(([c]) => c.startsWith(p)) || [];
   const nr = data.runs.filter(r => Object.keys(r.callsneth || {}).length).pop();
   const [ec] = pick(Object.values(cr.calls)[0], "erigon"), [rc] = pick(Object.values(cr.calls)[0], "reth"), [pc] = pick(prev && Object.values(prev.calls)[0], "erigon");
-  document.getElementById("calls-note").textContent = `One mainnet transaction per row, replayed as eth_call at its own block on the same node and datadir window, 16 connections. ` +
+  document.getElementById("calls-note").innerHTML = buildTag(ec && (ec.includes("dbg") ? ec.replace(/^erigon-/, "") : "main-" + ec.replace(/^erigon-/, ""))) + "<p>" + esc(`One mainnet transaction per row, replayed as eth_call at its own block on the same node and datadir window, 16 connections. ` +
     `${ec} against ${rc}, measured ${short(cr.date)}; change = erigon rps against ${pc ? pc + " on " + short(prev.date) : "nothing yet"}. Transactions whose call fails on the node are left out.` +
-    (nr ? ` neth = Nethermind 2.2.0, measured ${short(nr.date)} in a separate run at "latest" with both clients on the same machine; e/n compares erigon and neth from that run by gas per second, since the heads are about 149k blocks apart and a call can take a different path on each (swap-route: 1.47M gas on erigon, 0.24M on neth); – = the call reverted or errored on one of them.` : "");
+    (nr ? ` neth = Nethermind 2.2.0, measured ${short(nr.date)} in a separate run at "latest" with both clients on the same machine; e/n compares erigon and neth from that run by gas per second, since the heads are about 149k blocks apart and a call can take a different path on each (swap-route: 1.47M gas on erigon, 0.24M on neth); – = the call reverted or errored on one of them.` : "")) + "</p>";
   const rows = Object.keys(cr.calls).sort().map(f => {
     const [, e] = pick(cr.calls[f], "erigon"), [, r] = pick(cr.calls[f], "reth"), [, p] = pick(prev?.calls[f], "erigon");
     const [, ne] = pick(nr?.callsneth[f], "erigon"), [, nn] = pick(nr?.callsneth[f], "nethermind");

@@ -190,7 +190,8 @@
       "#25024 types: reuse cached Keccak hashes for bloom construction",
       "#25022 rpc/transactions: skip unused BAL recording during traces",
       "#25009 vm: avoid redundant zeroing when copying log data"
-    ]
+    ],
+    "dbg": true
   },
   {
     "date": "2026-10-19",
@@ -299,7 +300,8 @@
       "#25089 vm: run CALLVALUE on the fast path",
       "#25017 #24991 #24966 #24961 (lupin012, RPC)"
     ],
-    "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs"
+    "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs",
+    "dbg": true
   },
   {
     "date": "2026-10-20",
@@ -356,7 +358,8 @@
       "node block_full_data[zero_byte_True]: the full-suite number (~880) is about half of a family-only run; earlier tests in the same process slow it down, a harness effect",
       "eth_call per transaction: erigon / reth 1.43 over 24 transactions, behind only on transferFrom x262 (0.86) and the modexp proof verify (0.92)"
     ],
-    "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; gevm added to the EVM tier"
+    "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; gevm added to the EVM tier",
+    "dbg": true
   },
   {
     "date": "2026-10-21",
@@ -409,7 +412,8 @@
       "EVM clz_same -20%, selfbalance -13%, clz_diff -6%: ops left on the generic path pay one more taken branch (#25164)"
     ],
     "bottlenecks": [],
-    "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; node and RPC numbers are from the 2026-10-20 snapshot"
+    "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; node and RPC numbers are from the 2026-10-20 snapshot",
+    "dbg": true
   },
   {
     "date": "2026-10-21",
@@ -457,7 +461,8 @@
       "EVM tier -2.4% (noise 0.11%): shifts -24%, calldatasize -23%, codesize -19%, call_frame_context -16%, jumpdests -14%; code layout, not a code change: the binaries differ in EVM.run alignment, and at equal alignment the #25164 op table is 1.4% faster than the range check it replaced"
     ],
     "bottlenecks": [],
-    "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; EVM tier is dbg 8e711db2b3, node tier dbg 0d9cecb17a (projected: page numbers times the A/B ratio on the same box); RPC numbers are from the 2026-10-20 snapshot"
+    "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; EVM tier is dbg 8e711db2b3, node tier dbg 0d9cecb17a (projected: page numbers times the A/B ratio on the same box); RPC numbers are from the 2026-10-20 snapshot",
+    "dbg": true
   },
   {
     "date": "2026-10-21",

@@ -45,10 +45,16 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
         for fixture, client, ns in csv.reader(open(f)):
             run["ns"].setdefault(fixture, {})[client] = int(ns)
     runs.append(run)
-# The page shows only the latest node and blocktest tables.
-for k in ("node", "nodePass", "nodebal", "nodebalPass", "bt"):
-    for run in [r for r in runs if r[k]][:-1]:
-        run[k] = {}
+# The page shows one table per tier: the latest dbg build (main + open PRs) unless a later day has a main run, else the latest run.
+isdbg = lambda r: r["versions"].get("erigon", "").startswith("dbg")
+for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",)):
+    has = [r for r in runs if r[ks[0]]]
+    d = [r for r in has if isdbg(r)]
+    keep = d[-1] if d and d[-1]["date"][:10] >= has[-1]["date"][:10] else has[-1] if has else None
+    for run in has:
+        if run is not keep:
+            for k in ks:
+                run[k] = {}
 progress = src / "runs.json"
 progress = json.load(open(progress)) if progress.exists() else []
 html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "branch": branch}))

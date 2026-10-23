@@ -24,12 +24,13 @@ marked `*` and must never be quoted as an EVM comparison.
 
 ## Rules that keep the numbers fair
 
-- **The erigon column and the Progress trend are main only.** A build of main plus open PRs never replaces the erigon
-  column and never goes into `history/runs.json`. If it is worth showing, it gets its own clearly labelled column or
-  section ("erigon + open PRs") that lists the PRs. A journal entry compares main with the previous main point; a
-  comparison against a main-plus-PRs build is not a list of regressions.
-  The "erigon + open PRs" section reads its one-table summary from `history/openprs.json`. One page only: no
-  per-branch pages.
+- **Trend = main, tables = dbg.** The Progress trend has one main point per day. Its last point is today's dbg build
+  (the dbg branch = main + open PRs): an entry in `history/runs.json` with `"dbg": true`, drawn hollow with its sha, and
+  replaced by that day's main point the next day; older dbg entries stay in the file but are never drawn. Every table
+  shows the latest dbg run (`versions.csv` has `erigon,dbg-<sha>`) and falls back to the latest main run when dbg has no
+  data for the tier or a later day has a main run; each table names the build it shows. Measure main HEAD and dbg HEAD
+  every night in every tier: main feeds the trend and the nightly diff, dbg feeds the tables and today's point. A
+  journal card compares main with the previous main point, never with a dbg build. One page only: no per-branch pages.
 - **Measure only on the bench box, under its lock.** Every measuring script takes the lock in `BENCH_LOCK`
   (`run/all.sh` does it itself). Never build, profile or run anything else on the box while a run holds the lock.
   Numbers taken without the lock are void; delete them from history. Never measure on a laptop.
