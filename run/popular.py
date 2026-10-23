@@ -2,14 +2,20 @@
 """Rank mainnet contracts by gas used over the last BLOCKS blocks (default 200) and print one
 representative transaction per contract: the successful call closest to that contract's median gas.
 usage: run/popular.py [top] [blocks] [end block]   env VMBENCH_RPC (default https://eth.drpc.org)"""
-import json, os, statistics, sys, urllib.request
+import json, os, statistics, sys, time, urllib.request
 
 rpc = os.environ.get("VMBENCH_RPC", "https://eth.drpc.org")
 top, blocks = int(sys.argv[1]) if len(sys.argv) > 1 else 10, int(sys.argv[2]) if len(sys.argv) > 2 else 200
 
 def call(method, *params):
     req = urllib.request.Request(rpc, json.dumps({"jsonrpc": "2.0", "id": 1, "method": method, "params": list(params)}).encode(), {"Content-Type": "application/json", "User-Agent": "vm-bench"})
-    r = json.load(urllib.request.urlopen(req, timeout=60))
+    for attempt in range(5):  # public endpoints reset connections now and then
+        try:
+            r = json.load(urllib.request.urlopen(req, timeout=60))
+            break
+        except OSError:
+            if attempt == 4: raise
+            time.sleep(2 ** attempt)
     if "error" in r: raise RuntimeError(r["error"])
     return r["result"]
 
