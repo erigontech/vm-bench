@@ -583,5 +583,37 @@
       "noise": 0.3,
       "fixtures": "glamsterdam-devnet@v8.1.4"
     }
+  },
+  {
+    "date": "2026-10-23",
+    "dbg": true,
+    "old": "e507491c0081a132083db1f1dd0b997f5ce93b12",
+    "new": "41174f6b355c6b494c213a0e6232cd8bafae4890",
+    "evm": {
+      "mgas": 1110.8,
+      "ratio": 0.629,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 4422.4,
+      "ratio": 1.172,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3898.6,
+      "ratio": 0.754,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "dbg: main e507491c00 + open PRs",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
   }
 ]

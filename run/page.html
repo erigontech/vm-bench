@@ -224,7 +224,8 @@ if (prog.length) {
       (dv ? `<line class="ln dbg" x1="${x(n - 1)}" y1="${y(vals[n - 1])}" x2="${x(n)}" y2="${y(dv.v)}"/><circle class="dot dbg" cx="${x(n)}" cy="${y(dv.v)}"/>` +
         `<text class="end dbg" x="${x(n)}" y="${y(dv.v) - 9}" text-anchor="middle">${f(dv.v)}</text><text class="tick dbg" x="${x(n)}" y="${h - 4}" text-anchor="middle">dbg ${dv.sha.slice(0, 8)}</text>` : "") + "</svg>";
   };
-  document.getElementById("prog-trend").innerHTML = [["evm", "EVM"], ["node", "Node BAL-off"], ["nodebal", "Node BAL-on"]].map(([k, t]) => {
+  document.getElementById("prog-trend").innerHTML = (dbgPt ? `<div class="build" style="grid-column:1/-1"><b>○ dbg (main + open PRs) ${sha(dbgPt.new)}</b>, ${dbgPt.date}: today's build, drawn after the main points; the next main point replaces it.</div>` : "") +
+    [["evm", "EVM"], ["node", "Node BAL-off"], ["nodebal", "Node BAL-on"]].map(([k, t]) => {
     const rs = prog.filter(r => r[k]), l = rs[rs.length - 1], dk = dbgPt?.[k], dv = m => dk && { v: dk[m], sha: dbgPt.new };
     return !l ? "" :
     `<div class="chart"><h3>${t}: erigon Mgas/s, ${l[k].fixtures}</h3>${spark(rs.map(r => r[k].mgas), v => v.toFixed(0), rs.map(r => r[k].fixtures), rs, dv("mgas"))}</div>` +
