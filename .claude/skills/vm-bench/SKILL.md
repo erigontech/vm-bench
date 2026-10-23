@@ -16,6 +16,8 @@ node    benchmarkoor newPayload Mgas/s, EEST               erigon, reth, netherm
         tests-benchmark genesis per test (small state)
 RPC     replayable request corpora, open-loop rate ladder  erigon, reth (geth/neth full nodes      history/<t>/rpcw.csv
                                                            cannot serve historical calls)
+RPC     8 recorded-request scenarios (m33, cal33, ...),    erigon                                  history/<t>/rpc.csv
+        16 connections; eth_call per mainnet fixture       erigon, reth                            history/<t>/calls.csv
 ```
 
 The older state-test runners (`run/<client>.sh`, `fixtures/`, `history/<t>/<client>.csv`) stay for erigon-vs-revm only:
@@ -29,7 +31,9 @@ marked `*` and must never be quoted as an EVM comparison.
   replaced by that day's main point the next day; older dbg entries stay in the file but are never drawn. Every table
   shows the latest dbg run (`versions.csv` has `erigon,dbg-<sha>`) and falls back to the latest main run when dbg has no
   data for the tier or a later day has a main run; each table names the build it shows. Measure main HEAD and dbg HEAD
-  every night in every tier: main feeds the trend and the nightly diff, dbg feeds the tables and today's point. A
+  every night in every tier, the RPC throughput scenarios (`rpcenv.sh <ref> m33,cal33,callmany11,est33,trace33,trc33,trcblk33,trcmany11 base=`
+  on the RPC box, then `run/rpc-import.py <log>`) and `run/calls.sh` included; when the RPC box is busy with another
+  run, skip it that night and say so. Main feeds the trend and the nightly diff, dbg feeds the tables and today's point. A
   journal card compares main with the previous main point, never with a dbg build. One page only: no per-branch pages.
 - **Measure only on the bench box, under its lock.** Every measuring script takes the lock in `BENCH_LOCK`
   (`run/all.sh` does it itself). Never build, profile or run anything else on the box while a run holds the lock.
