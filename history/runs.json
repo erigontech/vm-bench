@@ -521,5 +521,48 @@
       "#25089 vm: run CALLVALUE on the fast path",
       "#25091 execution/cache: no copy for a state-cache fill that is refused"
     ]
+  },
+  {
+    "date": "2026-10-23",
+    "old": "3324fd6b4819011a7bc7b392babbec3a28e3366b",
+    "new": "2cedbabffc5e2e598e5c723d12bc5a0bad05ed01",
+    "evm": {
+      "mgas": 2136.3,
+      "ratio": 1.21,
+      "best": "nethermind",
+      "noise": 0.2,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 4314.5,
+      "ratio": 1.123,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "note": "EVM: since #25204 erigon runs the txs of one sender in parallel; 49 of 68 erigon blocks fall under the 100 ms / 30% twin floor, so this EVM point uses the 19 valid blocks and is not comparable with earlier points",
+    "better": [
+      "node suite 2046.3 -> 4314.5 Mgas/s (x2.11, #25204: txs of one sender run in parallel): sha256 941 -> 3923 (x4.2), blake2f 131 -> 508 (x3.9), unchunkified_bytecode 267 -> 929 (x3.5, 7 rows), mod_arithmetic 253 -> 789 (x3.1), mod 252 -> 749 (x3.0)",
+      "EVM, 19 blocks valid in all runs: 908.9 -> 2127.4 Mgas/s (x2.34, #25204): mod_arithmetic 282 -> 1758 (x6.2), keccak_max_permutations 113 -> 698 (x6.2), mod 223 -> 1360 (x6.1)",
+      "node erigon / nethermind on the instruction and scenario tests 0.515 -> 1.123"
+    ],
+    "worse": [
+      "node keccak mem_update_False 1641-1836 -> 1205-1362 Mgas/s (-25..29%, 4 rows), mem_update_True offset_1024 1611 -> 1362 (-15%)",
+      "node ether_transfers a_to_a 18000-21054 -> 15390-16426 (-15..25%, 5 rows), auth_transaction 1064 -> 886 (-17%), blake2f_uncachable 12 rounds 1764 -> 1534 (-13%)",
+      "EVM bls12_381_uncachable 958 -> 940 Mgas/s (-1.9%), bls12_pairing_uncachable -0.9%"
+    ],
+    "bottlenecks": [
+      "node selfdestruct_existing value_bearing: 737 vs nethermind 4687 (x0.16), no PR",
+      "node storage_access_cold SLOAD: 2224 vs nethermind 13215 (x0.17); EVM storage_access_cold 2670 vs revme 45916 (x0.06), no PR; top frame fastkeccak.keccakF1600BMI2 5.7%, GC 4.2%, go-freelru ShardedLRU.Len 1.9%",
+      "EVM instruction/ext_account_query_cold: 2515 vs revme 32295 (x0.08), no PR; top frame runtime.tryDeferToSpanScan 5.7% (GC), mapaccess2_fast64 4.5%",
+      "EVM scenario/ether_transfers: 548 vs revme 6856 (x0.08), node ether_transfers 13798 vs nethermind 78153 (x0.18), no PR; top frame secp256k1_gej_double 19.7% (sender recovery about 41%)"
+    ],
+    "shipped": [
+      "#25204 execution: charge the sender at validation, allow same-sender txs run in parallel: node suite x2.11",
+      "#25072 execution/cache: faster code-cache fill when loading cold contracts",
+      "#24033 execution: recover senders while newPayload decodes the payload",
+      "#25160 execution/state: emit no writes for an account created and destroyed in one tx",
+      "#25219 execution/engineapi: look up a new payload's header by hash and number"
+    ]
   }
 ]
