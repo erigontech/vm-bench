@@ -615,5 +615,37 @@
     "worse": [],
     "bottlenecks": [],
     "shipped": []
+  },
+  {
+    "date": "2026-10-23",
+    "dbg": true,
+    "old": "2c25716b2f2b620cd386a418562cfe7548f20aff",
+    "new": "29e1236382a5e7a0d560c9abde864c218bfaa4f0",
+    "evm": {
+      "mgas": 1108.5,
+      "ratio": 0.628,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 4380.1,
+      "ratio": 1.164,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3861.6,
+      "ratio": 0.745,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "dbg: main 2c25716b2f + open PRs",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
   }
 ]
