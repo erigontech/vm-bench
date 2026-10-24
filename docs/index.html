@@ -283,6 +283,7 @@ if (btRun) {
 
 // Node: benchmarkoor newPayload Mgas/s, latest snapshot that has it. Hero and family rows use the tests every hero client passed;
 // a client valid on fewer than half of the tests keeps its per-test column but stays out of the hero.
+const NETH_CACHE = "Nethermind result cache (PrecompileCachedCodeInfoRepository)";
 function nodeSection(id, key, passKey, note) {
   const run = [...data.runs].reverse().find(r => Object.keys(r[key]).length);
   if (!run) return;
@@ -306,10 +307,13 @@ function nodeSection(id, key, passKey, note) {
   document.getElementById(id + "-fam").innerHTML = `<table><thead><tr><th>family</th><th>tests</th>${hc.map(c => `<th>${name(c)}</th>`).join("")}${ho.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
     body(fams.map(f => `<tr><td class="f" title="${f}">${f.replace(/^test_/, "")}</td><td class="gas">${hero.filter(t => fam(t) === f).length}</td>` +
       hc.map(c => `<td>${fmt(fm(f, c))}</td>`).join("") + ho.map(c => ratioCell(fm(f, "erigon") / fm(f, c))).join("") + "</tr>")) + "</tbody></table>";
+  // Nethermind serves precompile calls that repeat one input from PrecompileCachedCodeInfoRepository; *_uncachable tests vary the input.
+  const cached = (t, c) => c === "nethermind" && cat(t) === "precompile" && !t.includes("uncachable");
   const label = t => t.split("::")[1].replace(/fork_\w+-blockchain_test_engine_x-/, "").replace(/-?benchmark-gas-value_\d+M/, "").replace("[]", "");
   document.getElementById(id).innerHTML = `<table><thead><tr><th>test</th>${nc.map(c => `<th>${name(c)}</th>`).join("")}${no.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
     body([...new Set(tests.map(cat))].flatMap(g => [`<tr class="group"><td colspan="${1 + nc.length + no.length}">${g}</td></tr>`, ...tests.filter(t => cat(t) === g).map(t => `<tr><td class="f" title="${t}">${label(t)}</td>` +
-      nc.map(c => `<td>${fmt(res[t][c] ?? NaN)}</td>`).join("") + no.map(c => ratioCell(res[t].erigon / res[t][c])).join("") + "</tr>")])) + "</tbody></table>";
+      nc.map(c => cached(t, c) ? `<td class="gas" title="${NETH_CACHE}">${fmt(res[t][c] ?? NaN)}*</td>` : `<td>${fmt(res[t][c] ?? NaN)}</td>`).join("") +
+      no.map(c => cached(t, c) ? `<td class="gas" title="${NETH_CACHE}">cache</td>` : ratioCell(res[t].erigon / res[t][c])).join("") + "</tr>")])) + "</tbody></table>";
 }
 nodeSection("node", "node", "nodePass", ({ tests, hero, nv, pp, rows }) => clientNote(
   `Node tier: engine_newPayload Mgas/s on Osaka blocks, BAL off (Osaka blocks carry no block access list). ` +
@@ -318,7 +322,8 @@ nodeSection("node", "node", "nodePass", ({ tests, hero, nv, pp, rows }) => clien
   `Same cpuset and memory limit for every client, a fresh container per client and run, the first test of each genesis group dropped as warm-up, ` +
   `two passes (erigon, reth, nethermind, geth, then reversed), Mgas/s = mean of the passes.`, rows,
   [`Fixtures ${esc(nv.fixtures)}, Osaka, 150M-gas blocks.`, `${tests.length} tests.`, `Pass-to-pass within ${pp}%.`,
-   `The hero leaves out the ${tests.length - hero.length} precompile tests: geth and nethermind run with their default precompile result caches, so that group compares caches.`]));
+   `The hero leaves out the ${tests.length - hero.length} precompile tests: geth and nethermind run with their default precompile result caches, so that group compares caches.`,
+   `neth * = ${NETH_CACHE}: a precompile test that repeats one input; no e/neth ratio, and no geometric mean uses it.`]));
 nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp, rows, extra }) => clientNote(
   `Node tier: engine_newPayload Mgas/s on Amsterdam blocks (glamsterdam-devnet-8 fixtures), BAL on: the same EEST compute tests ` +
   `filled for Amsterdam, so every block carries its block access list and every client runs in its BAL mode with the instance flags of ethpandaops/benchmarkoor-tests. ` +
@@ -328,6 +333,7 @@ nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp,
   [`Fixtures: ${esc(nv.fixtures)}.`, `${tests.length} tests (${esc(nv.missing)}).`, `Pass-to-pass within ${pp}%.`,
    `The hero and the family table use the ${hero.length} instruction and scenario tests that ${hc.join(", ")} all passed` +
    (nc.length > hc.length ? `; ${nc.filter(c => !hc.includes(c)).join(", ")} passed fewer than half of the tests and shows in the per-test table only.` : "."),
+   `neth * = ${NETH_CACHE}: a precompile test that repeats one input; no e/neth ratio, and no geometric mean uses it.`,
    ...extra.map(esc), ...(nv["not run"] ? [`Not run: ${esc(nv["not run"])}.`] : [])]));
 
 if (data.branch) document.querySelector(".lede").innerHTML = `Branch build <span class="tag">${esc(data.branch)}</span>: erigon is main plus open PRs, the other clients are the same runs as on the <a href="./">main page</a>. ` +
