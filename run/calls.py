@@ -19,5 +19,6 @@ for p in sorted((root / "fixtures").glob("mainnet*/*.json")):
         call["maxFeePerGas"], call["maxPriorityFeePerGas"] = tx["maxFeePerGas"], tx["maxPriorityFeePerGas"]
     block = hex(int(env["currentNumber"], 16) - 1)
     body = {"jsonrpc": "2.0", "id": 1, "method": "eth_call", "params": [call, block]}
-    latest = {**body, "params": [call, "latest"]}
+    # Without its fee fields the call skips the balance check: the sender may hold no ETH at latest.
+    latest = {**body, "params": [{k: v for k, v in call.items() if k not in ("gasPrice", "maxFeePerGas", "maxPriorityFeePerGas")}, "latest"]}
     print(p.parent.name + "/" + p.stem, json.dumps(body, separators=(",", ":")), json.dumps(latest, separators=(",", ":")), sep="\t")
