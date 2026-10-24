@@ -1317,7 +1317,10 @@
       "node tload x0.77 (4 tests), shifts x0.78, storage_access_warm_benchmark x0.84, returndatasize_nonzero x0.84 (12 tests)",
       "BAL-on blobhash x0.80, swapn x0.80, extcodecopy_warm x0.82, selfdestruct_created x0.83"
     ],
-    "bottlenecks": [],
+    "bottlenecks": [
+      "node contract_creation contract_size_0: 173-179 Mgas/s, x0.20 of nethermind; top frame runtime.cgocall (mdbx) 6-8% once the KZG context build is left out; that build (InitKZGCtx, about 0.5 s of CPU) runs on the first block after a start",
+      "node storage_access_cold_benchmark SLOAD: 202-206 Mgas/s, x0.19 of nethermind; top frame runtime.cgocall 4-5%, then memmove; no frame dominates"
+    ],
     "shipped": [
       "#25188 faster EXP for an odd base with a large exponent",
       "#25210 PUSH3-32 immediates as one 32-byte window",
