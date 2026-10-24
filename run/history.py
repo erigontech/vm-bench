@@ -39,7 +39,7 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
             continue
         if f.name == "calls.csv":
             for r in csv.reader(open(f)):
-                run["calls"].setdefault(r[0], {})[r[1]] = dict(zip(("rps", "p50", "p99", "err"), map(float, r[2:])))
+                run["calls"].setdefault(r[0], {})[r[1]] = {**dict(zip(("rps", "p50", "p99", "err"), map(float, r[2:6]))), "at": r[6] if len(r) > 6 else "block"}
             continue
         if f.name == "rpc.csv":
             run["rpc"] = [dict(zip(("scenario", "client", "rps", "p50", "p99"), (r[0], r[1], *map(float, r[2:])))) for r in csv.reader(open(f))]

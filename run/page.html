@@ -376,12 +376,12 @@ if (callRuns.length) {
   const nr = data.runs.filter(r => Object.keys(r.callsneth || {}).length).pop();
   const [ec] = pick(Object.values(cr.calls)[0], "erigon"), [rc] = pick(Object.values(cr.calls)[0], "reth"), [pc] = pick(prev && Object.values(prev.calls)[0], "erigon");
   document.getElementById("calls-note").innerHTML = buildTag(ec && (ec.includes("dbg") ? ec.replace(/^erigon-/, "") : "main-" + ec.replace(/^erigon-/, ""))) + "<p>" + esc(`One mainnet transaction per row, replayed as eth_call at its own block on the same node and datadir window, 16 connections. ` +
-    `${ec} against ${rc}, measured ${short(cr.date)}; change = erigon rps against ${pc ? pc + " on " + short(prev.date) : "nothing yet"}. A row without numbers is a transaction the node cannot run: its block is older than the state the node keeps, or the call fails.` +
+    `${ec} against ${rc}, measured ${short(cr.date)}; change = erigon rps against ${pc ? pc + " on " + short(prev.date) : "nothing yet"}. A transaction whose block is older than the state the node keeps runs at "latest" and says so; a row without numbers is a call that fails on this node.` +
     (nr ? ` neth = Nethermind 2.2.0, measured ${short(nr.date)} in a separate run at "latest" with both clients on the same machine; e/n compares erigon and neth from that run by gas per second, since the heads are about 149k blocks apart and a call can take a different path on each (swap-route: 1.47M gas on erigon, 0.24M on neth); – = the call reverted or errored on one of them.` : "")) + "</p>";
   const rows = Object.keys(cr.calls).map(f => {
     const [, e] = pick(cr.calls[f], "erigon"), [, r] = pick(cr.calls[f], "reth"), [, p] = pick(prev?.calls[f], "erigon");
     const [, ne] = pick(nr?.callsneth[f], "erigon"), [, nn] = pick(nr?.callsneth[f], "nethermind");
-    return { f, e: e?.rps, r: r?.rps, ch: e && p ? e.rps / p.rps : NaN, en: ne && nn ? (ne.rps * (ne.gas || 1)) / (nn.rps * (nn.gas || 1)) : NaN, n: nn?.rps };
+    return { f, latest: e?.at === "latest", e: e?.rps, r: r?.rps, ch: e && p ? e.rps / p.rps : NaN, en: ne && nn ? (ne.rps * (ne.gas || 1)) / (nn.rps * (nn.gas || 1)) : NaN, n: nn?.rps };
   });
   const chCell = k => { if (isNaN(k)) return `<td class="gas">–</td>`; const s = (100 * (k - 1)).toFixed(1).replace(/^-0\.0$/, "0.0"); return `<td class="${k > 1.03 ? "up" : k < 0.97 ? "down" : ""}">${s.startsWith("-") ? s : "+" + s}%</td>`; };
   const tot = { e: geomean(rows.map(x => x.e)), r: geomean(rows.map(x => x.r)), ch: geomean(rows.map(x => x.ch)), en: geomean(rows.map(x => x.en)), n: geomean(rows.map(x => x.n)) };
@@ -389,7 +389,7 @@ if (callRuns.length) {
   const byF = Object.fromEntries(rows.map(x => [x.f, x])), oldest = Math.min(...rows.map(x => data.callFixtures[x.f]));
   document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>reth rps</th><th>e/r</th><th>neth rps</th><th>e/n</th><th>change</th></tr></thead><tbody>` +
     Object.keys({ ...data.callFixtures, ...cr.calls }).sort((a, b) => a.localeCompare(b, "en", { numeric: true })).map(f => { const x = byF[f];
-      return x ? `<tr><td class="f" title="${x.f}">${x.f}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}<td>${fmt(x.n, 0)}</td>${enCell(x.en)}${chCell(x.ch)}</tr>`
+      return x ? `<tr><td class="f" title="${x.f}">${x.f}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}<td>${fmt(x.n, 0)}</td>${enCell(x.en)}${chCell(x.ch)}</tr>`
         : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="6">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
     `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.r, 0)}</b></td>${ratioCell(tot.e / tot.r)}<td><b>${fmt(tot.n, 0)}</b></td>${enCell(tot.en)}${chCell(tot.ch)}</tr></tbody></table></div>`;
 }

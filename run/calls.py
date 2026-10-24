@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """eth_call request bodies for the mainnet fixtures: one JSON-RPC body per line, prefixed by the fixture
-name and a tab. The call runs on the state before the fixture's block, the closest an RPC node offers
-to the fixture's pre-state (transactions earlier in the same block are not applied)."""
+name and a tab, then the same call at "latest" after another tab. The call runs on the state before the
+fixture's block, the closest an RPC node offers to the fixture's pre-state (transactions earlier in the
+same block are not applied); the "latest" body is for a node that no longer keeps that state."""
 import json, sys
 from pathlib import Path
 
@@ -18,4 +19,5 @@ for p in sorted((root / "fixtures").glob("mainnet*/*.json")):
         call["maxFeePerGas"], call["maxPriorityFeePerGas"] = tx["maxFeePerGas"], tx["maxPriorityFeePerGas"]
     block = hex(int(env["currentNumber"], 16) - 1)
     body = {"jsonrpc": "2.0", "id": 1, "method": "eth_call", "params": [call, block]}
-    print(p.parent.name + "/" + p.stem, json.dumps(body, separators=(",", ":")), sep="\t")
+    latest = {**body, "params": [call, "latest"]}
+    print(p.parent.name + "/" + p.stem, json.dumps(body, separators=(",", ":")), json.dumps(latest, separators=(",", ":")), sep="\t")
