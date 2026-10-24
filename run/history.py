@@ -9,7 +9,7 @@ hidden = {"besu", "ethrex", "nimbus"}
 runs = []
 src, page, branch = (root / sys.argv[1], root / sys.argv[2], sys.argv[3]) if len(sys.argv) > 3 else (root / "history", root / "docs" / "index.html", None)
 for d in sorted(p for p in src.iterdir() if p.is_dir()):
-    run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}, "st": {}, "stArms": [], "nodeab": {}, "nodeabArms": []}
+    run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}, "st": {}, "stArms": [], "nodeab": {}, "nodeabArms": [], "callsprof": {}}
     if (d / "errors.txt").exists():
         run["errors"] = (d / "errors.txt").read_text().split("\n")[:-1]
     for f in d.glob("*.csv"):
@@ -50,6 +50,9 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
         if f.name == "callsneth.csv":
             for r in csv.reader(open(f)):
                 run[f.stem].setdefault(r[0], {})[r[1]] = dict(zip(("rps", "p50", "p99", "err", "gas"), map(float, r[2:])))
+            continue
+        if f.name == "callsprof.csv":
+            run["callsprof"] = {r[0]: {"bucket": r[1], "share": float(r[2]), "frames": r[3]} for r in csv.reader(open(f))}
             continue
         if f.name == "calls.csv":
             for r in csv.reader(open(f)):

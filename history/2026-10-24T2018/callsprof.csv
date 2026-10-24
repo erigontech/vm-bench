@@ -1,0 +1,38 @@
+mainnet-edge-cases/10-680f4f10-create-8018,state,29,runtime.cgocall 15% | linux.Syscall6 8% | runtime.mapaccess2_fast64 5%
+mainnet-edge-cases/11-45bf841d-gst2-mint,state,28,runtime.cgocall 15% | linux.Syscall6 8% | runtime.mapaccess2_fast64 5%
+mainnet-edge-cases/12-2d524c14-create-d33d,state,32,runtime.cgocall 17% | vm.(*EVM).run 6% | runtime.mapaccess2_fast64 6%
+mainnet-edge-cases/13-c0b6ab3a-storage-b9c2,evm,25,vm.(*EVM).run 11% | runtime.mapaccess2_fast64 8% | linux.Syscall6 5%
+mainnet-edge-cases/14-a098cdcd-create-bot-99be,state,25,runtime.cgocall 13% | linux.Syscall6 12% | runtime.mapaccess2_fast64 3%
+mainnet-edge-cases/16-52c62f26-create-selfdestruct-2c20,state,21,vm.(*EVM).run 9% | runtime.cgocall 7% | runtime.mapaccess2_fast64 6%
+mainnet-edge-cases/17-8653e244-ecrecover-330-110KB,bn256,63,fp.mul 28% | runtime.cgocall 18% | fptower.mulAdxE2 6%
+mainnet-edge-cases/18-3c70f07a-metamorpho-redeem-3302,evm,40,vm.(*EVM).run 18% | runtime.cgocall 6% | vm.(*Stack).exchange (inline) 4%
+mainnet-edge-cases/19-2b1039fc-metamorpho-redeem-5046,evm,39,vm.(*EVM).run 19% | runtime.cgocall 7% | vm.(*Stack).exchange (inline) 4%
+mainnet-edge-cases/2-5a158d08-div-loop-28M,evm,75,vm.(*EVM).run 31% | vm.(*Stack).exchange (inline) 9% | vm.(*Stack).dup (inline) 5%
+mainnet-edge-cases/20-fe16276b-sha256-sstore-20a6,evm,59,vm.(*EVM).run 28% | vm.(*Stack).exchange (inline) 7% | vm.(*Stack).dup (inline) 5%
+mainnet-edge-cases/21-d4c854e7-multicall3-forward,state,55,runtime.cgocall 54% | vm.(*EVM).run 7% | linux.Syscall6 3%
+mainnet-edge-cases/22-efd056de-modexp-proof-verify,evm,78,uint256.Reciprocal 23% | vm.(*EVM).run 15% | uint256.(*Int).reduce4 10%
+mainnet-edge-cases/23-a500a7f4-transferfrom-262,evm,48,vm.(*EVM).run 23% | vm.(*Stack).exchange (inline) 5% | linux.Syscall6 4%
+mainnet-edge-cases/24-e312d0cf-morpho-bundle,evm,31,vm.(*EVM).run 18% | runtime.cgocall 9% | linux.Syscall6 3%
+mainnet-edge-cases/25-3304e751-pendle-pt-swap,evm,30,vm.(*EVM).run 20% | runtime.cgocall 14% | linux.Syscall6 3%
+mainnet-edge-cases/26-3e27e037-7702-batch-transfer-315,state,27,vm.(*EVM).run 11% | runtime.cgocall 8% | runtime.mapaccess2_fast64 4%
+mainnet-edge-cases/27-fbfd1a5e-poke-c4d6,evm,28,vm.(*EVM).run 17% | runtime.cgocall 12% | linux.Syscall6 3%
+mainnet-edge-cases/28-86c02805-roles-exec-morpho,evm,36,vm.(*EVM).run 20% | runtime.cgocall 4% | fastkeccak.keccakF1600BMI2 4%
+mainnet-edge-cases/29-ad24b118-swap-route-a323,evm,28,vm.(*EVM).run 15% | runtime.cgocall 9% | runtime.mapaccess2_fast64 5%
+mainnet-edge-cases/30-51290012-call-tree-depth9-2c5d,evm,40,vm.(*EVM).run 23% | runtime.cgocall 9% | vm.(*Stack).exchange (inline) 4%
+mainnet-edge-cases/31-692aa8bf-unlock-compressed-batch,state,57,runtime.cgocall 53% | vm.(*EVM).run 7% | linux.Syscall6 3%
+mainnet-edge-cases/32-6ce64e43-seaport-fulfill-orders,state,56,runtime.cgocall 54% | vm.(*EVM).run 9% | fastkeccak.keccakF1600BMI2 5%
+mainnet-edge-cases/33-15f8752b-v4-swap-usdc-weth,state,21,vm.(*EVM).run 11% | linux.Syscall6 9% | runtime.cgocall 8%
+mainnet-edge-cases/4-ea93481b-sload-storm,state,44,runtime.cgocall 16% | vm.(*EVM).run 7% | maps.ctrlGroup.matchH2 (inline) 5%
+mainnet-edge-cases/5-ba639ee8-batch-transfer-77KB,state,36,runtime.cgocall 20% | vm.(*EVM).run 10% | maps.ctrlGroup.matchH2 (inline) 4%
+mainnet-edge-cases/6-cc33e185-chi-mint,state,33,runtime.cgocall 17% | runtime.mapaccess2_fast64 6% | maps.ctrlGroup.matchH2 (inline) 6%
+mainnet-edge-cases/8-b865ae4b-create-bot-0010,state,29,runtime.cgocall 15% | linux.Syscall6 8% | runtime.mapaccess2_fast64 5%
+mainnet-edge-cases/9-e52b14b4-increase-21M,state,27,runtime.cgocall 15% | vm.(*EVM).run 11% | maps.ctrlGroup.matchH2 (inline) 5%
+mainnet-popular/0c320640-00fe7820-2.8M,state,32,vm.(*EVM).run 10% | runtime.cgocall 10% | zstd.sequenceDecs_decodeSync_bmi2 6%
+mainnet-popular/0dc42698-usdc-transfer,sched/net,19,linux.Syscall6 19% | runtime.cgocall 9% | vm.(*EVM).run 2%
+mainnet-popular/61c94904-usdt-transfer,sched/net,20,linux.Syscall6 19% | runtime.cgocall 9% | zstd.sequenceDecs_decodeSync_bmi2 2%
+mainnet-popular/6ca3b71a-c10fc8fa-2.5M,state,40,zstd.sequenceDecs_decodeSync_bmi2 14% | vm.(*EVM).run 11% | zstd.buildDtable_asm 6%
+mainnet-popular/8a527e85-entrypoint-v07-handleops,state,34,runtime.cgocall 27% | vm.(*EVM).run 11% | linux.Syscall6 6%
+mainnet-popular/9be47a39-8feab81d,evm,30,vm.(*EVM).run 20% | runtime.cgocall 10% | linux.Syscall6 5%
+mainnet-popular/b14bbe7b-4337084d,state,28,runtime.cgocall 18% | vm.(*EVM).run 11% | linux.Syscall6 8%
+mainnet-popular/c8e9ccb3-0de8bf93-3.4M,evm,41,vm.(*EVM).run 19% | runtime.cgocall 10% | vm.(*Stack).exchange (inline) 6%
+mainnet-popular/eb4094b3-ccc88a9d,evm,29,vm.(*EVM).run 20% | runtime.cgocall 19% | linux.Syscall6 4%

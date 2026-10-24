@@ -461,11 +461,15 @@ if (callRuns.length) {
   const tot = { e: geomean(rows.map(x => x.e)), r: geomean(rows.map(x => x.r)), ch: geomean(rows.map(x => x.ch)), en: geomean(rows.map(x => x.en)), n: geomean(rows.map(x => x.n)) };
   const enCell = k => isNaN(k) ? `<td class="gas">–</td>` : ratioCell(k);
   const byF = Object.fromEntries(rows.map(x => [x.f, x])), oldest = Math.min(...rows.map(x => data.callFixtures[x.f]));
-  document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>reth rps</th><th>e/r</th><th>neth rps</th><th>e/n</th><th>change</th></tr></thead><tbody>` +
+  // bottleneck = the CPU-profile bucket with the largest flat share while the row's eth_call runs, from the latest profiled build.
+  const pr = data.runs.filter(r => Object.keys(r.callsprof || {}).length).pop(), bn = f => { const b = pr?.callsprof[f]; return b ? `<td class="gas" title="${esc(b.frames)}">${esc(b.bucket)} ${b.share}%</td>` : `<td class="gas">–</td>`; };
+  if (pr) document.getElementById("calls-note").innerHTML += "<p>" + esc(`bottleneck = the largest share of erigon's CPU profile while the row's call runs (${pr.versions.erigon || "erigon"}, ${short(pr.date)}): ` +
+    `evm = the interpreter, state = state reads (mdbx, snapshot files), sched/net = HTTP serving and syscalls, bn256 = the alt_bn128 precompiles. Hover a cell for its top frames.`) + "</p>";
+  document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>reth rps</th><th>e/r</th><th>neth rps</th><th>e/n</th><th>change</th><th>bottleneck</th></tr></thead><tbody>` +
     Object.keys({ ...data.callFixtures, ...cr.calls }).sort((a, b) => a.localeCompare(b, "en", { numeric: true })).map(f => { const x = byF[f];
-      return x ? `<tr><td class="f" title="${x.f}">${x.f}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}<td>${fmt(x.n, 0)}</td>${enCell(x.en)}${chCell(x.ch)}</tr>`
-        : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="6">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
-    `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.r, 0)}</b></td>${ratioCell(tot.e / tot.r)}<td><b>${fmt(tot.n, 0)}</b></td>${enCell(tot.en)}${chCell(tot.ch)}</tr></tbody></table></div>`;
+      return x ? `<tr><td class="f" title="${x.f}">${x.f}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}<td>${fmt(x.n, 0)}</td>${enCell(x.en)}${chCell(x.ch)}${bn(x.f)}</tr>`
+        : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="7">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
+    `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.r, 0)}</b></td>${ratioCell(tot.e / tot.r)}<td><b>${fmt(tot.n, 0)}</b></td>${enCell(tot.en)}${chCell(tot.ch)}<td></td></tr></tbody></table></div>`;
 }
 
 // RPC
