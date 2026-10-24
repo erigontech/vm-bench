@@ -9,7 +9,7 @@ hidden = {"besu", "ethrex", "nimbus"}
 runs = []
 src, page, branch = (root / sys.argv[1], root / sys.argv[2], sys.argv[3]) if len(sys.argv) > 3 else (root / "history", root / "docs" / "index.html", None)
 for d in sorted(p for p in src.iterdir() if p.is_dir()):
-    run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}, "st": {}, "stArms": []}
+    run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}, "st": {}, "stArms": [], "nodeab": {}, "nodeabArms": []}
     if (d / "errors.txt").exists():
         run["errors"] = (d / "errors.txt").read_text().split("\n")[:-1]
     for f in d.glob("*.csv"):
@@ -22,6 +22,12 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
             for r in csv.reader(open(f)):  # a sub-test name may contain commas
                 file, sub, (arm, gas, ms, twin) = r[0], ",".join(r[1:-4]), r[-4:]
                 run["st"].setdefault(file, {}).setdefault(sub, {})[arm] = {"gas": int(gas), "ms": int(ms), "twin": int(twin)}
+            continue
+        if f.name == "nodeab.csv":
+            run["nodeab"] = {t: {"a": float(a), "b": float(b)} for t, a, b in csv.reader(open(f))}
+            continue
+        if f.name == "nodeab-arms.csv":
+            run["nodeabArms"] = [r for r in csv.reader(open(f))]
             continue
         if f.name == "subtest-arms.csv":
             run["stArms"] = [r for r in csv.reader(open(f))]
