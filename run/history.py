@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build docs/index.html from history/*/.
 run/history.py <dir> <page> <branch>: the same page for a branch build, e.g. branches/dbg docs/dbg.html dbg."""
-import csv, json, sys
+import csv, json, math, sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parent.parent
@@ -61,6 +61,27 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
         for fixture, client, ns in csv.reader(open(f)):
             run["ns"].setdefault(fixture, {})[client] = int(ns)
     runs.append(run)
+# Scenario blocks per run, before the per-tier pruning below drops older bt data: erigon's geometric mean Mgas/s and erigon / best client,
+# both over cells that are not grey (twin under 30% of the run, net at least 100 ms). gevm has no state root, so it is no peer.
+def scenario_point(run):
+    def mgas(f, c):
+        x = run["bt"][f].get(c)
+        return x["gas"] / (x["ms"] - x["twin"]) / 1e3 if x and x["ms"] - x["twin"] >= 100 and (c == "nethermind" or x["twin"] / x["ms"] <= 0.3) else None
+    gm = lambda xs: math.exp(sum(map(math.log, xs)) / len(xs))
+    files = [f for f in run["bt"] if f.startswith("scenario/")]
+    e = {f: mgas(f, "erigon") for f in files}
+    if not files or sum(v is not None for v in e.values()) * 2 < len(files):
+        return None
+    peers = {}
+    for c in {c for f in files for c in run["bt"][f]} - {"erigon", "gevm"}:
+        both = [f for f in files if e[f] and mgas(f, c)]
+        if len(both) * 2 >= len(files):
+            peers[c] = gm([e[f] for f in both]) / gm([mgas(f, c) for f in both])
+    best = min(peers, key=peers.get) if peers else None
+    build = run["versions"].get("erigon-evm") or run["versions"].get("erigon", "")
+    return {"date": run["date"], "build": build, "blocks": len(files), "mgas": round(gm([v for v in e.values() if v]), 1),
+            "ratio": round(peers[best], 3) if best else None, "best": best}
+scenario = [p for p in map(scenario_point, (r for r in runs if r["bt"])) if p]
 # The page shows one table per tier: the latest dbg build (main + open PRs) unless a later day has a main run, else the latest run.
 isdbg = lambda r: r["versions"].get("erigon", "").startswith("dbg")
 for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "stArms")):
@@ -75,7 +96,7 @@ progress = src / "runs.json"
 progress = json.load(open(progress)) if progress.exists() else []
 # eth_call fixture -> block, so the page can list the fixtures a node could not run.
 callFixtures = {f"{p.parent.name}/{p.stem}": int(next(iter(json.load(open(p)).values()))["env"]["currentNumber"], 16) for p in root.glob("fixtures/mainnet*/*.json")}
-html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "branch": branch, "callFixtures": callFixtures}))
+html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "branch": branch, "callFixtures": callFixtures, "scenario": scenario}))
 (root / "docs").mkdir(exist_ok=True)
 (root / "docs" / ".nojekyll").touch()
 page.write_text(html)

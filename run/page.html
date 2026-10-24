@@ -154,15 +154,25 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <p class="note">Requests per second against one mainnet datadir, 33 recorded requests per method, 16 connections. trend = erigon rps per day, drawn once a scenario has two days.</p>
 <div class="wrap" id="rpc"></div>
 
-<h2 id="bt-title" hidden>EVM: EEST benchmark blocks</h2>
-<div class="note" id="st-sum" hidden></div>
-<div class="note" id="bt-note" hidden></div>
-<section class="race" id="bt-race" hidden></section>
-<h3 id="st-title" hidden>erigon builds per sub-test</h3>
-<div class="note" id="st-note" hidden></div>
-<div class="wrap" id="st" hidden></div>
-<h3 id="bt-files" hidden>all clients per file</h3>
-<div class="wrap" id="bt" hidden></div>
+<h2 id="sc-title" hidden>EEST benchmark scenario</h2>
+<div class="note" id="sc-st-sum" hidden></div>
+<div class="note" id="sc-bt-note" hidden></div>
+<section class="race" id="sc-bt-race" hidden></section>
+<h3 id="sc-st-title" hidden>erigon builds per scenario sub-test</h3>
+<div class="note" id="sc-st-note" hidden></div>
+<div class="wrap" id="sc-st" hidden></div>
+<h3 id="sc-bt-files" hidden>all clients per scenario file</h3>
+<div class="wrap" id="sc-bt" hidden></div>
+
+<h2 id="in-title" hidden>EEST benchmark instruction</h2>
+<div class="note" id="in-st-sum" hidden></div>
+<div class="note" id="in-bt-note" hidden></div>
+<section class="race" id="in-bt-race" hidden></section>
+<h3 id="in-st-title" hidden>erigon builds per instruction and precompile sub-test</h3>
+<div class="note" id="in-st-note" hidden></div>
+<div class="wrap" id="in-st" hidden></div>
+<h3 id="in-bt-files" hidden>all clients per instruction and precompile file</h3>
+<div class="wrap" id="in-bt" hidden></div>
 
 <div id="tip" hidden></div>
 
@@ -247,7 +257,18 @@ if (prog.length) {
     const rs = prog.filter(r => r[k]), l = rs[rs.length - 1], dk = dbgPt?.[k], dv = m => dk && { v: dk[m], sha: dbgPt.new };
     return !l ? "" :
     `<div class="chart"><h3>${t}: erigon Mgas/s, ${l[k].fixtures}</h3>${spark(rs.map(r => r[k].mgas), v => v.toFixed(0), rs.map(r => r[k].fixtures), rs, dv("mgas"))}</div>` +
-    `<div class="chart"><h3>${t}: erigon / best client (${l[k].best})</h3>${spark(rs.map(r => r[k].ratio), v => "×" + v.toFixed(2), rs.map(r => r[k].fixtures), rs, dv("ratio"))}</div>`; }).join("");
+    `<div class="chart"><h3>${t}: erigon / best client (${l[k].best})</h3>${spark(rs.map(r => r[k].ratio), v => "×" + v.toFixed(2), rs.map(r => r[k].fixtures), rs, dv("ratio"))}</div>`; }).join("") + scenarioCharts();
+  // EEST scenario blocks per measured main, latest point per day; the hollow point is the latest dbg build when it is newer.
+  function scenarioCharts() {
+    const sc = data.scenario || [], byDay = {};
+    for (const r of sc.filter(r => r.build.startsWith("main-") && !r.build.includes("+"))) byDay[r.date.slice(0, 10)] = r;
+    const rs = Object.values(byDay), l = rs[rs.length - 1], d = sc.filter(r => r.build.startsWith("dbg-")).pop();
+    if (!l) return "";
+    const dp = d && d.date > l.date && { sha: d.build.replace(/^dbg-/, "") }, rows = rs.map(r => ({ date: r.date.slice(0, 10) })), fx = rs.map(r => r.blocks + " blocks");
+    const more = `<p class="note" style="margin:2px 0 0"><a href="#eest-benchmark-scenario">EEST benchmark scenario: per block and per sub-test ↓</a></p>`;
+    return `<div class="chart"><h3>EEST benchmark scenario: erigon Mgas/s</h3>${spark(rs.map(r => r.mgas), v => v.toFixed(0), fx, rows, dp && { ...dp, v: d.mgas })}${more}</div>` +
+      `<div class="chart"><h3>EEST benchmark scenario: erigon / best client (${name(l.best)})</h3>${spark(rs.map(r => r.ratio), v => "×" + v.toFixed(2), fx, rows, dp && { ...dp, v: d.ratio })}${more}</div>`;
+  }
   const rp = prog.filter(r => r.rpc);
   const wls = [...new Set(rp.flatMap(r => Object.keys(r.rpc.knee)))];
   document.getElementById("prog-rpc").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">RPC: erigon knee per workload, rps</h3><div class="wrap"><table><thead><tr><th>workload</th>` +
@@ -271,12 +292,13 @@ function ratioCell(k) {
 }
 // EEST benchmark blocks: latest snapshot that has them.
 const btRun = [...data.runs].reverse().find(r => Object.keys(r.bt).length);
-if (btRun) {
-  for (const id of ["bt-title", "bt-note", "bt-race", "bt", "bt-files"]) document.getElementById(id).hidden = false;
-  const files = Object.keys(btRun.bt).sort();
+// px: the section's id prefix; groups: the EEST file groups it shows.
+function btSection(px, groups, what) {
+  for (const id of ["title", "bt-note", "bt-race", "bt", "bt-files"]) document.getElementById(px + id).hidden = false;
+  const files = Object.keys(btRun.bt).filter(f => groups.includes(f.split("/")[0])).sort();
   const btClients = [...new Set(files.flatMap(f => Object.keys(btRun.bt[f])))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || a.localeCompare(b));
   const btTool = { geth: "evm blocktest", erigon: "evm blocktest", revme: "revme blockchaintest", nethermind: "nethtest -b", evmone: "evmone test", gevm: "RunBlockchainTestFile" };
-  document.getElementById("bt-note").innerHTML = buildTag(btRun.versions["erigon-evm"] || btRun.versions.erigon) + clientNote(
+  document.getElementById(px + "bt-note").innerHTML = buildTag(btRun.versions["erigon-evm"] || btRun.versions.erigon) + (px !== "sc-" ? `<p>Method, clients and notes as in <a href="#eest-benchmark-scenario">EEST benchmark scenario</a>.</p>` : clientNote(
     `Eight copies of one 150M-gas block per file, run one after another through each client's own blockchain-test tool, one block per process. ` +
     `Ggas/s = gas / (wall time of the file − wall time of the same file with no blocks), best of 3. ` +
     `Every client parses the fixture, executes the block and checks the state root, so the number is comparable across clients.`,
@@ -287,31 +309,32 @@ if (btRun) {
      `nethtest's dotnet start-up is ~3 s, so nethermind runs the file and the twin second in one process after a pass of the file: start-up and JIT warm-up cancel, nethermind is measured warm, and only the 100 ms floor greys its cells.`,
      `A client with fewer than half of its blocks valid is left out of the hero.`,
      `The precompile tests repeat one input, and geth and neth serve repeated precompile calls from a result cache, so that group compares caches, not precompiles; the hero uses instruction and scenario only.`,
-     `Fixtures: <a href="https://github.com/ethereum/execution-specs/releases/tag/tests-benchmark%40v0.0.9">EEST tests-benchmark@v0.0.9</a>, 150M variant.`], "tool");
+     `Fixtures: <a href="https://github.com/ethereum/execution-specs/releases/tag/tests-benchmark%40v0.0.9">EEST tests-benchmark@v0.0.9</a>, 150M variant.`], "tool"));
   const btGgas = (f, c) => { const x = btRun.bt[f]?.[c]; return x && x.ms > x.twin ? x.gas / (x.ms - x.twin) / 1e6 : NaN; };
   const btGrey = (f, c) => { const x = btRun.bt[f]?.[c]; return x && ((c !== "nethermind" && x.twin / x.ms > 0.3) || x.ms - x.twin < 100); };
   const btBase = btClients.find(c => c.startsWith("erigon"));
   const heroFiles = files.filter(f => !f.startsWith("precompile/"));
   const means = btClients.map(c => ({ c, valid: heroFiles.filter(f => btRun.bt[f]?.[c] && !btGrey(f, c)).length, v: geomean(heroFiles.map(f => btGrey(f, c) ? NaN : btGgas(f, c))) })).filter(r => !isNaN(r.v) && r.valid * 2 >= heroFiles.length);
   const ref = means.find(r => r.c === btBase)?.v, max = Math.max(...means.map(r => r.v));
-  document.getElementById("bt-race").innerHTML = ref ? `<div><h3>${heroFiles.length} instruction and scenario blocks, ${btRun.date.slice(0, 10)}, geometric mean Ggas/s</h3><div class="bars">` +
+  document.getElementById(px + "bt-race").innerHTML = ref ? `<div><h3>${heroFiles.length} ${what} blocks, ${btRun.date.slice(0, 10)}, geometric mean Ggas/s</h3><div class="bars">` +
     means.map(r => { const k = ref / r.v; return `<div class="c">${name(r.c)}</div><div class="b ${r.c === btBase ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div><div class="v">${fmt(r.v, 2)}</div><div class="r ${r.c === btBase ? "" : cls(k)}">${r.c === btBase ? "" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>" : "";
   const bo = btClients.filter(c => c !== btBase);
-  document.getElementById("bt").innerHTML = `<table><thead><tr><th>file</th>${btClients.map(c => `<th>${name(c)}</th>`).join("")}${bo.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
+  document.getElementById(px + "bt").innerHTML = `<table><thead><tr><th>file</th>${btClients.map(c => `<th>${name(c)}</th>`).join("")}${bo.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
     body([...new Set(files.map(f => f.split("/")[0]))].sort((a, b) => (a !== "scenario") - (b !== "scenario") || a.localeCompare(b)).flatMap(g => [`<tr class="group"><td colspan="${1 + btClients.length + bo.length}">${g}</td></tr>`, ...files.filter(f => f.startsWith(g + "/")).map(f => `<tr><td class="f">${f.slice(g.length + 1)}</td>` +
       btClients.map(c => `<td class="${btGrey(f, c) ? "gas" : ""}" title="${btRun.bt[f]?.[c] ? btRun.bt[f][c].ms + " ms, twin " + btRun.bt[f][c].twin + " ms" : ""}">${fmt(btGgas(f, c), 2)}</td>`).join("") +
       bo.map(c => btGrey(f, c) || btGrey(f, btBase) ? `<td class="ratio"><span class="n even">–</span></td>` : ratioCell(btGgas(f, btBase) / btGgas(f, c))).join("") + "</tr>")])) + "</tbody></table>";
 }
+if (btRun) { btSection("sc-", ["scenario"], "scenario"); btSection("in-", ["instruction", "precompile"], "instruction"); }
 
 // Per sub-test: every 150M sub-test of each EEST file, one block per process, for each erigon build and two reference clients.
 const stRun = [...data.runs].reverse().find(r => Object.keys(r.st || {}).length);
-if (stRun) {
-  for (const id of ["bt-title", "st-sum", "st-title", "st-note", "st"]) document.getElementById(id).hidden = false;
+function stSection(px, groups) {
+  for (const id of ["title", "st-sum", "st-title", "st-note", "st"]) document.getElementById(px + id).hidden = false;
   const arms = stRun.stArms.map(r => r[0]), label = Object.fromEntries(stRun.stArms), er = arms.filter(a => !["geth", "revme"].includes(a)), peers = arms.filter(a => !er.includes(a));
   const base = er[0], rest = er.slice(1), nm = a => ({ pr24133: "#24133" })[a] || name(a);
   const g = (x) => x && x.ms - x.twin >= 20 ? x.gas / (x.ms - x.twin) / 1e6 : NaN;
   const catRank = f => ["scenario", "instruction", "precompile"].indexOf(f.split("/")[0]);
-  const rows = Object.entries(stRun.st).sort(([a], [b]) => catRank(a) - catRank(b) || a.localeCompare(b)).flatMap(([f, subs]) => Object.entries(subs).map(([s, x]) => {
+  const rows = Object.entries(stRun.st).filter(([f]) => groups.includes(f.split("/")[0])).sort(([a], [b]) => catRank(a) - catRank(b) || a.localeCompare(b)).flatMap(([f, subs]) => Object.entries(subs).map(([s, x]) => {
     const v = Object.fromEntries(arms.map(a => [a, g(x[a])])), pv = peers.map(a => v[a]).filter(n => !isNaN(n)), best = pv.length ? Math.max(...pv) : NaN;
     return { f, s, x, v, worst: Math.min(...rest.map(a => v[a] / v[base]).filter(n => !isNaN(n))), vsBest: v[base] / best };
   }));
@@ -331,18 +354,19 @@ if (stRun) {
   };
   const worst = (k, r) => r ? `<p><b>Worst case${k}:</b> ${esc(r.f)} ${esc(r.s)} falls from ${fmt(r.v[base], 2)} Ggas/s on ${esc(label[base])} to ${rest.map(a => `${fmt(r.v[a], 2)} with ${esc(label[a])}`).join(", ")} (×${fmt(r.worst, 2)}).</p>` : "";
   const worstOf = c => [...reg].filter(r => !c || r.f.startsWith(c)).sort((a, b) => a.worst - b.worst)[0];
-  document.getElementById("st-sum").innerHTML =
-    nodeAB() + worst("", worstOf()) + ["scenario", "instruction", "precompile"].map(c => worst(` in ${c}`, worstOf(c + "/"))).join("") +
+  document.getElementById(px + "st-sum").innerHTML =
+    (groups.includes("scenario") ? nodeAB() : "") + worst("", worstOf()) + (groups.length > 1 ? groups.map(c => worst(` in ${c}`, worstOf(c + "/"))).join("") : "") +
     `<h3>${reg.length} of ${rows.length} sub-tests are more than ${Math.round(100 * (1 - REG))}% slower than ${esc(label[base])} on a newer erigon build</h3>${list(reg, r => r.worst)}` +
     `<h3>${bad.length} sub-tests where ${esc(label[base])} is under ×${BAD} of the faster of ${peers.map(nm).join(" and ")}</h3>${list(bad, r => r.vsBest)}` +
     `<p class="gas">Measured ${stRun.date.slice(0, 10)}, one 150M block per process, Ggas/s = gas / (wall time − the same file with no blocks), best of 3, one exec worker; arms interleaved per sub-test on one box.</p>`;
-  document.getElementById("st-note").innerHTML = `<p>${arms.map(a => `<b>${esc(nm(a))}</b> = ${esc(label[a] || a)}`).join(", ")}. Red rows: a newer build is more than ${Math.round(100 * (1 - REG))}% slower than ${esc(label[base])}, or ${esc(label[base])} is under ×${BAD} of the best reference client. Grey = under 20 ms net, too short for a wall clock.</p>`;
+  document.getElementById(px + "st-note").innerHTML = `<p>${arms.map(a => `<b>${esc(nm(a))}</b> = ${esc(label[a] || a)}`).join(", ")}. Red rows: a newer build is more than ${Math.round(100 * (1 - REG))}% slower than ${esc(label[base])}, or ${esc(label[base])} is under ×${BAD} of the best reference client. Grey = under 20 ms net, too short for a wall clock.</p>`;
   const cols = [...arms.map(a => `<th>${esc(nm(a))}</th>`), ...rest.map(a => `<th>${esc(nm(a))}/${esc(nm(base))}</th>`), `<th>${esc(nm(base))}/best</th>`].join("");
-  document.getElementById("st").innerHTML = `<table><thead><tr><th>file</th><th>sub-test</th>${cols}</tr></thead><tbody>` +
+  document.getElementById(px + "st").innerHTML = `<table><thead><tr><th>file</th><th>sub-test</th>${cols}</tr></thead><tbody>` +
     body([...reg, ...bad.filter(r => !reg.includes(r)), ...rows.filter(r => !reg.includes(r) && !bad.includes(r))].map(r => `<tr${r.worst < REG || r.vsBest < BAD ? ' class="flag"' : ""}><td class="f">${esc(r.f)}</td><td class="f" title="${esc(r.s)}">${esc(r.s)}</td>` +
       arms.map(a => `<td class="${isNaN(r.v[a]) ? "gas" : ""}" title="${r.x[a] ? r.x[a].ms + " ms, twin " + r.x[a].twin + " ms" : ""}">${fmt(r.v[a], 2)}</td>`).join("") +
       rest.map(a => ratioCell(r.v[a] / r.v[base])).join("") + ratioCell(r.vsBest) + "</tr>")) + "</tbody></table>";
 }
+if (stRun) { stSection("sc-", ["scenario"]); stSection("in-", ["instruction", "precompile"]); }
 
 // Node: benchmarkoor newPayload Mgas/s, latest snapshot that has it. Hero and family rows use the tests every hero client passed;
 // a client valid on fewer than half of the tests keeps its per-test column but stays out of the hero.
@@ -485,6 +509,6 @@ const markToc = () => {
 addEventListener("scroll", markToc, { passive: true });
 markToc();
 // Slugs of renamed headings, so links shared before the rename still land.
-const oldSlugs = { "node-newpayload-mgas-s": "newpayload-bal-off", "node-bal-off-newpayload-mgas-s": "newpayload-bal-off", "node-bal-on-newpayload-mgas-s": "newpayload-bal-on" };
+const oldSlugs = { "evm-eest-benchmark-blocks": "eest-benchmark-scenario", "node-newpayload-mgas-s": "newpayload-bal-off", "node-bal-off-newpayload-mgas-s": "newpayload-bal-off", "node-bal-on-newpayload-mgas-s": "newpayload-bal-on" };
 if (globalThis.location?.hash) { const h = location.hash.slice(1); document.getElementById(oldSlugs[h] ?? h)?.scrollIntoView(); }
 </script>
