@@ -312,7 +312,7 @@ if (stRun) {
   const g = (x) => x && x.ms - x.twin >= 20 ? x.gas / (x.ms - x.twin) / 1e6 : NaN;
   const catRank = f => ["scenario", "instruction", "precompile"].indexOf(f.split("/")[0]);
   const rows = Object.entries(stRun.st).sort(([a], [b]) => catRank(a) - catRank(b) || a.localeCompare(b)).flatMap(([f, subs]) => Object.entries(subs).map(([s, x]) => {
-    const v = Object.fromEntries(arms.map(a => [a, g(x[a])])), best = Math.max(...peers.map(a => v[a]).filter(n => !isNaN(n)));
+    const v = Object.fromEntries(arms.map(a => [a, g(x[a])])), pv = peers.map(a => v[a]).filter(n => !isNaN(n)), best = pv.length ? Math.max(...pv) : NaN;
     return { f, s, x, v, worst: Math.min(...rest.map(a => v[a] / v[base]).filter(n => !isNaN(n))), vsBest: v[base] / best };
   }));
   const REG = 0.85, BAD = 0.33;

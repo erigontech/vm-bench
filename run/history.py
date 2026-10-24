@@ -19,7 +19,8 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
                 run["versions"]["modes"] = "; ".join(m for m in run["versions"]["modes"].split("; ") if m.split(" ")[0] not in hidden)
             continue
         if f.name == "subtests.csv":
-            for file, sub, arm, gas, ms, twin in csv.reader(open(f)):
+            for r in csv.reader(open(f)):  # a sub-test name may contain commas
+                file, sub, (arm, gas, ms, twin) = r[0], ",".join(r[1:-4]), r[-4:]
                 run["st"].setdefault(file, {}).setdefault(sub, {})[arm] = {"gas": int(gas), "ms": int(ms), "twin": int(twin)}
             continue
         if f.name == "subtest-arms.csv":
