@@ -121,6 +121,7 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <nav id="toc" aria-label="Sections"></nav>
 <h1>vm-bench <a href="https://github.com/erigontech/vm-bench" style="font-size:15px;font-weight:500;color:var(--ink-2);margin-left:10px;vertical-align:middle">github.com/erigontech/vm-bench</a></h1>
 <p class="lede">How fast <span class="tag">erigon</span> executes EVM transactions compared with geth, revm, evmone and Nethermind, on the same state-test fixtures, re-measured on every change to main.</p>
+<div class="note" id="status"></div>
 
 <h2 id="prog-title" hidden>Progress</h2>
 <p class="note" id="prog-note" hidden></p>
@@ -191,6 +192,21 @@ document.addEventListener("click", e => {
   tip.textContent = t.title; tip.hidden = false;
 });
 
+
+// Data status: how old each section's data is, and what failed in the run behind the EVM blocks table.
+{
+  const tiers = [["node", "newPayload BAL-off"], ["nodebal", "newPayload BAL-on"], ["calls", "eth_call per transaction"], ["rpcw", "RPC workloads"], ["rpc", "JSON-RPC throughput"], ["bt", "EVM blocks"]];
+  const age = d => (Date.now() - Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10), +d.slice(11, 13), +d.slice(13, 15))) / 36e5;
+  const rows = tiers.map(([k, t]) => {
+    const r = [...data.runs].reverse().find(r => Object.keys(r[k] || {}).length);
+    if (!r) return `<b style="color:var(--loss)">${t}: no data</b>`;
+    const h = age(r.date), txt = `${t}: ${r.date.slice(5, 10)} ${r.date.slice(11, 13)}:${r.date.slice(13, 15)} UTC`;
+    return h > 36 ? `<b style="color:var(--loss)">${txt}, ${Math.round(h / 24)} days old</b>` : txt;
+  });
+  const bt = [...data.runs].reverse().find(r => Object.keys(r.bt).length), errs = bt?.errors || [];
+  document.getElementById("status").innerHTML = "Data: " + rows.join(" · ") +
+    (errs.length ? `<br><b style="color:var(--loss)">EVM blocks run ${bt.date}: ${errs.length} failed</b> <span title="${esc(errs.join("\n"))}">(${esc(errs.slice(0, 4).join("; "))}${errs.length > 4 ? "; …" : ""})</span>` : "");
+}
 
 // progress: one entry per measured main in history/runs.json, oldest first
 const allProg = data.progress || [], prog = allProg.filter(r => !r.dbg);

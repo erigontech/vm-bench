@@ -10,6 +10,8 @@ runs = []
 src, page, branch = (root / sys.argv[1], root / sys.argv[2], sys.argv[3]) if len(sys.argv) > 3 else (root / "history", root / "docs" / "index.html", None)
 for d in sorted(p for p in src.iterdir() if p.is_dir()):
     run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}}
+    if (d / "errors.txt").exists():
+        run["errors"] = (d / "errors.txt").read_text().split("\n")[:-1]
     for f in d.glob("*.csv"):
         if f.name == "versions.csv":
             run["versions"] = {c: v for c, v in csv.reader(open(f)) if c not in hidden}

@@ -10,7 +10,10 @@ export DOTNET_ROOT=${DOTNET_ROOT:-$HOME/.dotnet}
 export EVMONE=${EVMONE:-$HOME/evmone/bin/evmone} NETHTEST=${NETHTEST:-$HOME/nethtest/nethtest}
 export LD_LIBRARY_PATH=$HOME/evmone/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 mkdir -p results
+# Every "<client>: <test> failed" line goes into the snapshot as errors.txt, so the page shows what failed.
+exec 2> >(tee results/stderr.log >&2)
 for client in ${CLIENTS:-erigon geth revme evmone nethermind gevm}; do
+	[ -z "${BLOCKTEST_ONLY:-}" ] || break
 	[ -x run/$client.sh ] || continue  # gevm has only the blocktest tier
 	run/$client.sh > results/$client.csv || echo "$client: runner failed" >&2
 done
@@ -26,5 +29,8 @@ snap=history/$(date -u +%Y-%m-%dT%H%M)
 mkdir -p "$snap"
 for f in results/*.csv; do [ -s "$f" ] && cp "$f" "$snap/"; done
 run/versions.sh > "$snap/versions.csv"
+{ cat results/build-errors.txt 2>/dev/null; grep -E ': .*failed$' results/stderr.log; } > "$snap/errors.txt" || true
+[ -s "$snap/errors.txt" ] || rm "$snap/errors.txt"
+rm -f results/build-errors.txt
 run/history.py
 run/compare.py results/*.csv
