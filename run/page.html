@@ -81,6 +81,7 @@ td.ratio{padding:5px 0 5px 6px;width:5.4em}
 .rb i.l{justify-self:end;background:var(--loss)}
 .rb i.w{background:var(--win)}
 td.ratio span.n{display:inline-block;width:3em;text-align:right;margin-left:4px;vertical-align:middle}
+tr.flag td{background:color-mix(in srgb,var(--loss) 10%,transparent)}
 td.ratio .win{color:var(--win);font-weight:600}td.ratio .loss{color:var(--loss);font-weight:600}td.ratio .even{color:var(--ink-2)}
 
 
@@ -154,8 +155,13 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <div class="wrap" id="rpc"></div>
 
 <h2 id="bt-title" hidden>EVM: EEST benchmark blocks</h2>
+<div class="note" id="st-sum" hidden></div>
 <div class="note" id="bt-note" hidden></div>
 <section class="race" id="bt-race" hidden></section>
+<h3 id="st-title" hidden>erigon builds per sub-test</h3>
+<div class="note" id="st-note" hidden></div>
+<div class="wrap" id="st" hidden></div>
+<h3 id="bt-files" hidden>all clients per file</h3>
 <div class="wrap" id="bt" hidden></div>
 
 <div id="tip" hidden></div>
@@ -266,7 +272,7 @@ function ratioCell(k) {
 // EEST benchmark blocks: latest snapshot that has them.
 const btRun = [...data.runs].reverse().find(r => Object.keys(r.bt).length);
 if (btRun) {
-  for (const id of ["bt-title", "bt-note", "bt-race", "bt"]) document.getElementById(id).hidden = false;
+  for (const id of ["bt-title", "bt-note", "bt-race", "bt", "bt-files"]) document.getElementById(id).hidden = false;
   const files = Object.keys(btRun.bt).sort();
   const btClients = [...new Set(files.flatMap(f => Object.keys(btRun.bt[f])))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || a.localeCompare(b));
   const btTool = { geth: "evm blocktest", erigon: "evm blocktest", revme: "revme blockchaintest", nethermind: "nethtest -b", evmone: "evmone test", gevm: "RunBlockchainTestFile" };
@@ -292,9 +298,37 @@ if (btRun) {
     means.map(r => { const k = ref / r.v; return `<div class="c">${name(r.c)}</div><div class="b ${r.c === btBase ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div><div class="v">${fmt(r.v, 2)}</div><div class="r ${r.c === btBase ? "" : cls(k)}">${r.c === btBase ? "" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>" : "";
   const bo = btClients.filter(c => c !== btBase);
   document.getElementById("bt").innerHTML = `<table><thead><tr><th>file</th>${btClients.map(c => `<th>${name(c)}</th>`).join("")}${bo.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
-    body([...new Set(files.map(f => f.split("/")[0]))].flatMap(g => [`<tr class="group"><td colspan="${1 + btClients.length + bo.length}">${g}</td></tr>`, ...files.filter(f => f.startsWith(g + "/")).map(f => `<tr><td class="f">${f.slice(g.length + 1)}</td>` +
+    body([...new Set(files.map(f => f.split("/")[0]))].sort((a, b) => (a !== "scenario") - (b !== "scenario") || a.localeCompare(b)).flatMap(g => [`<tr class="group"><td colspan="${1 + btClients.length + bo.length}">${g}</td></tr>`, ...files.filter(f => f.startsWith(g + "/")).map(f => `<tr><td class="f">${f.slice(g.length + 1)}</td>` +
       btClients.map(c => `<td class="${btGrey(f, c) ? "gas" : ""}" title="${btRun.bt[f]?.[c] ? btRun.bt[f][c].ms + " ms, twin " + btRun.bt[f][c].twin + " ms" : ""}">${fmt(btGgas(f, c), 2)}</td>`).join("") +
       bo.map(c => btGrey(f, c) || btGrey(f, btBase) ? `<td class="ratio"><span class="n even">–</span></td>` : ratioCell(btGgas(f, btBase) / btGgas(f, c))).join("") + "</tr>")])) + "</tbody></table>";
+}
+
+// Per sub-test: every 150M sub-test of each EEST file, one block per process, for each erigon build and two reference clients.
+const stRun = [...data.runs].reverse().find(r => Object.keys(r.st || {}).length);
+if (stRun) {
+  for (const id of ["bt-title", "st-sum", "st-title", "st-note", "st"]) document.getElementById(id).hidden = false;
+  const arms = stRun.stArms.map(r => r[0]), label = Object.fromEntries(stRun.stArms), er = arms.filter(a => !["geth", "revme"].includes(a)), peers = arms.filter(a => !er.includes(a));
+  const base = er[0], rest = er.slice(1), nm = a => ({ pr24133: "#24133" })[a] || name(a);
+  const g = (x) => x && x.ms - x.twin >= 20 ? x.gas / (x.ms - x.twin) / 1e6 : NaN;
+  const catRank = f => ["scenario", "instruction", "precompile"].indexOf(f.split("/")[0]);
+  const rows = Object.entries(stRun.st).sort(([a], [b]) => catRank(a) - catRank(b) || a.localeCompare(b)).flatMap(([f, subs]) => Object.entries(subs).map(([s, x]) => {
+    const v = Object.fromEntries(arms.map(a => [a, g(x[a])])), best = Math.max(...peers.map(a => v[a]).filter(n => !isNaN(n)));
+    return { f, s, x, v, worst: Math.min(...rest.map(a => v[a] / v[base]).filter(n => !isNaN(n))), vsBest: v[base] / best };
+  }));
+  const REG = 0.85, BAD = 0.33;
+  const line = r => `<b>${esc(r.f)}</b> ${esc(r.s)}: ` + er.map(a => `${esc(label[a] || a)} ${fmt(r.v[a], 2)}`).join(" → ") + ` Ggas/s`;
+  const reg = rows.filter(r => r.worst < REG).sort((a, b) => a.worst - b.worst), bad = rows.filter(r => r.vsBest < BAD).sort((a, b) => a.vsBest - b.vsBest);
+  const list = (rs, k) => rs.length ? `<ol>${rs.slice(0, 25).map(r => `<li>${line(r)} (×${fmt(k(r), 2)})</li>`).join("")}</ol>${rs.length > 25 ? `<p>+${rs.length - 25} more in the table below.</p>` : ""}` : "<p>none</p>";
+  document.getElementById("st-sum").innerHTML =
+    `<h3>${reg.length} of ${rows.length} sub-tests are more than ${Math.round(100 * (1 - REG))}% slower than ${esc(label[base])} on a newer erigon build</h3>${list(reg, r => r.worst)}` +
+    `<h3>${bad.length} sub-tests where ${esc(label[base])} is under ×${BAD} of the faster of ${peers.map(nm).join(" and ")}</h3>${list(bad, r => r.vsBest)}` +
+    `<p class="gas">Measured ${stRun.date.slice(0, 10)}, one 150M block per process, Ggas/s = gas / (wall time − the same file with no blocks), best of 3, one exec worker; arms interleaved per sub-test on one box.</p>`;
+  document.getElementById("st-note").innerHTML = `<p>${arms.map(a => `<b>${esc(nm(a))}</b> = ${esc(label[a] || a)}`).join(", ")}. Red rows: a newer build is more than ${Math.round(100 * (1 - REG))}% slower than ${esc(label[base])}, or ${esc(label[base])} is under ×${BAD} of the best reference client. Grey = under 20 ms net, too short for a wall clock.</p>`;
+  const cols = [...arms.map(a => `<th>${esc(nm(a))}</th>`), ...rest.map(a => `<th>${esc(nm(a))}/${esc(nm(base))}</th>`), `<th>${esc(nm(base))}/best</th>`].join("");
+  document.getElementById("st").innerHTML = `<table><thead><tr><th>file</th><th>sub-test</th>${cols}</tr></thead><tbody>` +
+    body([...reg, ...bad.filter(r => !reg.includes(r)), ...rows.filter(r => !reg.includes(r) && !bad.includes(r))].map(r => `<tr${r.worst < REG || r.vsBest < BAD ? ' class="flag"' : ""}><td class="f">${esc(r.f)}</td><td class="f" title="${esc(r.s)}">${esc(r.s)}</td>` +
+      arms.map(a => `<td class="${isNaN(r.v[a]) ? "gas" : ""}" title="${r.x[a] ? r.x[a].ms + " ms, twin " + r.x[a].twin + " ms" : ""}">${fmt(r.v[a], 2)}</td>`).join("") +
+      rest.map(a => ratioCell(r.v[a] / r.v[base])).join("") + ratioCell(r.vsBest) + "</tr>")) + "</tbody></table>";
 }
 
 // Node: benchmarkoor newPayload Mgas/s, latest snapshot that has it. Hero and family rows use the tests every hero client passed;
