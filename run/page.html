@@ -243,12 +243,15 @@ if (prog.length) {
     // the y range spans at least 10% of the value, so a move inside the noise stays a flat line
     const all = dv ? [...vals, dv.v] : vals, w = 420, h = 110, p = 40, lo = Math.min(...all), hi = Math.max(...all), sp = Math.max(hi - lo, hi * 0.1) || 1, mid = (hi + lo) / 2;
     const x = i => p + i * (w - 2 * p) / Math.max(1, all.length - 1), y = v => 22 + (h - 46) * (0.5 - (v - mid) / sp), n = vals.length;
+    // With many points only every step-th one (and the first and last) carries a value and a date; every dot has a hover title.
+    const step = Math.ceil(n / 7), lab = i => i === 0 || i === n - 1 || (i % step === 0 && n - 1 - i >= step / 2);
     const segs = [];
     vals.forEach((v, i) => (i && fx[i] === fx[i - 1] ? segs[segs.length - 1] : segs[segs.push([]) - 1]).push(i));
     return `<svg viewBox="0 0 ${w} ${h}" role="img">` + segs.map(s => `<polyline class="ln erigon" points="${s.map(i => x(i) + "," + y(vals[i])).join(" ")}"/>`).join("") +
       segs.slice(1).map(s => { const bx = (x(s[0] - 1) + x(s[0])) / 2; return `<line class="ax" x1="${bx}" x2="${bx}" y1="8" y2="${h - 18}" stroke-dasharray="3 3"/><text class="tick" x="${bx + 4}" y="12">${fx[s[0]]}</text>`; }).join("") +
-      vals.map((v, i) => `<circle class="dot erigon" cx="${x(i)}" cy="${y(v)}"/><text class="end erigon" x="${x(i)}" y="${y(v) - 8}" text-anchor="middle">${f(v)}</text>`).join("") +
-      rows.map((r, i) => `<text class="tick" x="${x(i)}" y="${h - 4}" text-anchor="middle">${r.date.slice(5)}</text>`).join("") +
+      vals.map((v, i) => `<circle class="dot erigon" cx="${x(i)}" cy="${y(v)}"><title>${rows[i].date.slice(5)}: ${f(v)}</title></circle>` +
+        (lab(i) ? `<text class="end erigon" x="${x(i)}" y="${y(v) - 8}" text-anchor="middle">${f(v)}</text>` : "")).join("") +
+      rows.map((r, i) => lab(i) ? `<text class="tick" x="${x(i)}" y="${h - 4}" text-anchor="middle">${r.date.slice(5)}</text>` : "").join("") +
       (dv ? `<line class="ln dbg" x1="${x(n - 1)}" y1="${y(vals[n - 1])}" x2="${x(n)}" y2="${y(dv.v)}"/><circle class="dot dbg" cx="${x(n)}" cy="${y(dv.v)}"/>` +
         `<text class="end dbg" x="${x(n)}" y="${y(dv.v) - 9}" text-anchor="middle">${f(dv.v)}</text><text class="tick dbg" x="${x(n)}" y="${h - 4}" text-anchor="middle">dbg ${dv.sha.slice(0, 8)}</text>` : "") + "</svg>";
   };

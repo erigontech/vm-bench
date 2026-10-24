@@ -1,5 +1,470 @@
 [
   {
+    "date": "2026-10-01",
+    "old": null,
+    "new": "6bfdad5404e129c5d757103d720152f2d8e33a3d",
+    "evm": {
+      "mgas": 784.9,
+      "ratio": 0.445,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1355.3,
+      "ratio": 0.338,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 2776.8,
+      "ratio": 0.52,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-02",
+    "old": "6bfdad5404e129c5d757103d720152f2d8e33a3d",
+    "new": "301ffbc21685c583f526335d0ac53666a2364624",
+    "evm": {
+      "mgas": 760.7,
+      "ratio": 0.431,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1370.0,
+      "ratio": 0.343,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 2770.0,
+      "ratio": 0.518,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; EVM x0.97 vs 6bfdad5404 (10-01)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-03",
+    "old": "301ffbc21685c583f526335d0ac53666a2364624",
+    "new": "e393829ca9748bda6196f1f36839888d4715b90c",
+    "evm": {
+      "mgas": 763.0,
+      "ratio": 0.432,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1360.5,
+      "ratio": 0.34,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 2786.0,
+      "ratio": 0.521,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-04",
+    "old": "e393829ca9748bda6196f1f36839888d4715b90c",
+    "new": "5cb6c8674de8ff3967d36356cfdcd0f0b88e31ce",
+    "evm": {
+      "mgas": 746.1,
+      "ratio": 0.423,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1374.9,
+      "ratio": 0.344,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 2768.8,
+      "ratio": 0.517,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; EVM x0.98, BAL-on x0.99 vs e393829ca9 (10-03)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-05",
+    "old": "5cb6c8674de8ff3967d36356cfdcd0f0b88e31ce",
+    "new": "96188a47395eb2a1f95e49d2c939f08fa15d66c7",
+    "evm": {
+      "mgas": 1033.0,
+      "ratio": 0.585,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1759.0,
+      "ratio": 0.452,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3473.4,
+      "ratio": 0.657,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; EVM x1.38, node x1.28, BAL-on x1.25 vs 5cb6c8674d (10-04)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-06",
+    "old": "96188a47395eb2a1f95e49d2c939f08fa15d66c7",
+    "new": "be875431395319db5d5e3260a876f5cd403c7976",
+    "evm": {
+      "mgas": 1014.4,
+      "ratio": 0.575,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1802.3,
+      "ratio": 0.466,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3567.6,
+      "ratio": 0.679,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; EVM x0.98, node x1.02, BAL-on x1.03 vs 96188a4739 (10-05)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-07",
+    "old": "be875431395319db5d5e3260a876f5cd403c7976",
+    "new": "1b2ae29a8cafbbc82587c7d02ae996b917c4ab58",
+    "evm": {
+      "mgas": 1015.6,
+      "ratio": 0.575,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1788.2,
+      "ratio": 0.462,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3527.8,
+      "ratio": 0.671,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; BAL-on x0.99 vs be87543139 (10-06)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-08",
+    "old": "1b2ae29a8cafbbc82587c7d02ae996b917c4ab58",
+    "new": "5b3fc33321c6c0156840a0adb08930c3f8a71c0f",
+    "evm": {
+      "mgas": 1017.3,
+      "ratio": 0.576,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1798.2,
+      "ratio": 0.464,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3559.2,
+      "ratio": 0.678,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; BAL-on x1.01 vs 1b2ae29a8c (10-07)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-09",
+    "old": "5b3fc33321c6c0156840a0adb08930c3f8a71c0f",
+    "new": "97f059e62572a7076b688880576273111c4b6e08",
+    "evm": {
+      "mgas": 1055.5,
+      "ratio": 0.598,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1827.2,
+      "ratio": 0.474,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3627.0,
+      "ratio": 0.693,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; EVM x1.04, BAL-on x1.02 vs 5b3fc33321 (10-08)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-10",
+    "old": "97f059e62572a7076b688880576273111c4b6e08",
+    "new": "e1c10eeda75220bb6f95b8761678f766eb887628",
+    "evm": {
+      "mgas": 1054.6,
+      "ratio": 0.597,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1822.7,
+      "ratio": 0.472,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3627.4,
+      "ratio": 0.694,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-11",
+    "old": "e1c10eeda75220bb6f95b8761678f766eb887628",
+    "new": "1d3ebbf217f6b4f99028cd590889a5c9f3aaa969",
+    "evm": {
+      "mgas": 1057.3,
+      "ratio": 0.599,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1837.0,
+      "ratio": 0.477,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3647.0,
+      "ratio": 0.697,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-12",
+    "old": "1d3ebbf217f6b4f99028cd590889a5c9f3aaa969",
+    "new": "010665de0a1b656cddef4f31655b568d58160814",
+    "evm": {
+      "mgas": 1063.3,
+      "ratio": 0.602,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1805.3,
+      "ratio": 0.467,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3589.8,
+      "ratio": 0.683,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; BAL-on x0.98 vs 1d3ebbf217 (10-11)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-13",
+    "old": "010665de0a1b656cddef4f31655b568d58160814",
+    "new": "02be1a7893e87cf3ec748aeb45796345ba48457f",
+    "evm": {
+      "mgas": 986.8,
+      "ratio": 0.559,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1836.8,
+      "ratio": 0.478,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3670.2,
+      "ratio": 0.702,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; EVM x0.93, BAL-on x1.02 vs 010665de0a (10-12)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-14",
+    "old": "02be1a7893e87cf3ec748aeb45796345ba48457f",
+    "new": "362e903341f1bd32f4bbbc5150e716808d93393e",
+    "evm": {
+      "mgas": 1006.7,
+      "ratio": 0.57,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1855.7,
+      "ratio": 0.483,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3711.2,
+      "ratio": 0.712,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; EVM x1.02, BAL-on x1.01 vs 02be1a7893 (10-13)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-15",
+    "old": "362e903341f1bd32f4bbbc5150e716808d93393e",
+    "new": "7af7e8747f8e1993298e7b5e1be27f4ce4a05980",
+    "evm": {
+      "mgas": 1050.2,
+      "ratio": 0.595,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1837.6,
+      "ratio": 0.478,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3688.5,
+      "ratio": 0.71,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; EVM x1.04, BAL-on x0.99 vs 362e903341 (10-14)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
     "date": "2026-10-16",
     "old": null,
     "new": "670e20e109af4f66528c05661d6c446d4551aeee",
@@ -130,6 +595,37 @@
     "shipped": [
       "#24960 rpc: calls with state overrides run on the versioned state path"
     ]
+  },
+  {
+    "date": "2026-10-18",
+    "old": "df6a0a67cdcb4f2bd509bdb4f1d5a8ff1849ad14",
+    "new": "3b184f9855ef0b088e11bee32fb66980eda55bdc",
+    "evm": {
+      "mgas": 1022.9,
+      "ratio": 0.58,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1801.6,
+      "ratio": 0.466,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3615.9,
+      "ratio": 0.692,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; node x0.97 vs df6a0a67cd (10-17)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
   },
   {
     "date": "2026-10-19",
@@ -362,6 +858,37 @@
     "dbg": true
   },
   {
+    "date": "2026-10-20",
+    "old": "77d3569d13973ae5e4e8220f5541e670e04bd814",
+    "new": "ec01a338c69d81330c0f81952ac693b0a7f819c7",
+    "evm": {
+      "mgas": 1074.5,
+      "ratio": 0.609,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 1963.1,
+      "ratio": 0.5,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3845.4,
+      "ratio": 0.73,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; node x1.05 vs 77d3569d13 (10-19)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
     "date": "2026-10-21",
     "old": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
     "new": "b03dee1904f6a01c43d9acf95c19d284382a6ba8",
@@ -535,6 +1062,37 @@
     }
   },
   {
+    "date": "2026-10-22",
+    "old": "3324fd6b4819011a7bc7b392babbec3a28e3366b",
+    "new": "36e65012a9f8348bdc17daddeb809a17014a3902",
+    "evm": {
+      "mgas": 1045.2,
+      "ratio": 0.592,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 4297.9,
+      "ratio": 1.115,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 3977.5,
+      "ratio": 0.752,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "backfill; EVM x0.96, node x2.11, BAL-on x1.01 vs 3324fd6b48 (10-21)",
+    "better": [],
+    "worse": [],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
     "date": "2026-10-23",
     "old": "3324fd6b4819011a7bc7b392babbec3a28e3366b",
     "new": "2cedbabffc5e2e598e5c723d12bc5a0bad05ed01",
@@ -647,5 +1205,126 @@
     "worse": [],
     "bottlenecks": [],
     "shipped": []
+  },
+  {
+    "date": "2026-10-24",
+    "old": "2cedbabffc5e2e598e5c723d12bc5a0bad05ed01",
+    "new": "0a7733e2a8d4d5b4f4353e11fe09871a97577004",
+    "evm": {
+      "mgas": 1088.1,
+      "ratio": 0.616,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 4477.0,
+      "ratio": 1.176,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 4124.8,
+      "ratio": 0.789,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "better": [
+      "node suite x1.06, BAL-on x1.06 over the families (#25164 cheap ops inline, #25156 MCOPY fast path)"
+    ],
+    "worse": [
+      "BAL-on identity x0.67, selfbalance x0.81; node iszero x0.83, sha256 x0.86 (single tests)"
+    ],
+    "bottlenecks": [],
+    "shipped": [
+      "#25164 cheap context, bitwise, DUP9-16 and SWAP5-16 ops inline",
+      "#25156 MCOPY fast-path bounds",
+      "#24041 fee re-credit balance read"
+    ],
+    "note": "EVM x1.06, node x1.04, BAL-on x1.04 vs 2cedbabffc (10-23)"
+  },
+  {
+    "date": "2026-10-24",
+    "dbg": true,
+    "old": "29e1236382a5e7a0d560c9abde864c218bfaa4f0",
+    "new": "8be122f17bb9401c0eb2d98623b7b8744b09bbaa",
+    "evm": {
+      "mgas": 1113.4,
+      "ratio": 0.631,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 4598.9,
+      "ratio": 1.238,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 4064.5,
+      "ratio": 0.795,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "dbg: main 2026-10-24 + #24133 head, #25210, #25222, #25264 and other open PRs",
+    "better": [
+      "storage_access_warm SSTORE new value x1.83 node, x1.96 / x3.13 BAL-on",
+      "codecopy / calldatacopy / returndatacopy x1.21 / x1.38 / x1.27 node, x1.22 / x1.36 / x1.26 BAL-on (up to x2.0)",
+      "BAL-on selfdestruct_initcode x1.50, selfdestruct_created x1.24; node selfdestruct_created x1.09, initcode x0.98"
+    ],
+    "worse": [
+      "node identity x0.78, blobhash x0.80 (2 tests); BAL-on block_full_data x0.83, selfdestruct_existing x0.84"
+    ],
+    "bottlenecks": [],
+    "shipped": []
+  },
+  {
+    "date": "2026-10-25",
+    "old": "0a7733e2a8d4d5b4f4353e11fe09871a97577004",
+    "new": "f9a0ca070d23febddf34333dd170e7b4587fe875",
+    "evm": {
+      "mgas": 1111.2,
+      "ratio": 0.63,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 4611.7,
+      "ratio": 1.222,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 4249.3,
+      "ratio": 0.819,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "better": [
+      "exp_bench_arithmetic x2.57 node, x2.59 BAL-on (36 tests, #25188)",
+      "push x1.34 node, x1.37 BAL-on (33 tests, #25210)",
+      "BAL-on calldataload x1.19"
+    ],
+    "worse": [
+      "node tload x0.77 (4 tests), shifts x0.78, storage_access_warm_benchmark x0.84, returndatasize_nonzero x0.84 (12 tests)",
+      "BAL-on blobhash x0.80, swapn x0.80, extcodecopy_warm x0.82, selfdestruct_created x0.83"
+    ],
+    "bottlenecks": [],
+    "shipped": [
+      "#25188 faster EXP for an odd base with a large exponent",
+      "#25210 PUSH3-32 immediates as one 32-byte window",
+      "#25227 revert logs by snapshot count",
+      "#25263 burnt contract self-destruct",
+      "#25308 pooled btree cursor key copy"
+    ],
+    "note": "EVM x1.02, node x1.03, BAL-on x1.03 vs 0a7733e2a8 (10-24)"
   }
 ]
