@@ -326,14 +326,13 @@ if (stRun) {
     const L = Object.fromEntries(nr.nodeabArms), rs = Object.entries(nr.nodeab).map(([t, x]) => ({ t: t.replace(/^test_/, ""), ...x, k: x.b / x.a })).sort((p, q) => p.k - q.k);
     const w = rs[0], slow = rs.filter(r => r.k < REG);
     return `<p><b>Worst case (node tier):</b> ${esc(w.t)} falls from ${fmt(w.a, 0)} to ${fmt(w.b, 0)} Mgas/s with #24133 (×${fmt(w.k, 2)}).</p>` +
-      `<h3>Node tier, ${esc(L.scope || "")}, ${nr.date.slice(0, 10)}: ${slow.length} of ${rs.length} tests more than ${Math.round(100 * (1 - REG))}% slower with #24133</h3>` +
-      `<ol>${slow.slice(0, 25).map(r => `<li>${esc(r.t)}: ${esc(L.a)} ${fmt(r.a, 0)} → ${esc(L.b)} ${fmt(r.b, 0)} Mgas/s (×${fmt(r.k, 2)})</li>`).join("")}</ol>${slow.length > 25 ? `<p>+${slow.length - 25} more.</p>` : ""}`;
+      `<details><summary>${slow.length} of ${rs.length} node-tier tests more than ${Math.round(100 * (1 - REG))}% slower with #24133</summary><h3>Node tier, ${esc(L.scope || "")}, ${nr.date.slice(0, 10)}: ${slow.length} of ${rs.length} tests more than ${Math.round(100 * (1 - REG))}% slower with #24133</h3>` +
+      `<ol>${slow.slice(0, 25).map(r => `<li>${esc(r.t)}: ${esc(L.a)} ${fmt(r.a, 0)} → ${esc(L.b)} ${fmt(r.b, 0)} Mgas/s (×${fmt(r.k, 2)})</li>`).join("")}</ol>${slow.length > 25 ? `<p>+${slow.length - 25} more.</p>` : ""}</details>`;
   };
   const worst = (k, r) => r ? `<p><b>Worst case${k}:</b> ${esc(r.f)} ${esc(r.s)} falls from ${fmt(r.v[base], 2)} Ggas/s on ${esc(label[base])} to ${rest.map(a => `${fmt(r.v[a], 2)} with ${esc(label[a])}`).join(", ")} (×${fmt(r.worst, 2)}).</p>` : "";
   const worstOf = c => [...reg].filter(r => !c || r.f.startsWith(c)).sort((a, b) => a.worst - b.worst)[0];
   document.getElementById("st-sum").innerHTML =
-    worst("", worstOf()) + ["scenario", "instruction", "precompile"].map(c => worst(` in ${c}`, worstOf(c + "/"))).join("") +
-    nodeAB() +
+    nodeAB() + worst("", worstOf()) + ["scenario", "instruction", "precompile"].map(c => worst(` in ${c}`, worstOf(c + "/"))).join("") +
     `<h3>${reg.length} of ${rows.length} sub-tests are more than ${Math.round(100 * (1 - REG))}% slower than ${esc(label[base])} on a newer erigon build</h3>${list(reg, r => r.worst)}` +
     `<h3>${bad.length} sub-tests where ${esc(label[base])} is under ×${BAD} of the faster of ${peers.map(nm).join(" and ")}</h3>${list(bad, r => r.vsBest)}` +
     `<p class="gas">Measured ${stRun.date.slice(0, 10)}, one 150M block per process, Ggas/s = gas / (wall time − the same file with no blocks), best of 3, one exec worker; arms interleaved per sub-test on one box.</p>`;
