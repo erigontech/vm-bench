@@ -1366,7 +1366,10 @@
       "EVM ether_transfers x0.77, contract_creation x0.77, unchunkified_bytecode x0.62",
       "RPC trcblk33 x0.26, callmany11 x0.49, est33 x0.73; E/R m33 x0.69, eth_getProof x0.36, trace_block x0.40"
     ],
-    "bottlenecks": [],
+    "bottlenecks": [
+      "node contract_creation contract_size_max: x0.09 of the best client; top frames fastkeccak.keccakF1600BMI2 and tidwall/btree search, about 8% each, once the KZG context build is left out",
+      "node selfdestruct_existing value_bearing: x0.12 of the best client; not profiled, because a fresh node answers SYNCING to the first newPayload, the same startup failure the #24133 dbg builds showed"
+    ],
     "shipped": [
       "#24133 Block-STM parallel execution 2/2",
       "#24844 versionMap <=> noMaterialize",
