@@ -1329,5 +1329,50 @@
       "#25308 pooled btree cursor key copy"
     ],
     "note": "EVM x1.02, node x1.03, BAL-on x1.03 vs 0a7733e2a8 (10-24)"
+  },
+  {
+    "date": "2026-10-26",
+    "old": "f9a0ca070d23febddf34333dd170e7b4587fe875",
+    "new": "71a7eb1de1cd5dc7f7d7f869691a3ab3a1368834",
+    "evm": {
+      "mgas": 1134.4,
+      "ratio": 0.643,
+      "best": "nethermind",
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 4641.1,
+      "ratio": 1.243,
+      "best": "nethermind",
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 4271.0,
+      "ratio": 0.838,
+      "best": "reth",
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "EVM x1.02 vs f9a0ca070d; #24133 Block-STM (2/2) and #24844 merged: the per-tx families lose, the copy ops gain",
+    "better": [
+      "codecopy_benchmark x1.44, calldatacopy_from_call x1.47 node; returndatacopy x1.30, calldatacopy x1.44-1.46 BAL-on (#25222)",
+      "callvalue_from_call x2.43, callvalue_from_origin x1.71 node"
+    ],
+    "worse": [
+      "node ether_transfers x0.75 (60 tests), storage_access_cold x0.72 (14), contract_creation x0.70 (6), selfdestruct x0.69-0.73, ext_account_query_cold x0.63",
+      "BAL-on creates_collisions x0.59, block_full_data x0.68, storage_access_cold x0.73, ether_transfers x0.86",
+      "EVM ether_transfers x0.77, contract_creation x0.77, unchunkified_bytecode x0.62",
+      "RPC trcblk33 x0.26, callmany11 x0.49, est33 x0.73; E/R m33 x0.69, eth_getProof x0.36, trace_block x0.40"
+    ],
+    "bottlenecks": [],
+    "shipped": [
+      "#24133 Block-STM parallel execution 2/2",
+      "#24844 versionMap <=> noMaterialize",
+      "#25222 inline CODECOPY, CALLDATACOPY and RETURNDATACOPY",
+      "#25225 BAL bounded dispatch window",
+      "#25314 keep a released exec slot's roTx"
+    ]
   }
 ]
