@@ -320,10 +320,12 @@ function btSection(px, groups, what) {
   const heroFiles = files.filter(f => !f.startsWith("precompile/"));
   const means = btClients.map(c => ({ c, valid: heroFiles.filter(f => btRun.bt[f]?.[c] && !btGrey(f, c)).length, v: geomean(heroFiles.map(f => btGrey(f, c) ? NaN : btGgas(f, c))) })).filter(r => !isNaN(r.v) && r.valid * 2 >= heroFiles.length);
   const ref = means.find(r => r.c === btBase)?.v, max = Math.max(...means.map(r => r.v));
-  const bars = (t, rs) => `<div><h3>${heroFiles.length} ${what} blocks, ${t}, ${btRun.date.slice(0, 10)}, geometric mean Ggas/s</h3><div class="bars">` +
-    rs.map(r => { const k = ref / r.v; return `<div class="c">${name(r.c)}</div><div class="b ${r.c === btBase ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div><div class="v">${fmt(r.v, 2)}</div><div class="r ${r.c === btBase ? "" : cls(k)}">${r.c === btBase ? "" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>";
-  document.getElementById(px + "bt-race").innerHTML = ref ? bars("trie-yes", means.filter(r => !noTrie(r.c))) +
-    (means.some(r => noTrie(r.c)) ? bars("trie-no (no state root, erigon for reference)", means.filter(r => r.c === btBase || noTrie(r.c))) : "") : "";
+  // erigon vs a client: per-file ratios on the files both ran cleanly, so a file one of them lost to grey does not move the ratio
+  const vsBase = c => geomean(heroFiles.filter(f => !btGrey(f, c) && !btGrey(f, btBase)).map(f => btGgas(f, btBase) / btGgas(f, c)));
+  const bars = (t, rs, ratio) => `<div><h3>${heroFiles.length} ${what} blocks, ${t}, ${btRun.date.slice(0, 10)}, geometric mean Ggas/s</h3><div class="bars">` +
+    rs.map(r => { const k = vsBase(r.c), show = ratio && r.c !== btBase && !isNaN(k); return `<div class="c">${name(r.c)}</div><div class="b ${r.c === btBase ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div><div class="v">${fmt(r.v, 2)}</div><div class="r ${show ? cls(k) : ""}">${show ? "×" + fmt(k, 2) : ""}</div>`; }).join("") + "</div></div>";
+  document.getElementById(px + "bt-race").innerHTML = ref ? bars("trie-yes", means.filter(r => !noTrie(r.c)), true) +
+    (means.some(r => noTrie(r.c)) ? bars("trie-no (no state root, not comparable with erigon)", means.filter(r => noTrie(r.c)), false) : "") : "";
   const bo = btClients.filter(c => c !== btBase);
   const span = (cs, l) => cs.length ? `<th colspan="${cs.length}">${l}</th>` : "";
   document.getElementById(px + "bt").innerHTML = `<table><thead><tr><th></th>${span(btClients.filter(c => !noTrie(c)), "trie-yes")}${span(btClients.filter(noTrie), "trie-no")}${span(bo.filter(c => !noTrie(c)), "trie-yes")}${span(bo.filter(noTrie), "trie-no")}</tr><tr><th>file</th>${btClients.map(c => `<th>${name(c)}</th>`).join("")}${bo.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
