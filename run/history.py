@@ -65,7 +65,7 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
             run["ns"].setdefault(fixture, {})[client] = int(ns)
     runs.append(run)
 # Scenario blocks per run, before the per-tier pruning below drops older bt data: erigon's geometric mean Mgas/s and erigon / best client,
-# both over cells that are not grey (twin under 30% of the run, net at least 100 ms). gevm has no state root, so it is no peer.
+# both over cells that are not grey (twin under 30% of the run, net at least 100 ms). revme and gevm compute no state root, so they are no peers.
 def scenario_point(run):
     def mgas(f, c):
         x = run["bt"][f].get(c)
@@ -76,7 +76,7 @@ def scenario_point(run):
     if not files or sum(v is not None for v in e.values()) * 2 < len(files):
         return None
     peers = {}
-    for c in {c for f in files for c in run["bt"][f]} - {"erigon", "gevm"}:
+    for c in {c for f in files for c in run["bt"][f]} - {"erigon", "gevm", "revme"}:
         both = [f for f in files if e[f] and mgas(f, c)]
         if len(both) * 2 >= len(files):
             peers[c] = gm([e[f] for f in both]) / gm([mgas(f, c) for f in both])

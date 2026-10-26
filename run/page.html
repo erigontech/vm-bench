@@ -299,14 +299,16 @@ const btRun = [...data.runs].reverse().find(r => Object.keys(r.bt).length);
 function btSection(px, groups, what) {
   for (const id of ["title", "bt-note", "bt-race", "bt", "bt-files"]) document.getElementById(px + id).hidden = false;
   const files = Object.keys(btRun.bt).filter(f => groups.includes(f.split("/")[0])).sort();
-  const btClients = [...new Set(files.flatMap(f => Object.keys(btRun.bt[f])))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || a.localeCompare(b));
+  // trie-no clients keep state in memory and compute no state root, so they are not peers of a node
+  const noTrie = c => c === "revme" || c === "gevm";
+  const btClients = [...new Set(files.flatMap(f => Object.keys(btRun.bt[f])))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || noTrie(a) - noTrie(b) || a.localeCompare(b));
   const btTool = { geth: "evm blocktest", erigon: "evm blocktest", revme: "revme blockchaintest", nethermind: "nethtest -b", evmone: "evmone test", gevm: "RunBlockchainTestFile" };
   document.getElementById(px + "bt-note").innerHTML = buildTag(btRun.versions["erigon-evm"] || btRun.versions.erigon) + (px !== "sc-" ? `<p>Method, clients and notes as in <a href="#eest-benchmark-scenario">EEST benchmark scenario</a>.</p>` : clientNote(
     `Eight copies of one 150M-gas block per file, run one after another through each client's own blockchain-test tool, one block per process. ` +
     `Ggas/s = gas / (wall time of the file − wall time of the same file with no blocks), best of 3. ` +
-    `Every client parses the fixture, executes the block and checks the state root, so the number is comparable across clients.`,
+    `trie-yes clients (erigon, geth, nethermind, evmone) compute the state root; trie-no clients (revme, gevm) keep state in memory, compute no state root and check the post-state account by account. Compare erigon with trie-yes; read trie-no as an upper bound.`,
     btClients.map(c => [c, btRun.versions[c + "-evm"] || btRun.versions[c], btTool[c]]),
-    [`gevm is the exception: it has no trie, computes no state root and checks the post-state account by account, from geth's dump of the same block; read its column as an upper bound.`,
+    [`Erigon, geth and nethermind recover tx senders (ecrecover); evmone, revme and gevm take senders from the fixture. gevm checks the post-state against geth's dump of the same block.`,
      `Grey = the no-block twin is more than 30% of the run or the net time is under 100 ms: setup-dominated or too short for a wall clock.`,
      `This tier compares interpreters: every client executes the block on one thread, so erigon runs with one exec worker. With its default workers erigon runs the txs of one sender in parallel, about x2 on these blocks. The node tier runs each client's default node.`,
      `nethtest's dotnet start-up is ~3 s, so nethermind runs the file and the twin second in one process after a pass of the file: start-up and JIT warm-up cancel, nethermind is measured warm, and only the 100 ms floor greys its cells.`,
@@ -319,10 +321,13 @@ function btSection(px, groups, what) {
   const heroFiles = files.filter(f => !f.startsWith("precompile/"));
   const means = btClients.map(c => ({ c, valid: heroFiles.filter(f => btRun.bt[f]?.[c] && !btGrey(f, c)).length, v: geomean(heroFiles.map(f => btGrey(f, c) ? NaN : btGgas(f, c))) })).filter(r => !isNaN(r.v) && r.valid * 2 >= heroFiles.length);
   const ref = means.find(r => r.c === btBase)?.v, max = Math.max(...means.map(r => r.v));
-  document.getElementById(px + "bt-race").innerHTML = ref ? `<div><h3>${heroFiles.length} ${what} blocks, ${btRun.date.slice(0, 10)}, geometric mean Ggas/s</h3><div class="bars">` +
-    means.map(r => { const k = ref / r.v; return `<div class="c">${name(r.c)}</div><div class="b ${r.c === btBase ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div><div class="v">${fmt(r.v, 2)}</div><div class="r ${r.c === btBase ? "" : cls(k)}">${r.c === btBase ? "" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>" : "";
+  const bars = (t, rs) => `<div><h3>${heroFiles.length} ${what} blocks, ${t}, ${btRun.date.slice(0, 10)}, geometric mean Ggas/s</h3><div class="bars">` +
+    rs.map(r => { const k = ref / r.v; return `<div class="c">${name(r.c)}</div><div class="b ${r.c === btBase ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div><div class="v">${fmt(r.v, 2)}</div><div class="r ${r.c === btBase ? "" : cls(k)}">${r.c === btBase ? "" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>";
+  document.getElementById(px + "bt-race").innerHTML = ref ? bars("trie-yes", means.filter(r => !noTrie(r.c))) +
+    (means.some(r => noTrie(r.c)) ? bars("trie-no (no state root, erigon for reference)", means.filter(r => r.c === btBase || noTrie(r.c))) : "") : "";
   const bo = btClients.filter(c => c !== btBase);
-  document.getElementById(px + "bt").innerHTML = `<table><thead><tr><th>file</th>${btClients.map(c => `<th>${name(c)}</th>`).join("")}${bo.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
+  const span = (cs, l) => cs.length ? `<th colspan="${cs.length}">${l}</th>` : "";
+  document.getElementById(px + "bt").innerHTML = `<table><thead><tr><th></th>${span(btClients.filter(c => !noTrie(c)), "trie-yes")}${span(btClients.filter(noTrie), "trie-no")}${span(bo.filter(c => !noTrie(c)), "trie-yes")}${span(bo.filter(noTrie), "trie-no")}</tr><tr><th>file</th>${btClients.map(c => `<th>${name(c)}</th>`).join("")}${bo.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
     body([...new Set(files.map(f => f.split("/")[0]))].sort((a, b) => (a !== "scenario") - (b !== "scenario") || a.localeCompare(b)).flatMap(g => [`<tr class="group"><td colspan="${1 + btClients.length + bo.length}">${g}</td></tr>`, ...files.filter(f => f.startsWith(g + "/")).map(f => `<tr><td class="f">${f.slice(g.length + 1)}</td>` +
       btClients.map(c => `<td class="${btGrey(f, c) ? "gas" : ""}" title="${btRun.bt[f]?.[c] ? btRun.bt[f][c].ms + " ms, twin " + btRun.bt[f][c].twin + " ms" : ""}">${fmt(btGgas(f, c), 2)}</td>`).join("") +
       bo.map(c => btGrey(f, c) || btGrey(f, btBase) ? `<td class="ratio"><span class="n even">–</span></td>` : ratioCell(btGgas(f, btBase) / btGgas(f, c))).join("") + "</tr>")])) + "</tbody></table>";
