@@ -9,7 +9,7 @@ hidden = {"besu", "ethrex", "nimbus"}
 runs = []
 src, page, branch = (root / sys.argv[1], root / sys.argv[2], sys.argv[3]) if len(sys.argv) > 3 else (root / "history", root / "docs" / "index.html", None)
 for d in sorted(p for p in src.iterdir() if p.is_dir()):
-    run = {"date": d.name, "versions": {}, "ns": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}, "st": {}, "stArms": [], "nodeab": {}, "nodeabArms": [], "callsprof": {}}
+    run = {"date": d.name, "versions": {}, "rpc": [], "calls": {}, "bt": {}, "rpcw": [], "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}, "st": {}, "stArms": [], "callsprof": {}}
     if (d / "errors.txt").exists():
         run["errors"] = (d / "errors.txt").read_text().split("\n")[:-1]
     for f in d.glob("*.csv"):
@@ -22,12 +22,6 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
             for r in csv.reader(open(f)):  # a sub-test name may contain commas
                 file, sub, (arm, gas, ms, twin) = r[0], ",".join(r[1:-4]), r[-4:]
                 run["st"].setdefault(file, {}).setdefault(sub, {})[arm] = {"gas": int(gas), "ms": int(ms), "twin": int(twin)}
-            continue
-        if f.name == "nodeab.csv":
-            run["nodeab"] = {t: {"a": float(a), "b": float(b)} for t, a, b in csv.reader(open(f))}
-            continue
-        if f.name == "nodeab-arms.csv":
-            run["nodeabArms"] = [r for r in csv.reader(open(f))]
             continue
         if f.name == "subtest-arms.csv":
             run["stArms"] = [r for r in csv.reader(open(f))]
@@ -61,8 +55,6 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
         if f.name == "rpc.csv":
             run["rpc"] = [dict(zip(("scenario", "client", "rps", "p50", "p99"), (r[0], r[1], *map(float, r[2:])))) for r in csv.reader(open(f))]
             continue
-        for fixture, client, ns in csv.reader(open(f)):
-            run["ns"].setdefault(fixture, {})[client] = int(ns)
     runs.append(run)
 # Scenario blocks per run, before the per-tier pruning below drops older bt data: erigon's geometric mean Mgas/s and erigon / best client,
 # both over cells that are not grey (twin under 30% of the run, net at least 100 ms). revme and gevm compute no state root, so they are no peers.
@@ -85,12 +77,12 @@ def scenario_point(run):
     return {"date": run["date"], "build": build, "blocks": len(files), "mgas": round(gm([v for v in e.values() if v]), 1),
             "ratio": round(peers[best], 3) if best else None, "best": best}
 scenario = [p for p in map(scenario_point, (r for r in runs if r["bt"])) if p]
-# The page shows one table per tier: the latest dbg build (main + open PRs) unless a later day has a main run, else the latest run.
+# The page shows one table per tier: the latest dbg build (main + open PRs) unless a later main run exists, else the latest run.
 isdbg = lambda r: r["versions"].get("erigon", "").startswith("dbg")
 for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "stArms")):
     has = [r for r in runs if r[ks[0]]]
     d = [r for r in has if isdbg(r)]
-    keep = d[-1] if d and d[-1]["date"][:10] >= has[-1]["date"][:10] else has[-1] if has else None
+    keep = d[-1] if d and d[-1] is has[-1] else has[-1] if has else None
     for run in has:
         if run is not keep:
             for k in ks:
