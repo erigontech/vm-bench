@@ -130,6 +130,9 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <div id="prog-rpc"></div>
 <div id="prog-journal"></div>
 
+<h2 id="sf-title" hidden>Stateful benchmarkoor A/B</h2>
+<div class="note" id="sf" hidden></div>
+
 <h2 id="node-title" hidden>_newPayload BAL-off</h2>
 <div class="note" id="node-note" hidden></div>
 <section class="race" id="node-race" hidden></section>
@@ -215,7 +218,7 @@ document.addEventListener("click", e => {
   const rows = tiers.map(([k, t]) => {
     const r = [...data.runs].reverse().find(r => Object.keys(r[k] || {}).length);
     if (!r) return `<b style="color:var(--loss)">${t}: no data</b>`;
-    const h = age(r.date), txt = `${t}: ${r.date.slice(5, 10)} ${r.date.slice(11, 13)}:${r.date.slice(13, 15)} UTC`;
+    const b = r.versions?.erigon, h = age(r.date), txt = `${t}${b ? " (" + b.replace("-", " ") + ")" : ""}: ${r.date.slice(5, 10)} ${r.date.slice(11, 13)}:${r.date.slice(13, 15)} UTC`;
     return h > 36 ? `<b style="color:var(--loss)">${txt}, ${Math.round(h / 24)} days old</b>` : txt;
   });
   const bt = [...data.runs].reverse().find(r => Object.keys(r.bt).length), errs = bt?.errors || [];
@@ -223,6 +226,12 @@ document.addEventListener("click", e => {
     (errs.length ? `<br><b style="color:var(--loss)">EVM blocks run ${bt.date}: ${errs.length} failed</b> <span title="${esc(errs.join("\n"))}">(${esc(errs.slice(0, 4).join("; "))}${errs.length > 4 ? "; …" : ""})</span>` : "");
 }
 
+// stateful: A/B results of single changes against one main build, not part of the main trend
+if (data.stateful) {
+  for (const id of ["sf-title", "sf"]) document.getElementById(id).hidden = false;
+  document.getElementById("sf").innerHTML = `<p>${data.stateful.date}: each arm is main ${esc(data.stateful.base)} plus one change, A B B A against that main; these changes are not in main.</p><ul>` +
+    data.stateful.lines.map(x => `<li>${esc(x).replace(/#(\d+)/g, '<a href="https://github.com/erigontech/erigon/pull/$1">#$1</a>')}</li>`).join("") + "</ul>";
+}
 // progress: one entry per measured main in history/runs.json, oldest first
 const allProg = data.progress || [], prog = allProg.filter(r => !r.dbg);
 // today's dbg build (main + open PRs): drawn only while no main point is newer
@@ -277,13 +286,13 @@ if (prog.length) {
     rp.map(r => `<th>${r.date.slice(5)} ${sha(r.rpc.main).slice(0, 9)}</th>`).join("") + "</tr></thead><tbody>" +
     wls.map(w => `<tr><td>${w}</td>` + rp.map((r, i) => { const v = r.rpc.knee[w], q = i ? rp[i - 1].rpc.knee[w] : v;
       return `<td class="${v < q ? "down" : v > q ? "up" : ""}">${v ?? "–"}</td>`; }).join("") + "</tr>").join("") + "</tbody></table></div>";
-  const sec = (h, xs) => xs.length ? `<h4>${h}</h4><ul>${xs.map(x => `<li>${link(x)}</li>`).join("")}</ul>` : "";
+  const sec = (h, xs) => xs?.length ? `<h4>${h}</h4><ul>${xs.map(x => `<li>${link(x)}</li>`).join("")}</ul>` : "";
   document.getElementById("prog-journal").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">Journal</h3>` + [...prog, ...(dbgPt ? [dbgPt] : [])].reverse().map((r, i) =>
     `<details class="card"${i ? "" : " open"}><summary><b>${r.date}</b>${r.dbg ? ` · <b class="tag" style="color:#c2410c">dbg (main + open PRs) ${sha(r.new)}</b>` : ""} · ` +
     (r.old ? `<a href="https://github.com/erigontech/erigon/compare/${r.old}...${r.new}">${sha(r.old)}..${sha(r.new)}</a>` : `main ${sha(r.new)}, first point`) +
     ` · EVM ${r.evm.mgas.toFixed(1)}, node ${r.node.mgas.toFixed(1)} Mgas/s` +
     (prog.indexOf(r) > 0 && r.evm.fixtures !== prog[prog.indexOf(r) - 1].evm.fixtures ? ` · EVM fixtures now ${r.evm.fixtures}, not comparable with earlier points` : "") + (r.note ? ` · ${r.note}` : "") + `</summary>` +
-    sec("Shipped", r.shipped) + sec("Better", r.better) + sec("Worse", r.worse) + sec("Bottlenecks", r.bottlenecks) + sec("Stateful", r.stateful) + "</details>").join("");
+    sec("Shipped", r.shipped) + sec("Better", r.better) + sec("Worse", r.worse) + sec("Bottlenecks", r.bottlenecks) + "</details>").join("");
 }
 
 function ratioCell(k) {
@@ -339,8 +348,8 @@ if (btRun) { btSection("sc-", ["scenario"], "scenario"); btSection("in-", ["inst
 const stRun = [...data.runs].reverse().find(r => Object.keys(r.st || {}).length);
 function stSection(px, groups) {
   for (const id of ["title", "st-sum", "st-title", "st-note", "st"]) document.getElementById(px + id).hidden = false;
-  const arms = stRun.stArms.map(r => r[0]), label = Object.fromEntries(stRun.stArms), er = arms.filter(a => !["geth", "revme"].includes(a)), peers = arms.filter(a => !er.includes(a));
-  const base = er[0], rest = er.slice(1), nm = a => ({ pr24133: "#24133" })[a] || name(a);
+  const arms = stRun.stArms.map(r => r[0]).filter(a => !/^pr\d+$/.test(a)), label = Object.fromEntries(stRun.stArms), er = arms.filter(a => !["geth", "revme"].includes(a)), peers = arms.filter(a => !er.includes(a));
+  const base = er[0], rest = er.slice(1), nm = name;
   const g = (x) => x && x.ms - x.twin >= 20 ? x.gas / (x.ms - x.twin) / 1e6 : NaN;
   const catRank = f => ["scenario", "instruction", "precompile"].indexOf(f.split("/")[0]);
   const rows = Object.entries(stRun.st).filter(([f]) => groups.includes(f.split("/")[0])).sort(([a], [b]) => catRank(a) - catRank(b) || a.localeCompare(b)).flatMap(([f, subs]) => Object.entries(subs).map(([s, x]) => {
@@ -355,7 +364,6 @@ function stSection(px, groups) {
   const worstOf = c => [...reg].filter(r => !c || r.f.startsWith(c)).sort((a, b) => a.worst - b.worst)[0];
   document.getElementById(px + "st-sum").innerHTML =
     worst("", worstOf()) + (groups.length > 1 ? groups.map(c => worst(` in ${c}`, worstOf(c + "/"))).join("") : "") +
-    `<h3>${reg.length} of ${rows.length} sub-tests are more than ${Math.round(100 * (1 - REG))}% slower than ${esc(label[base])} on a newer erigon build</h3>${list(reg, r => r.worst)}` +
     `<h3>${bad.length} sub-tests where ${esc(label[base])} is under ×${BAD} of the faster of ${peers.map(nm).join(" and ")}</h3>${list(bad, r => r.vsBest)}` +
     `<p class="gas">Measured ${stRun.date.slice(0, 10)}, one 150M block per process, Ggas/s = gas / (wall time − the same file with no blocks), best of 3, one exec worker; arms interleaved per sub-test on one box.</p>`;
   document.getElementById(px + "st-note").innerHTML = `<p>${arms.map(a => `<b>${esc(nm(a))}</b> = ${esc(label[a] || a)}`).join(", ")}. Red rows: a newer build is more than ${Math.round(100 * (1 - REG))}% slower than ${esc(label[base])}, or ${esc(label[base])} is under ×${BAD} of the best reference client. Grey = under 20 ms net, too short for a wall clock.</p>`;

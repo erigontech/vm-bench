@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build docs/index.html from history/*/.
 run/history.py <dir> <page> <branch>: the same page for a branch build, e.g. branches/dbg docs/dbg.html dbg."""
-import csv, json, math, sys
+import csv, json, math, re, sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parent.parent
@@ -21,10 +21,11 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
         if f.name == "subtests.csv":
             for r in csv.reader(open(f)):  # a sub-test name may contain commas
                 file, sub, (arm, gas, ms, twin) = r[0], ",".join(r[1:-4]), r[-4:]
-                run["st"].setdefault(file, {}).setdefault(sub, {})[arm] = {"gas": int(gas), "ms": int(ms), "twin": int(twin)}
+                if not re.fullmatch(r"pr\d+", arm):
+                    run["st"].setdefault(file, {}).setdefault(sub, {})[arm] = {"gas": int(gas), "ms": int(ms), "twin": int(twin)}
             continue
         if f.name == "subtest-arms.csv":
-            run["stArms"] = [r for r in csv.reader(open(f))]
+            run["stArms"] = [r for r in csv.reader(open(f)) if not re.fullmatch(r"pr\d+", r[0])]
             continue
         if f.name == "blocktest.csv":
             for file, client, gas, ms, twin in csv.reader(open(f)):
@@ -91,7 +92,9 @@ progress = src / "runs.json"
 progress = json.load(open(progress)) if progress.exists() else []
 # eth_call fixture -> block, so the page can list the fixtures a node could not run.
 callFixtures = {f"{p.parent.name}/{p.stem}": int(next(iter(json.load(open(p)).values()))["env"]["currentNumber"], 16) for p in root.glob("fixtures/mainnet*/*.json")}
-html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "branch": branch, "callFixtures": callFixtures, "scenario": scenario}))
+stateful = src / "stateful.json"
+stateful = json.load(open(stateful)) if stateful.exists() else None
+html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "stateful": stateful, "branch": branch, "callFixtures": callFixtures, "scenario": scenario}))
 (root / "docs").mkdir(exist_ok=True)
 (root / "docs" / ".nojekyll").touch()
 page.write_text(html)

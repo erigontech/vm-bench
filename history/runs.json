@@ -1271,7 +1271,7 @@
       "noise": 0.3,
       "fixtures": "glamsterdam-devnet@v8.1.4"
     },
-    "note": "dbg: main 2026-10-24 + #24133 head, #25210, #25222, #25264 and other open PRs",
+    "note": "dbg: main 2026-10-24 + #25210, #25222, #25264 and other open PRs",
     "better": [
       "storage_access_warm SSTORE new value x1.83 node, x1.96 / x3.13 BAL-on",
       "codecopy / calldatacopy / returndatacopy x1.21 / x1.38 / x1.27 node, x1.22 / x1.36 / x1.26 BAL-on (up to x2.0)",
@@ -1355,7 +1355,7 @@
       "noise": 0.3,
       "fixtures": "glamsterdam-devnet@v8.1.4"
     },
-    "note": "EVM x1.02 vs f9a0ca070d; #24133 Block-STM (2/2) and #24844 merged: the per-tx families lose, the copy ops gain",
+    "note": "EVM x1.02 vs f9a0ca070d; Block-STM and #24844 merged: the per-tx families lose, the copy ops gain",
     "better": [
       "codecopy_benchmark x1.44, calldatacopy_from_call x1.47 node; returndatacopy x1.30, calldatacopy x1.44-1.46 BAL-on (#25222)",
       "callvalue_from_call x2.43, callvalue_from_origin x1.71 node"
@@ -1368,21 +1368,14 @@
     ],
     "bottlenecks": [
       "node contract_creation contract_size_max: x0.09 of the best client; top frames fastkeccak.keccakF1600BMI2 and tidwall/btree search, about 8% each, once the KZG context build is left out",
-      "node selfdestruct_existing value_bearing: x0.12 of the best client; not profiled, because a fresh node answers SYNCING to the first newPayload, the same startup failure the #24133 dbg builds showed"
+      "node selfdestruct_existing value_bearing: x0.12 of the best client; not profiled, because a fresh node answers SYNCING to the first newPayload, the same startup failure earlier dbg builds showed"
     ],
     "shipped": [
-      "#24133 Block-STM parallel execution 2/2",
+      "Block-STM parallel execution",
       "#24844 versionMap <=> noMaterialize",
       "#25222 inline CODECOPY, CALLDATACOPY and RETURNDATACOPY",
       "#25225 BAL bounded dispatch window",
       "#25314 keep a released exec slot's roTx"
-    ],
-    "stateful": [
-      "gd8 stateful suite (devnet-8 state, BAL on, 341 tests, newPayload time, noise about 1%): account_access takes 54% of the time, ether_transfers_onchain_receivers 32%, ext_account_query_warm 7%",
-      "#25339 mem-batch shards vs main 17822a558f: 3.4% faster in total, ether_transfers 5.9% faster (26.0 to 23.7 s), account_access 1.4% faster",
-      "Within noise: self-loop workers exit after commit (0.8%), BranchCache skips an identical fill (0.9%), 3 trie BAL warmup workers instead of 6 (0%), code buffer kept across reader rebinds (0.1%), BAL read slots kept to the next block (0.6% on sstore/sload)",
-      "Slower: READ_AHEAD_BAL_CODE=true 51%; Gosched after each exec-loop publish 2.0% (ether_transfers 6.5%); state root computed ahead from the BAL for tip blocks 0.9% (ether_transfers 4.4%), its fold competes with exec for the 6 CPUs",
-      "Where the time goes: account_access runs serial cold CALLs, 21% of CPU reads code (decompress, then one cache copy); ether_transfers ends with a ~280 ms CPU-bound commitment fold after exec; sstore_bloated waits on I/O; ext_account_query_warm is EVM-bound"
     ]
   }
 ]
