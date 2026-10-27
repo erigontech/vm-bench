@@ -283,7 +283,7 @@ if (prog.length) {
     (r.old ? `<a href="https://github.com/erigontech/erigon/compare/${r.old}...${r.new}">${sha(r.old)}..${sha(r.new)}</a>` : `main ${sha(r.new)}, first point`) +
     ` · EVM ${r.evm.mgas.toFixed(1)}, node ${r.node.mgas.toFixed(1)} Mgas/s` +
     (prog.indexOf(r) > 0 && r.evm.fixtures !== prog[prog.indexOf(r) - 1].evm.fixtures ? ` · EVM fixtures now ${r.evm.fixtures}, not comparable with earlier points` : "") + (r.note ? ` · ${r.note}` : "") + `</summary>` +
-    sec("Shipped", r.shipped) + sec("Better", r.better) + sec("Worse", r.worse) + sec("Bottlenecks", r.bottlenecks) + "</details>").join("");
+    sec("Shipped", r.shipped) + sec("Better", r.better) + sec("Worse", r.worse) + sec("Bottlenecks", r.bottlenecks) + sec("Stateful", r.stateful) + "</details>").join("");
 }
 
 function ratioCell(k) {
