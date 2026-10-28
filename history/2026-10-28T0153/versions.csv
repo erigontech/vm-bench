@@ -1,0 +1,7 @@
+erigon,v1.9.7-0.20261015024125-21130d34c5b8
+erigon-evm,dbg-d9466e629
+geth,1.17.8-stable
+revme,revm#95463eb2
+evmone,0.25.0
+nethermind,2.2.0+1d2aff00ccee8df1ffabc142ee8ea61b3760754e
+gevm,github.com/Giulio2002/gevm
