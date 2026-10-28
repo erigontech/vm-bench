@@ -229,7 +229,7 @@ document.addEventListener("click", e => {
 // stateful: A/B results of single changes against one main build, not part of the main trend
 if (data.stateful) {
   for (const id of ["sf-title", "sf"]) document.getElementById(id).hidden = false;
-  document.getElementById("sf").innerHTML = `<p>${data.stateful.date}: each arm is main ${esc(data.stateful.base)} plus one change, A B B A against that main; these changes are not in main.</p><ul>` +
+  document.getElementById("sf").innerHTML = `<p>${data.stateful.date}: A B B A runs against main ${esc(data.stateful.base)}; each line names the build it measured, and none of these changes is in main yet.</p><ul>` +
     data.stateful.lines.map(x => `<li>${esc(x).replace(/#(\d+)/g, '<a href="https://github.com/erigontech/erigon/pull/$1">#$1</a>')}</li>`).join("") + "</ul>";
 }
 // progress: one entry per measured main in history/runs.json, oldest first
