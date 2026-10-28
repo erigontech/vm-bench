@@ -348,7 +348,7 @@ if (btRun) { btSection("sc-", ["scenario"], "scenario"); btSection("in-", ["inst
 const stRun = [...data.runs].reverse().find(r => Object.keys(r.st || {}).length);
 function stSection(px, groups) {
   for (const id of ["title", "st-sum", "st-title", "st-note", "st"]) document.getElementById(px + id).hidden = false;
-  const arms = stRun.stArms.map(r => r[0]).filter(a => !/^pr\d+$/.test(a)), label = Object.fromEntries(stRun.stArms), er = arms.filter(a => !["geth", "revme"].includes(a)), peers = arms.filter(a => !er.includes(a));
+  const arms = stRun.stArms.map(r => r[0]).filter(a => !/^pr\d+$/.test(a)), label = Object.fromEntries(stRun.stArms), er = arms.filter(a => !["geth", "revme"].includes(a)), peers = arms.filter(a => a === "geth");
   const base = er[0], rest = er.slice(1), nm = name;
   const g = (x) => x && x.ms - x.twin >= 20 ? x.gas / (x.ms - x.twin) / 1e6 : NaN;
   const catRank = f => ["scenario", "instruction", "precompile"].indexOf(f.split("/")[0]);
