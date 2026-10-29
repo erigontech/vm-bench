@@ -257,7 +257,7 @@ if (prog.length) {
     const segs = [];
     vals.forEach((v, i) => (i && fx[i] === fx[i - 1] ? segs[segs.length - 1] : segs[segs.push([]) - 1]).push(i));
     return `<svg viewBox="0 0 ${w} ${h}" role="img">` + segs.map(s => `<polyline class="ln erigon" points="${s.map(i => x(i) + "," + y(vals[i])).join(" ")}"/>`).join("") +
-      segs.slice(1).map((s, j) => { const bx = (x(s[0] - 1) + x(s[0])) / 2; return `<line class="ax" x1="${bx}" x2="${bx}" y1="8" y2="${h - 18}" stroke-dasharray="3 3"/><text class="tick" x="${bx + 4}" y="${12 + 11 * (j % 2)}">${fx[s[0]]}</text>`; }).join("") +
+      segs.slice(1).map((s, j) => { const bx = (x(s[0] - 1) + x(s[0])) / 2; return `<line class="ax" x1="${bx}" x2="${bx}" y1="8" y2="${h - 18}" stroke-dasharray="3 3"/><text class="tick" x="${bx + 4}" y="${h - 18 - 11 * (j % 2)}">${String(fx[s[0]]).replace(/^.*@/, "")}</text>`; }).join("") +
       vals.map((v, i) => `<circle class="dot erigon" cx="${x(i)}" cy="${y(v)}"><title>${rows[i].date.slice(5)}: ${f(v)}</title></circle>` +
         (lab(i) ? `<text class="end erigon" x="${x(i)}" y="${y(v) - 8}" text-anchor="middle">${f(v)}</text>` : "")).join("") +
       rows.map((r, i) => lab(i) ? `<text class="tick" x="${x(i)}" y="${h - 4}" text-anchor="middle">${r.date.slice(5)}</text>` : "").join("") +
