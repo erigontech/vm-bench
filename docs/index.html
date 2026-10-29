@@ -155,7 +155,6 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <h2>JSON-RPC throughput</h2>
 <p class="note">Requests per second against one mainnet datadir, 33 recorded requests per method, 16 connections. trend = erigon rps per day, drawn once a scenario has two days.</p>
 <div class="wrap" id="rpc"></div>
-<div id="prog-rpc"></div>
 
 <h2 id="sc-title" hidden>EEST benchmark scenario</h2>
 <div class="note" id="sc-st-sum" hidden></div>
@@ -244,7 +243,7 @@ if (prog.length) {
   document.getElementById("prog-note").textContent = `Erigon on each measured main; other clients keep their published numbers. ` +
     `EVM: geometric mean over the instruction and scenario blocks, noise ±${pl.evm.noise}%. Node: geometric mean over all tests, noise ±${pl.node.noise}%. ` +
     `Erigon / best client: erigon's geometric mean over the instruction and scenario cells divided by the best other client's on the same cells. ` +
-    `RPC: knee = the highest rate served in full without errors; latency one rate below the knee moves ±${prog.filter(r => r.rpc).pop().rpc.noise}%. Better and worse list only cells that moved past their noise.` +
+    `Better and worse list only cells that moved past their noise.` +
     (dbgPt ? ` The hollow last point is today's dbg build (main + open PRs, ${dbgPt.new.slice(0, 10)}); the next main point replaces it.` : "");
   // one series per fixture tag: a fixture change starts a new line, the old points stay, a dashed rule marks the break
   const spark = (vals, f, fx, rows = prog, dv) => {
@@ -283,12 +282,6 @@ if (prog.length) {
     return `<div class="chart"><h3>EEST benchmark scenario: erigon Mgas/s</h3>${spark(rs.map(r => r.mgas), v => v.toFixed(0), fx, rows, dp && { ...dp, v: d.mgas })}${more}</div>` +
       `<div class="chart"><h3>EEST benchmark scenario: erigon / best client (${name(l.best)})</h3>${spark(rs.map(r => r.ratio), v => "×" + v.toFixed(2), fx, rows, dp && { ...dp, v: d.ratio })}${more}</div>`;
   }
-  const rp = prog.filter(r => r.rpc);
-  const wls = [...new Set(rp.flatMap(r => Object.keys(r.rpc.knee)))];
-  document.getElementById("prog-rpc").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">Erigon knee per workload on each measured main, rps (the highest rate served in full without errors)</h3><div class="wrap"><table><thead><tr><th>workload</th>` +
-    rp.map(r => `<th>${r.date.slice(5)} ${sha(r.rpc.main).slice(0, 9)}</th>`).join("") + "</tr></thead><tbody>" +
-    wls.map(w => `<tr><td>${w}</td>` + rp.map((r, i) => { const v = r.rpc.knee[w], q = i ? rp[i - 1].rpc.knee[w] : v;
-      return `<td class="${v < q ? "down" : v > q ? "up" : ""}">${v ?? "–"}</td>`; }).join("") + "</tr>").join("") + "</tbody></table></div>";
   const sec = (h, xs) => xs?.length ? `<h4>${h}</h4><ul>${xs.map(x => `<li>${link(x)}</li>`).join("")}</ul>` : "";
   document.getElementById("prog-journal").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">Journal</h3>` + [...prog, ...(dbgPt ? [dbgPt] : [])].reverse().map((r, i) =>
     `<details class="card"${i ? "" : " open"}><summary><b>${r.date}</b>${r.dbg ? ` · <b class="tag" style="color:#c2410c">dbg (main + open PRs) ${sha(r.new)}</b>` : ""} · ` +
