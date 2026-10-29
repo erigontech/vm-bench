@@ -127,7 +127,6 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <h2 id="prog-title" hidden>Progress</h2>
 <p class="note" id="prog-note" hidden></p>
 <div class="charts" id="prog-trend"></div>
-<div id="prog-rpc"></div>
 <div id="prog-journal"></div>
 
 <h2 id="sf-title" hidden>Stateful benchmarkoor A/B</h2>
@@ -156,6 +155,7 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <h2>JSON-RPC throughput</h2>
 <p class="note">Requests per second against one mainnet datadir, 33 recorded requests per method, 16 connections. trend = erigon rps per day, drawn once a scenario has two days.</p>
 <div class="wrap" id="rpc"></div>
+<div id="prog-rpc"></div>
 
 <h2 id="sc-title" hidden>EEST benchmark scenario</h2>
 <div class="note" id="sc-st-sum" hidden></div>
@@ -285,7 +285,7 @@ if (prog.length) {
   }
   const rp = prog.filter(r => r.rpc);
   const wls = [...new Set(rp.flatMap(r => Object.keys(r.rpc.knee)))];
-  document.getElementById("prog-rpc").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">RPC: erigon knee per workload, rps</h3><div class="wrap"><table><thead><tr><th>workload</th>` +
+  document.getElementById("prog-rpc").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">Erigon knee per workload on each measured main, rps (the highest rate served in full without errors)</h3><div class="wrap"><table><thead><tr><th>workload</th>` +
     rp.map(r => `<th>${r.date.slice(5)} ${sha(r.rpc.main).slice(0, 9)}</th>`).join("") + "</tr></thead><tbody>" +
     wls.map(w => `<tr><td>${w}</td>` + rp.map((r, i) => { const v = r.rpc.knee[w], q = i ? rp[i - 1].rpc.knee[w] : v;
       return `<td class="${v < q ? "down" : v > q ? "up" : ""}">${v ?? "–"}</td>`; }).join("") + "</tr>").join("") + "</tbody></table></div>";
