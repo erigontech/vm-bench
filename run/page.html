@@ -249,7 +249,8 @@ if (prog.length) {
   const spark = (vals, f, fx, rows = prog, dv) => {
     // the y range spans at least 10% of the value, so a move inside the noise stays a flat line
     const all = dv ? [...vals, dv.v] : vals, w = 420, h = 110, p = 40, lo = Math.min(...all), hi = Math.max(...all), sp = Math.max(hi - lo, hi * 0.1) || 1, mid = (hi + lo) / 2;
-    const x = i => p + i * (w - 2 * p) / Math.max(1, all.length - 1), y = v => 22 + (h - 46) * (0.5 - (v - mid) / sp), n = vals.length;
+    // the dbg point keeps a fixed gap after the last main point, so its dashed segment stays visible
+    const n = vals.length, gap = dv ? 30 : 0, x = i => i >= n ? w - p : p + i * (w - 2 * p - gap) / Math.max(1, n - 1), y = v => 22 + (h - 46) * (0.5 - (v - mid) / sp);
     // With many points only every step-th one (and the first and last) carries a value and a date; every dot has a hover title.
     // A dbg point sits one step right of the last main point: only the caption above the chart names both values.
     const step = Math.ceil(n / 7), last = dv ? n - 1 - step : n - 1, lab = i => i === 0 || (!dv && i === n - 1) || (i % step === 0 && last - i >= step / 2);
@@ -279,8 +280,10 @@ if (prog.length) {
     if (!l) return "";
     const dp = d && d.date > l.date && { sha: d.build.replace(/^dbg-/, "") }, rows = rs.map(r => ({ date: r.date.slice(0, 10) })), fx = rs.map(r => r.blocks + " blocks");
     const more = `<p class="note" style="margin:2px 0 0"><a href="#eest-benchmark-scenario">EEST benchmark scenario: per block and per sub-test ↓</a></p>`;
-    return `<div class="chart"><h3>EEST benchmark scenario: erigon Mgas/s</h3>${spark(rs.map(r => r.mgas), v => v.toFixed(0), fx, rows, dp && { ...dp, v: d.mgas })}${more}</div>` +
-      `<div class="chart"><h3>EEST benchmark scenario: erigon / best client (${name(l.best)})</h3>${spark(rs.map(r => r.ratio), v => "×" + v.toFixed(2), fx, rows, dp && { ...dp, v: d.ratio })}${more}</div>`;
+    const cap = (m, f) => `<p class="note" style="margin:0 0 2px">main ${l.date.slice(5, 10)}: <b>${f(l[m])}</b>` +
+      (dp ? ` · <b style="color:#c2410c">dbg ${dp.sha.slice(0, 8)}: ${f(d[m])}</b> (×${(d[m] / l[m]).toFixed(2)} of main)` : "") + `</p>`;
+    return `<div class="chart"><h3>EEST benchmark scenario: erigon Mgas/s</h3>${cap("mgas", v => v.toFixed(0))}${spark(rs.map(r => r.mgas), v => v.toFixed(0), fx, rows, dp && { ...dp, v: d.mgas })}${more}</div>` +
+      `<div class="chart"><h3>EEST benchmark scenario: erigon / best client (${name(l.best)})</h3>${cap("ratio", v => "×" + v.toFixed(2))}${spark(rs.map(r => r.ratio), v => "×" + v.toFixed(2), fx, rows, dp && { ...dp, v: d.ratio })}${more}</div>`;
   }
   const sec = (h, xs) => xs?.length ? `<h4>${h}</h4><ul>${xs.map(x => `<li>${link(x)}</li>`).join("")}</ul>` : "";
   document.getElementById("prog-journal").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">Journal</h3>` + [...prog, ...(dbgPt ? [dbgPt] : [])].reverse().map((r, i) =>
