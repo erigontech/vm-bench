@@ -1600,30 +1600,30 @@ instruction/swap,opcode_SWAP9,main,150000000,238,74
 instruction/swap,opcode_SWAP9,dbg,150000000,237,75
 instruction/storage_access_cold,absent_slots_False-SSLOAD,main,1693157384,962,74
 instruction/storage_access_cold,absent_slots_False-SSLOAD,dbg,1693157384,953,73
-instruction/storage_access_cold,"absent_slots_False-SSTORE new value,main", out of gas,806485043,449,73
-instruction/storage_access_cold,"absent_slots_False-SSTORE new value,dbg", out of gas,806485043,444,75
-instruction/storage_access_cold,"absent_slots_False-SSTORE new value,main", revert,806485106,428,73
-instruction/storage_access_cold,"absent_slots_False-SSTORE new value,dbg", revert,806485106,437,75
+instruction/storage_access_cold,"absent_slots_False-SSTORE new value, out of gas",main,806485043,449,73
+instruction/storage_access_cold,"absent_slots_False-SSTORE new value, out of gas",dbg,806485043,444,75
+instruction/storage_access_cold,"absent_slots_False-SSTORE new value, revert",main,806485106,428,73
+instruction/storage_access_cold,"absent_slots_False-SSTORE new value, revert",dbg,806485106,437,75
 instruction/storage_access_cold,absent_slots_False-SSTORE new value,main,806485052,700,73
 instruction/storage_access_cold,absent_slots_False-SSTORE new value,dbg,806485052,700,74
-instruction/storage_access_cold,"absent_slots_False-SSTORE same value,main", out of gas,1620703567,895,74
-instruction/storage_access_cold,"absent_slots_False-SSTORE same value,dbg", out of gas,1620703567,930,75
-instruction/storage_access_cold,"absent_slots_False-SSTORE same value,main", revert,1620703630,956,73
-instruction/storage_access_cold,"absent_slots_False-SSTORE same value,dbg", revert,1620703630,947,74
+instruction/storage_access_cold,"absent_slots_False-SSTORE same value, out of gas",main,1620703567,895,74
+instruction/storage_access_cold,"absent_slots_False-SSTORE same value, out of gas",dbg,1620703567,930,75
+instruction/storage_access_cold,"absent_slots_False-SSTORE same value, revert",main,1620703630,956,73
+instruction/storage_access_cold,"absent_slots_False-SSTORE same value, revert",dbg,1620703630,947,74
 instruction/storage_access_cold,absent_slots_False-SSTORE same value,main,1620703576,890,73
 instruction/storage_access_cold,absent_slots_False-SSTORE same value,dbg,1620703576,916,73
 instruction/storage_access_cold,absent_slots_True-SSLOAD,main,150045008,266,73
 instruction/storage_access_cold,absent_slots_True-SSLOAD,dbg,150045008,262,75
-instruction/storage_access_cold,"absent_slots_True-SSTORE new value,main", out of gas,150032663,103,75
-instruction/storage_access_cold,"absent_slots_True-SSTORE new value,dbg", out of gas,150032663,104,73
-instruction/storage_access_cold,"absent_slots_True-SSTORE new value,main", revert,150032726,103,75
-instruction/storage_access_cold,"absent_slots_True-SSTORE new value,dbg", revert,150032726,102,74
+instruction/storage_access_cold,"absent_slots_True-SSTORE new value, out of gas",main,150032663,103,75
+instruction/storage_access_cold,"absent_slots_True-SSTORE new value, out of gas",dbg,150032663,104,73
+instruction/storage_access_cold,"absent_slots_True-SSTORE new value, revert",main,150032726,103,75
+instruction/storage_access_cold,"absent_slots_True-SSTORE new value, revert",dbg,150032726,102,74
 instruction/storage_access_cold,absent_slots_True-SSTORE new value,main,150032672,154,73
 instruction/storage_access_cold,absent_slots_True-SSTORE new value,dbg,150032672,154,74
-instruction/storage_access_cold,"absent_slots_True-SSTORE same value,main", out of gas,150025903,101,73
-instruction/storage_access_cold,"absent_slots_True-SSTORE same value,dbg", out of gas,150025903,100,75
-instruction/storage_access_cold,"absent_slots_True-SSTORE same value,main", revert,150025966,101,73
-instruction/storage_access_cold,"absent_slots_True-SSTORE same value,dbg", revert,150025966,103,74
+instruction/storage_access_cold,"absent_slots_True-SSTORE same value, out of gas",main,150025903,101,73
+instruction/storage_access_cold,"absent_slots_True-SSTORE same value, out of gas",dbg,150025903,100,75
+instruction/storage_access_cold,"absent_slots_True-SSTORE same value, revert",main,150025966,101,73
+instruction/storage_access_cold,"absent_slots_True-SSTORE same value, revert",dbg,150025966,103,74
 instruction/storage_access_cold,absent_slots_True-SSTORE same value,main,150025912,149,74
 instruction/storage_access_cold,absent_slots_True-SSTORE same value,dbg,150025912,148,75
 instruction/storage_access_cold_benchmark,SLOAD,main,150000000,156,74
@@ -2953,18 +2953,18 @@ instruction/swap,opcode_SWAP7,nethermind,150000000,3048,2929
 instruction/swap,opcode_SWAP8,nethermind,150000000,2994,2898
 instruction/swap,opcode_SWAP9,nethermind,150000000,3027,2915
 instruction/storage_access_cold,absent_slots_False-SSLOAD,nethermind,1693157384,3623,3180
-instruction/storage_access_cold,"absent_slots_False-SSTORE new value,nethermind", out of gas,806485043,3168,3026
-instruction/storage_access_cold,"absent_slots_False-SSTORE new value,nethermind", revert,806485106,3176,3058
+instruction/storage_access_cold,"absent_slots_False-SSTORE new value, out of gas",nethermind,806485043,3168,3026
+instruction/storage_access_cold,"absent_slots_False-SSTORE new value, revert",nethermind,806485106,3176,3058
 instruction/storage_access_cold,absent_slots_False-SSTORE new value,nethermind,806485052,3372,3116
-instruction/storage_access_cold,"absent_slots_False-SSTORE same value,nethermind", out of gas,1620703567,3682,3327
-instruction/storage_access_cold,"absent_slots_False-SSTORE same value,nethermind", revert,1620703630,3688,3229
+instruction/storage_access_cold,"absent_slots_False-SSTORE same value, out of gas",nethermind,1620703567,3682,3327
+instruction/storage_access_cold,"absent_slots_False-SSTORE same value, revert",nethermind,1620703630,3688,3229
 instruction/storage_access_cold,absent_slots_False-SSTORE same value,nethermind,1620703576,3637,3193
 instruction/storage_access_cold,absent_slots_True-SSLOAD,nethermind,150045008,2867,2851
-instruction/storage_access_cold,"absent_slots_True-SSTORE new value,nethermind", out of gas,150032663,2830,2808
-instruction/storage_access_cold,"absent_slots_True-SSTORE new value,nethermind", revert,150032726,2809,2811
+instruction/storage_access_cold,"absent_slots_True-SSTORE new value, out of gas",nethermind,150032663,2830,2808
+instruction/storage_access_cold,"absent_slots_True-SSTORE new value, revert",nethermind,150032726,2809,2811
 instruction/storage_access_cold,absent_slots_True-SSTORE new value,nethermind,150032672,2859,2836
-instruction/storage_access_cold,"absent_slots_True-SSTORE same value,nethermind", out of gas,150025903,2833,2810
-instruction/storage_access_cold,"absent_slots_True-SSTORE same value,nethermind", revert,150025966,2824,2809
+instruction/storage_access_cold,"absent_slots_True-SSTORE same value, out of gas",nethermind,150025903,2833,2810
+instruction/storage_access_cold,"absent_slots_True-SSTORE same value, revert",nethermind,150025966,2824,2809
 instruction/storage_access_cold,absent_slots_True-SSTORE same value,nethermind,150025912,2881,2861
 instruction/storage_access_cold_benchmark,SLOAD,nethermind,150000000,2869,2846
 instruction/storage_access_cold_benchmark,SSTORE_new,nethermind,150000000,2816,2837

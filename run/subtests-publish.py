@@ -6,10 +6,14 @@ import csv, sys, time
 from pathlib import Path
 
 root = Path(__file__).resolve().parent.parent
+raw = list(csv.reader(open(sys.argv[1])))
+known = {r[2] for r in raw if len(r) == 6}
 rows = []
-for r in csv.reader(open(sys.argv[1])):
-    # older outputs have the sub-test name unquoted, so its commas split it
-    rows.append([r[0], ",".join(r[1:-4]), r[-4], *map(int, r[-3:])])
+for r in raw:
+    # older outputs have the sub-test name unquoted, so its commas split it; the arm can sit
+    # between the name's parts, so it is found by name rather than by position
+    i = max(j for j in range(2, len(r) - 3) if r[j] in known)
+    rows.append([r[0], ",".join(r[1:i] + r[i + 1:-3]), r[i], *map(int, r[-3:])])
 arms = list(dict.fromkeys(r[2] for r in rows))
 labels = dict(a.split("=", 1) for a in sys.argv[2:])
 if set(labels) - set(arms):
