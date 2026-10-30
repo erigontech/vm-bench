@@ -76,6 +76,24 @@ exists. The other two tiers on the page are honest about what they measure: the 
 newPayload Mgas/s (erigon, reth, geth, nethermind, no evmone), the RPC tier is eth_call rps on one mainnet node,
 erigon and reth only, as a regression tracker.
 
+## Per sub-test
+
+The EVM tier above times the first sub-test of each EEST file, eight copies; this one times every 150M sub-test of the
+same tarball (one per opcode, input size or variant), one block per process. Same method: ms minus the no-block twin,
+best of REPEAT (default 3), erigon with one exec worker, nethermind warm in one process. Arms run interleaved per
+sub-test, so a drift of the machine hits every arm alike. List the erigon builds base first: the page compares every
+later build with the first one, and the last one with nethermind.
+
+```
+run/subtests-split.py           # download tests-benchmark@v0.0.9 to testdata/, check its sha256, write blocktests/subtests/
+mkdir -p results; run/subtests.sh main=<erigon evm binary> dbg=<erigon evm binary> nethermind > results/subtests.csv   # takes BENCH_LOCK
+run/subtests-publish.py results/subtests.csv 'main=main <sha>' 'dbg=dbg <sha>'   # new history/<UTC time>/
+run/history.py
+```
+
+An erigon evm binary is `make evm` in an erigon checkout (`build/bin/evm`). `geth` and `revme` are arms too, run as in
+`run/blocktest.sh`; `CATS=precompile` runs one group.
+
 ## RPC workloads
 
 `workloads/<name>/` is a request corpus anyone can replay against their own mainnet node: `requests.jsonl` (one
