@@ -92,7 +92,7 @@ td.ratio .win{color:var(--win);font-weight:600}td.ratio .loss{color:var(--loss);
 
 /* progress: trend per tier and a journal card per measured main */
 #prog-trend .chart svg{max-width:420px}
-td.up{color:var(--win);font-weight:600}td.down{color:var(--loss);font-weight:600}
+td.up{color:var(--win);font-weight:600}td.down,.old{color:var(--loss);font-weight:600}
 details.card{border-top:1px solid var(--rule);padding:10px 0}
 details.card summary{cursor:pointer}
 details.card h4{margin:10px 0 2px;font-size:14px;font-weight:600}
@@ -122,7 +122,7 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <body>
 <nav id="toc" aria-label="Sections"></nav>
 <h1>vm-bench <a href="https://github.com/erigontech/vm-bench" style="font-size:15px;font-weight:500;color:var(--ink-2);margin-left:10px;vertical-align:middle">github.com/erigontech/vm-bench</a></h1>
-<p class="lede">How fast <span class="tag">erigon</span> executes EVM transactions compared with geth, revm, evmone and Nethermind, on the same state-test fixtures, re-measured on every change to main.</p>
+<p class="lede">Where <span class="tag">erigon</span> is slower than reth, Nethermind, geth, evmone and revm, and whether the dbg build (main + open PRs) regressed. Measured every night: the Progress trend shows main, the tables show the latest dbg build unless a section says main.</p>
 <div class="note" id="status"></div>
 
 <h2 id="prog-title" hidden>Progress</h2>
@@ -150,10 +150,12 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <div id="calls" hidden></div>
 
 <h2 id="rpcw-title" hidden>RPC workloads</h2>
+<div id="rpcw-build"></div>
 <p class="note" id="rpcw-note" hidden>Request corpora anyone can replay against their own mainnet node: <a href="https://github.com/erigontech/vm-bench/tree/main/workloads">workloads/</a>, one directory per workload with the JSON-RPC bodies, the pinned block and the rate ladder. Open loop at each rate, 20 s; rps below the rate means the node is at capacity; latency in ms; err = failed requests; a node that answers errors to a workload is skipped. Numbers from different machines compare on latency at equal rate and on the knee, not on peak rps.</p>
 <div id="rpcw" hidden></div>
 
 <h2>JSON-RPC throughput</h2>
+<div id="rpc-build"></div>
 <p class="note">Requests per second against one mainnet datadir, 33 recorded requests per method, 16 connections. trend = erigon rps per day, drawn once a scenario has two days.</p>
 <div class="wrap" id="rpc"></div>
 
@@ -194,8 +196,13 @@ const clientNote = (desc, rows, facts, head = "run parameters") => `<p>${desc}</
   `<div class="wrap"><table class="cl"><thead><tr><th>client</th><th>version</th>${rows.some(r => r[2]) ? `<th>${head}</th>` : ""}</tr></thead><tbody>` +
   rows.map(([c, v, p]) => `<tr><td>${name(c)}</td><td>${esc(v)}</td>${p ? `<td>${head === "tool" ? `<span class="fl">${esc(p)}</span>` : flags(p)}</td>` : rows.some(r => r[2]) ? "<td></td>" : ""}</tr>`).join("") + "</tbody></table></div>" +
   `<ul>${facts.map(f => `<li>${f}</li>`).join("")}</ul>`;
-// which erigon build a table shows: "dbg-<sha>" (main + open PRs) or "main-<sha>"
-const buildTag = v => v ? `<div class="build">erigon build: ${v.startsWith("dbg") ? `<b>dbg ${esc(v.replace(/^dbg-/, ""))}</b> (main + open PRs)` : `main ${esc(v.replace(/^main-/, ""))}`}</div>` : "";
+// erigon build names: "dbg-<sha>" (main + open PRs), "main-<sha>" or a bare main sha, with or without an "erigon-" prefix
+const buildName = v => { v = String(v || "").replace(/^erigon-/, ""); return v.startsWith("dbg-") ? "dbg " + v.slice(4) : /^(main-)?[0-9a-f]{7,}$/.test(v) ? "main " + v.replace(/^main-/, "") : v; };
+// every section names the build and date it shows; the status table at the top lists them
+const shown = [];
+const buildTag = (v, date, what) => { if (what) shown.push([what, buildName(v), date]); const b = buildName(v);
+  return `<div class="build">erigon ${b.startsWith("dbg") ? `<b>${esc(b)}</b> (main + open PRs)` : esc(b)}, measured ${date.slice(0, 10)}</div>`; };
+const fold = (h, t = "method, clients and versions") => `<details class="fold"><summary>${t}</summary>${h}</details>`;
 const modeMap = m => Object.fromEntries((m ? m.split("; ") : []).map(x => [x.split(" ")[0], x.slice(x.indexOf(" ") + 1)]));
 const short = d => d.slice(5, 10);
 // A big table renders its first rows; the rest stay a string until "show all", so a phone does not lay out thousands of rows.
@@ -211,25 +218,11 @@ document.addEventListener("click", e => {
 });
 
 
-// Data status: how old each section's data is, and what failed in the run behind the EVM blocks table.
-{
-  const tiers = [["node", "newPayload BAL-off"], ["nodebal", "newPayload BAL-on"], ["calls", "eth_call per transaction"], ["rpcw", "RPC workloads"], ["rpc", "JSON-RPC throughput"], ["bt", "EVM blocks"]];
-  const age = d => (Date.now() - Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10), +d.slice(11, 13), +d.slice(13, 15))) / 36e5;
-  const rows = tiers.map(([k, t]) => {
-    const r = [...data.runs].reverse().find(r => Object.keys(r[k] || {}).length);
-    if (!r) return `<b style="color:var(--loss)">${t}: no data</b>`;
-    const b = r.versions?.erigon, h = age(r.date), txt = `${t}${b ? " (" + b.replace("-", " ") + ")" : ""}: ${r.date.slice(5, 10)} ${r.date.slice(11, 13)}:${r.date.slice(13, 15)} UTC`;
-    return h > 36 ? `<b style="color:var(--loss)">${txt}, ${Math.round(h / 24)} days old</b>` : txt;
-  });
-  const bt = [...data.runs].reverse().find(r => Object.keys(r.bt).length), errs = bt?.errors || [];
-  document.getElementById("status").innerHTML = "Data: " + rows.join(" · ") +
-    (errs.length ? `<br><b style="color:var(--loss)">EVM blocks run ${bt.date}: ${errs.length} failed</b> <span title="${esc(errs.join("\n"))}">(${esc(errs.slice(0, 4).join("; "))}${errs.length > 4 ? "; …" : ""})</span>` : "");
-}
-
 // stateful: A/B results of single changes against one main build, not part of the main trend
 if (data.stateful) {
   for (const id of ["sf-title", "sf"]) document.getElementById(id).hidden = false;
-  document.getElementById("sf").innerHTML = `<p>${data.stateful.date}: A B B A runs against main ${esc(data.stateful.base)}; each line names the build it measured, and none of these changes is in main yet.</p><ul>` +
+  shown.push(["Stateful benchmarkoor A/B", "main " + data.stateful.base + " vs single changes", data.stateful.date]);
+  document.getElementById("sf").innerHTML = `<div class="build">erigon main ${esc(data.stateful.base)} against the builds each line names, measured ${data.stateful.date}; none of these changes is in main yet</div><ul>` +
     data.stateful.lines.map(x => `<li>${esc(x).replace(/#(\d+)/g, '<a href="https://github.com/erigontech/erigon/pull/$1">#$1</a>')}</li>`).join("") + "</ul>";
 }
 // progress: one entry per measured main in history/runs.json, oldest first
@@ -241,11 +234,10 @@ if (prog.length) {
   const pl = prog[prog.length - 1];
   const link = t => esc(t).replace(/#(\d+)/g, '<a href="https://github.com/erigontech/erigon/pull/$1">#$1</a>');
   const sha = s => s.slice(0, 10);
-  document.getElementById("prog-note").textContent = `Erigon on each measured main; other clients keep their published numbers. ` +
+  shown.push(["Progress", `main ${sha(pl.new)}${dbgPt ? `, dbg ${sha(dbgPt.new)}` : ""}`, pl.date]);
+  document.getElementById("prog-note").textContent = `Erigon on each measured main; the other clients keep their published numbers. ` +
     `EVM: geometric mean over the instruction and scenario blocks, noise ±${pl.evm.noise}%. Node: geometric mean over all tests, noise ±${pl.node.noise}%. ` +
-    `Erigon / best client: erigon's geometric mean over the instruction and scenario cells divided by the best other client's on the same cells. ` +
-    `Better and worse list only cells that moved past their noise.` +
-    (dbgPt ? ` The hollow last point is today's dbg build (main + open PRs, ${dbgPt.new.slice(0, 10)}); the next main point replaces it.` : "");
+    `Erigon / best client: erigon's geometric mean divided by the best other client's on the same cells. The journal's Better and Worse list only cells that moved past their noise.`;
   // one series per fixture tag: a fixture change starts a new line, the old points stay, a dashed rule marks the break
   const spark = (vals, f, fx, rows = prog, dv) => {
     // the y range spans at least 10% of the value, so a move inside the noise stays a flat line
@@ -269,7 +261,7 @@ if (prog.length) {
     [["evm", "EVM"], ["node", "Node BAL-off"], ["nodebal", "Node BAL-on"]].map(([k, t]) => {
     const rs = prog.filter(r => r[k]), l = rs[rs.length - 1], dk = dbgPt?.[k], dv = m => dk && { v: dk[m], sha: dbgPt.new };
     const cap = (m, f) => `<p class="note" style="margin:0 0 2px">main ${l.date.slice(5)}: <b>${f(l[k][m])}</b>` +
-      (dk ? ` · <b style="color:#c2410c">dbg ${sha(dbgPt.new).slice(0, 8)}: ${f(dk[m])}</b> (×${(dk[m] / l[k][m]).toFixed(2)} of main)` : "") + `</p>`;
+      (dk ? ` · <b style="color:#c2410c">dbg ${sha(dbgPt.new)}: ${f(dk[m])}</b> (×${(dk[m] / l[k][m]).toFixed(2)} of main)` : "") + `</p>`;
     return !l ? "" :
     `<div class="chart"><h3>${t}: erigon Mgas/s, ${l[k].fixtures}</h3>${cap("mgas", v => v.toFixed(0))}${spark(rs.map(r => r[k].mgas), v => v.toFixed(0), rs.map(r => r[k].fixtures), rs, dv("mgas"))}</div>` +
     `<div class="chart"><h3>${t}: erigon / best client (${l[k].best})</h3>${cap("ratio", v => "×" + v.toFixed(2))}${spark(rs.map(r => r[k].ratio), v => "×" + v.toFixed(2), rs.map(r => r[k].fixtures), rs, dv("ratio"))}</div>`; }).join("") + scenarioCharts();
@@ -282,17 +274,19 @@ if (prog.length) {
     const dp = d && d.date > l.date && { sha: d.build.replace(/^dbg-/, "") }, rows = rs.map(r => ({ date: r.date.slice(0, 10) })), fx = rs.map(r => r.blocks + " blocks");
     const more = `<p class="note" style="margin:2px 0 0"><a href="#eest-benchmark-scenario">EEST benchmark scenario: per block and per sub-test ↓</a></p>`;
     const cap = (m, f) => `<p class="note" style="margin:0 0 2px">main ${l.date.slice(5, 10)}: <b>${f(l[m])}</b>` +
-      (dp ? ` · <b style="color:#c2410c">dbg ${dp.sha.slice(0, 8)}: ${f(d[m])}</b> (×${(d[m] / l[m]).toFixed(2)} of main)` : "") + `</p>`;
+      (dp ? ` · <b style="color:#c2410c">dbg ${dp.sha.slice(0, 10)}: ${f(d[m])}</b> (×${(d[m] / l[m]).toFixed(2)} of main)` : "") + `</p>`;
     return `<div class="chart"><h3>EEST benchmark scenario: erigon Mgas/s</h3>${cap("mgas", v => v.toFixed(0))}${spark(rs.map(r => r.mgas), v => v.toFixed(0), fx, rows, dp && { ...dp, v: d.mgas })}${more}</div>` +
       `<div class="chart"><h3>EEST benchmark scenario: erigon / best client (${name(l.best)})</h3>${cap("ratio", v => "×" + v.toFixed(2))}${spark(rs.map(r => r.ratio), v => "×" + v.toFixed(2), fx, rows, dp && { ...dp, v: d.ratio })}${more}</div>`;
   }
   const sec = (h, xs) => xs?.length ? `<h4>${h}</h4><ul>${xs.map(x => `<li>${link(x)}</li>`).join("")}</ul>` : "";
-  document.getElementById("prog-journal").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">Journal</h3>` + [...prog, ...(dbgPt ? [dbgPt] : [])].reverse().map((r, i) =>
+  const JOURNAL = 7, cards = [...prog, ...(dbgPt ? [dbgPt] : [])].reverse().map((r, i) =>
     `<details class="card"${i ? "" : " open"}><summary><b>${r.date}</b>${r.dbg ? ` · <b class="tag" style="color:#c2410c">dbg (main + open PRs) ${sha(r.new)}</b>` : ""} · ` +
     (r.old ? `<a href="https://github.com/erigontech/erigon/compare/${r.old}...${r.new}">${sha(r.old)}..${sha(r.new)}</a>` : `main ${sha(r.new)}, first point`) +
     ` · EVM ${r.evm.mgas.toFixed(1)}, node ${r.node.mgas.toFixed(1)} Mgas/s` +
     (prog.indexOf(r) > 0 && r.evm.fixtures !== prog[prog.indexOf(r) - 1].evm.fixtures ? ` · EVM fixtures now ${r.evm.fixtures}, not comparable with earlier points` : "") + (r.note ? ` · ${r.note}` : "") + `</summary>` +
-    sec("Shipped", r.shipped) + sec("Better", r.better) + sec("Worse", r.worse) + sec("Bottlenecks", r.bottlenecks) + "</details>").join("");
+    sec("Shipped", r.shipped) + sec("Better", r.better) + sec("Worse", r.worse) + sec("Bottlenecks", r.bottlenecks) + "</details>");
+  document.getElementById("prog-journal").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">Journal</h3>` + cards.slice(0, JOURNAL).join("") +
+    (cards.length > JOURNAL ? fold(cards.slice(JOURNAL).join(""), `${cards.length - JOURNAL} older points`) : "");
 }
 
 function ratioCell(k) {
@@ -311,7 +305,9 @@ function btSection(px, groups, what) {
   const noTrie = c => c === "revme" || c === "gevm";
   const btClients = [...new Set(files.flatMap(f => Object.keys(btRun.bt[f])))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || noTrie(a) - noTrie(b) || a.localeCompare(b));
   const btTool = { geth: "evm blocktest", erigon: "evm blocktest", revme: "revme blockchaintest", nethermind: "nethtest -b", evmone: "evmone test", gevm: "RunBlockchainTestFile" };
-  document.getElementById(px + "bt-note").innerHTML = buildTag(btRun.versions["erigon-evm"] || btRun.versions.erigon) + (px !== "sc-" ? `<p>Method, clients and notes as in <a href="#eest-benchmark-scenario">EEST benchmark scenario</a>.</p>` : clientNote(
+  const title = px === "sc-" ? "EEST benchmark scenario" : "EEST benchmark instruction";
+  document.getElementById(px + "bt-note").innerHTML = buildTag(btRun.versions["erigon-evm"] || btRun.versions.erigon, btRun.date, title + " blocks") +
+    `<p>Grey cells are setup-dominated or too short for a wall clock and stay out of the hero.</p>` + (px !== "sc-" ? `<p>Method, clients and versions as in <a href="#eest-benchmark-scenario">EEST benchmark scenario</a>.</p>` : fold(clientNote(
     `Eight copies of one 150M-gas block per file, run one after another through each client's own blockchain-test tool, one block per process. ` +
     `Ggas/s = gas / (wall time of the file − wall time of the same file with no blocks), best of 3. ` +
     `trie-yes clients (erigon, geth, nethermind, evmone) compute the state root; trie-no clients (revme, gevm) keep state in memory, compute no state root and check the post-state account by account. Compare erigon with trie-yes; read trie-no as an upper bound.`,
@@ -322,7 +318,7 @@ function btSection(px, groups, what) {
      `nethtest's dotnet start-up is ~3 s, so nethermind runs the file and the twin second in one process after a pass of the file: start-up and JIT warm-up cancel, nethermind is measured warm, and only the 100 ms floor greys its cells.`,
      `A client with fewer than half of its blocks valid is left out of the hero.`,
      `The precompile tests repeat one input, and geth and neth serve repeated precompile calls from a result cache, so that group compares caches, not precompiles; the hero uses instruction and scenario only.`,
-     `Fixtures: <a href="https://github.com/ethereum/execution-specs/releases/tag/tests-benchmark%40v0.0.9">EEST tests-benchmark@v0.0.9</a>, 150M variant.`], "tool"));
+     `Fixtures: <a href="https://github.com/ethereum/execution-specs/releases/tag/tests-benchmark%40v0.0.9">EEST tests-benchmark@v0.0.9</a>, 150M variant.`], "tool")));
   const btGgas = (f, c) => { const x = btRun.bt[f]?.[c]; return x && x.ms > x.twin ? x.gas / (x.ms - x.twin) / 1e6 : NaN; };
   // a file whose gas exceeds eight 150M blocks carries a setup block; its no-block twin drops it, so the time measures the setup
   const btGrey = (f, c) => { const x = btRun.bt[f]?.[c]; return x && ((c !== "nethermind" && x.twin / x.ms > 0.3) || x.ms - x.twin < 100 || x.gas > 1.25e9); };
@@ -364,6 +360,7 @@ function stSection(px, groups) {
   const worst = (k, r) => `<p><b>Worst case${k}:</b> ${esc(r.f)} ${esc(r.s)} falls from ${fmt(r.v[base], 2)} Ggas/s on ${lb(base)} to ${rest.map(a => `${fmt(r.v[a], 2)} with ${lb(a)}`).join(", ")} (×${fmt(r.worst, 2)}).</p>`;
   const worstOf = c => reg.find(r => !c || r.f.startsWith(c)), all = worstOf();
   const pct = Math.round(100 * (1 - REG)), peerNames = peers.map(nm).join(" and ");
+  shown.push([(px === "sc-" ? "EEST benchmark scenario" : "EEST benchmark instruction") + " sub-tests", er.map(a => (label[a] || a).replace(/ \(.*$/, "")).join(" vs "), stRun.date]);
   document.getElementById(px + "st-sum").innerHTML = `<div class="build">erigon builds: ${er.map(a => a === top && a !== base ? `<b>${lb(a)}</b>` : lb(a)).join(" vs ")}, measured ${stRun.date.slice(0, 10)}</div>` +
     `<p><b>${reg.length ? reg.length : "No"} sub-test${reg.length === 1 ? "" : "s"}</b> more than ${pct}% slower on ${rest.map(lb).join(", ")} than on ${lb(base)}.</p>` +
     (all ? worst("", all) + groups.map(c => [c, worstOf(c + "/")]).filter(([, r]) => r && r !== all).map(([c, r]) => worst(` in ${c}`, r)).join("") : "") +
@@ -395,7 +392,7 @@ function nodeSection(id, key, passKey, note) {
   const hc = nc.filter(c => tests.filter(t => res[t][c]).length * 2 >= tests.length);
   const hero = tests.filter(t => cat(t) !== "precompile" && hc.every(c => res[t][c]));
   const pp = (100 * Math.max(...Object.values(run[passKey]).map(r => Math.abs(r - 1)))).toFixed(1);
-  document.getElementById(id + "-note").innerHTML = buildTag(nv.erigon) + note({ tests, nc, hc, hero, nv, pp, rows: nc.map(c => [c, nv[c], modeMap(nv.modes)[c]]), extra: Object.entries(modeMap(nv.modes)).filter(([c]) => !nc.includes(c)).map(([c, m]) => c + " " + m) });
+  document.getElementById(id + "-note").innerHTML = buildTag(nv.erigon, run.date, { node: "newPayload BAL-off", nodebal: "newPayload BAL-on" }[id]) + fold(note({ tests, nc, hc, hero, nv, pp, rows: nc.map(c => [c, nv[c], modeMap(nv.modes)[c]]), extra: Object.entries(modeMap(nv.modes)).filter(([c]) => !nc.includes(c)).map(([c, m]) => c + " " + m) }));
   const means = hc.map(c => ({ c, v: geomean(hero.map(t => res[t][c])) }));
   const ref = means.find(r => r.c === "erigon").v, max = Math.max(...means.map(r => r.v));
   document.getElementById(id + "-race").innerHTML = `<div><h3>${hero.length} instruction and scenario tests, ${run.date.slice(0, 10)}, geometric mean Mgas/s</h3><div class="bars">` +
@@ -441,11 +438,15 @@ const rpcw = {};
 for (const r of data.runs) for (const row of r.rpcw || []) (rpcw[row.workload] ??= {})[row.client.split("-")[0] + "@" + row.rate] = { ...row, date: r.date };
 if (Object.keys(rpcw).length) {
   for (const id of ["rpcw-title", "rpcw-note", "rpcw"]) document.getElementById(id).hidden = false;
-  const rpcwBuild = [...new Set(Object.values(rpcw).flatMap(w => Object.values(w)).map(x => x.client).filter(c => c.startsWith("erigon")))];
-  document.getElementById("rpcw").innerHTML = rpcwBuild.map(c => buildTag(c.includes("dbg") ? c.replace(/^erigon-/, "") : "main-" + c.replace(/^erigon-/, ""))).join("") + Object.keys(rpcw).sort().map(w => {
-    const rows = Object.values(rpcw[w]).sort((a, b) => a.rate - b.rate || a.client.localeCompare(b.client));
-    return `<h3 style="margin:28px 0 6px;font-size:15px">${w}</h3><div class="wrap"><table><thead><tr><th>rate</th><th>client</th><th>rps</th><th>p50</th><th>p95</th><th>p99</th><th>err</th><th>measured</th></tr></thead><tbody>` +
-      rows.map(x => `<tr><td>${x.rate}</td><td>${x.client}</td><td>${x.rps.toFixed(0)}</td><td>${x.p50}</td><td>${x.p95}</td><td class="${x.p99 > 100 ? "loss" : ""}">${x.p99}</td><td class="${x.err ? "loss" : "gas"}">${x.err}</td><td class="gas">${short(x.date)}</td></tr>`).join("") + "</tbody></table></div>";
+  const all = Object.values(rpcw).flatMap(w => Object.values(w)), newest = all.reduce((a, b) => b.date > a.date ? b : a).date;
+  const cname = c => c.startsWith("erigon") ? "erigon " + buildName(c) : c.replace("-", " ");
+  document.getElementById("rpcw-build").innerHTML = buildTag(all.find(x => x.date === newest && x.client.startsWith("erigon"))?.client, newest, "RPC workloads");
+  document.getElementById("rpcw").innerHTML = Object.keys(rpcw).sort().map(w => {
+    const rows = Object.values(rpcw[w]).sort((a, b) => a.rate - b.rate || a.client.localeCompare(b.client)), days = [...new Set(rows.map(x => x.date.slice(0, 10)))];
+    return `<h3 style="margin:28px 0 2px;font-size:15px">${esc(w)}</h3><p class="note" style="margin:0">${[...new Set(rows.map(x => x.client))].map(c => esc(cname(c))).join(" vs ")}` +
+      (days.length === 1 ? `, <span class="${days[0] < newest.slice(0, 10) ? "old" : ""}">measured ${days[0]}</span>` : "") + `</p>` +
+      `<div class="wrap"><table><thead><tr><th>rate</th><th>client</th><th>rps</th><th>p50</th><th>p95</th><th>p99</th><th>err</th>${days.length > 1 ? "<th>measured</th>" : ""}</tr></thead><tbody>` +
+      rows.map(x => `<tr><td>${x.rate}</td><td>${esc(x.client.split("-")[0])}</td><td>${x.rps.toFixed(0)}</td><td>${x.p50}</td><td>${x.p95}</td><td class="${x.p99 > 100 ? "loss" : ""}">${x.p99}</td><td class="${x.err ? "loss" : "gas"}">${x.err}</td>${days.length > 1 ? `<td class="gas">${short(x.date)}</td>` : ""}</tr>`).join("") + "</tbody></table></div>";
   }).join("");
 }
 
@@ -453,13 +454,20 @@ if (Object.keys(rpcw).length) {
 const callRuns = data.runs.filter(r => Object.keys(r.calls).length);
 if (callRuns.length) {
   for (const id of ["calls-title", "calls-note", "calls"]) document.getElementById(id).hidden = false;
-  const cr = callRuns[callRuns.length - 1], prev = callRuns[callRuns.length - 2];
   const pick = (by, p) => Object.entries(by || {}).find(([c]) => c.startsWith(p)) || [];
+  const erigonOf = r => pick(Object.values(r.calls)[0], "erigon")[0] || "", isDbg = r => erigonOf(r).includes("dbg");
+  // tables = dbg: the latest dbg run unless a later day has a main run; the change column compares with main
+  const last = callRuns[callRuns.length - 1], lastDbg = callRuns.filter(isDbg).pop();
+  const cr = lastDbg && lastDbg.date.slice(0, 10) >= last.date.slice(0, 10) ? lastDbg : last;
+  const prev = callRuns.filter(r => r !== cr && !isDbg(r) && (isDbg(cr) || r.date < cr.date)).pop();
   const nr = data.runs.filter(r => Object.keys(r.callsneth || {}).length).pop();
-  const [ec] = pick(Object.values(cr.calls)[0], "erigon"), [rc] = pick(Object.values(cr.calls)[0], "reth"), [pc] = pick(prev && Object.values(prev.calls)[0], "erigon");
-  document.getElementById("calls-note").innerHTML = buildTag(ec && (ec.includes("dbg") ? ec.replace(/^erigon-/, "") : "main-" + ec.replace(/^erigon-/, ""))) + "<p>" + esc(`One mainnet transaction per row, replayed as eth_call at its own block on the same node and datadir window, 16 connections. ` +
-    `${ec} against ${rc}, measured ${short(cr.date)}; change = erigon rps against ${pc ? pc + " on " + short(prev.date) : "nothing yet"}. A transaction whose block is older than the state the node keeps runs at "latest" and says so; a row without numbers is a call that fails on this node.` +
-    (nr ? ` neth = Nethermind 2.2.0, measured ${short(nr.date)} in a separate run at "latest" with both clients on the same machine; e/n compares erigon and neth from that run by gas per second, since the heads are about 149k blocks apart and a call can take a different path on each (swap-route: 1.47M gas on erigon, 0.24M on neth); – = the call reverted or errored on one of them.` : "")) + "</p>";
+  const [ec] = pick(Object.values(cr.calls)[0], "erigon"), [rc] = pick(Object.values(cr.calls)[0], "reth"), pc = prev && erigonOf(prev);
+  const [ne0] = pick(nr && Object.values(nr.callsneth)[0], "erigon"), [nn0] = pick(nr && Object.values(nr.callsneth)[0], "nethermind");
+  const chHead = isDbg(cr) ? "dbg/main" : "vs prev main";
+  document.getElementById("calls-note").innerHTML = buildTag(ec, cr.date, "eth_call per transaction") + "<p>" + esc(`Against reth ${(rc || "").replace(/^reth-/, "")} in the same run. ` +
+    `One mainnet transaction per row, replayed as eth_call at its own block, 16 connections; "at latest" = the block is older than the state the node keeps; a row without numbers is a call that fails on this node.`) + "</p>" +
+    (pc ? `<p>${chHead} = erigon rps against ${esc(buildName(pc))}, measured ${short(prev.date)}.</p>` : "") +
+    (nr ? "<p>" + esc(`neth, e/n: a separate run at "latest", ${ne0 ? "erigon " + buildName(ne0) : "erigon"} against Nethermind ${(nn0 || "").replace(/^nethermind-/, "")}, measured ${short(nr.date)}; e/n compares gas per second, since a call can take a different path on each head; – = the call reverted or errored on one of them.`) + "</p>" : "");
   const rows = Object.keys(cr.calls).map(f => {
     const [, e] = pick(cr.calls[f], "erigon"), [, r] = pick(cr.calls[f], "reth"), [, p] = pick(prev?.calls[f], "erigon");
     const [, ne] = pick(nr?.callsneth[f], "erigon"), [, nn] = pick(nr?.callsneth[f], "nethermind");
@@ -471,9 +479,9 @@ if (callRuns.length) {
   const byF = Object.fromEntries(rows.map(x => [x.f, x])), oldest = Math.min(...rows.map(x => data.callFixtures[x.f]));
   // bottleneck = the CPU-profile bucket with the largest flat share while the row's eth_call runs, from the latest profiled build.
   const pr = data.runs.filter(r => Object.keys(r.callsprof || {}).length).pop(), bn = f => { const b = pr?.callsprof[f]; return b ? `<td class="gas" title="${esc(b.frames)}">${esc(b.bucket)} ${b.share}%</td>` : `<td class="gas">–</td>`; };
-  if (pr) document.getElementById("calls-note").innerHTML += "<p>" + esc(`bottleneck = the largest share of erigon's CPU profile while the row's call runs (${pr.versions.erigon || "erigon"}, ${short(pr.date)}): ` +
-    `evm = the interpreter, state = state reads (mdbx, snapshot files), sched/net = HTTP serving and syscalls, bn256 = the alt_bn128 precompiles. Hover a cell for its top frames.`) + "</p>";
-  document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>reth rps</th><th>e/r</th><th>neth rps</th><th>e/n</th><th>change</th><th>bottleneck</th></tr></thead><tbody>` +
+  if (pr) document.getElementById("calls-note").innerHTML += "<p>" + esc(`bottleneck: the largest share of erigon's CPU profile while the call runs, erigon ${buildName(pr.versions.erigon)}, measured ${short(pr.date)}; ` +
+    `evm = the interpreter, state = state reads (mdbx, snapshot files), sched/net = HTTP serving and syscalls, bn256 = the alt_bn128 precompiles; hover a cell for its top frames.`) + "</p>";
+  document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>reth rps</th><th>e/r</th><th>neth rps ${nr ? short(nr.date) : ""}</th><th>e/n</th><th>${chHead}</th><th>bottleneck ${pr ? short(pr.date) : ""}</th></tr></thead><tbody>` +
     Object.keys({ ...data.callFixtures, ...cr.calls }).sort((a, b) => a.localeCompare(b, "en", { numeric: true })).map(f => { const x = byF[f];
       return x ? `<tr><td class="f" title="${x.f}">${x.f}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}<td>${fmt(x.n, 0)}</td>${enCell(x.en)}${chCell(x.ch)}${bn(x.f)}</tr>`
         : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="7">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
@@ -489,8 +497,21 @@ if (scenarios.length) {
   const trend = s => Object.entries(rpcDays[s]), hasTrend = scenarios.some(s => trend(s).length > 1);
   const tinyLine = t => { const vs = t.map(e => e[1]), lo = Math.min(...vs), hi = Math.max(...vs), x = i => 2 + 76 * i / (vs.length - 1), y = v => 18 - 16 * (v - lo) / (hi - lo || 1);
     return `<svg width="80" height="20" role="img"><title>${t.map(([d, v]) => d + " " + v.toFixed(0)).join(", ")}</title><polyline fill="none" stroke="var(--erigon)" stroke-width="1.5" points="${vs.map((v, i) => x(i) + "," + y(v)).join(" ")}"/></svg>`; };
-  document.getElementById("rpc").innerHTML = `<table><thead><tr><th>scenario</th><th>erigon</th><th>rps</th><th>p50 ms</th><th>p99 ms</th><th>measured</th>${hasTrend ? "<th>trend</th>" : ""}</tr></thead><tbody>` +
-    scenarios.map(s => { const r = rpcLatest[s]; return `<tr><td>${s}</td><td>${r.client.replace(/^erigon-/, "")}</td><td>${r.rps.toFixed(0)}</td><td>${r.p50.toFixed(2)}</td><td>${r.p99.toFixed(2)}</td><td>${short(r.date)}</td>${hasTrend ? `<td>${trend(s).length > 1 ? tinyLine(trend(s)) : ""}</td>` : ""}</tr>`; }).join("") + "</tbody></table>";
+  const nd = rpcRuns[rpcRuns.length - 1].date, oldN = scenarios.filter(s => rpcLatest[s].date !== nd).length;
+  document.getElementById("rpc-build").innerHTML = buildTag(rpcRuns[rpcRuns.length - 1].rpc.find(x => x.client.startsWith("erigon"))?.client, nd, "JSON-RPC throughput");
+  document.getElementById("rpc").innerHTML = (oldN ? `<p class="note">${oldN} of ${scenarios.length} scenarios were not measured on ${nd.slice(0, 10)}; their rows show an older build and date in red.</p>` : "") + `<table><thead><tr><th>scenario</th><th>erigon</th><th>rps</th><th>p50 ms</th><th>p99 ms</th><th>measured</th>${hasTrend ? "<th>trend</th>" : ""}</tr></thead><tbody>` +
+    scenarios.map(s => { const r = rpcLatest[s]; return `<tr><td>${s}</td><td class="${r.date !== nd ? "old" : ""}">${esc(buildName(r.client))}</td><td>${r.rps.toFixed(0)}</td><td>${r.p50.toFixed(2)}</td><td>${r.p99.toFixed(2)}</td><td class="${r.date !== nd ? "old" : ""}">${short(r.date)}</td>${hasTrend ? `<td>${trend(s).length > 1 ? tinyLine(trend(s)) : ""}</td>` : ""}</tr>`; }).join("") + "</tbody></table>";
+}
+// Status: the build and date each section shows, in page order, and what failed in the run behind the EVM blocks tables.
+{
+  const rank = w => ["Progress", "Stateful", "newPayload BAL-off", "newPayload BAL-on", "eth_call", "RPC workloads", "JSON-RPC", "EEST benchmark scenario", "EEST benchmark instruction"].findIndex(p => w.startsWith(p));
+  const age = d => (Date.now() - Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10), +d.slice(11, 13) || 0, +d.slice(13, 15) || 0)) / 36e5;
+  const when = d => d.slice(0, 10) + (d[10] === "T" ? ` ${d.slice(11, 13)}:${d.slice(13, 15)} UTC` : "");
+  const errs = btRun?.errors || [];
+  document.getElementById("status").innerHTML = `<div class="wrap"><table class="cl"><thead><tr><th>section</th><th>erigon</th><th>measured</th></tr></thead><tbody>` +
+    shown.sort((a, b) => rank(a[0]) - rank(b[0])).map(([w, b, d]) => { const h = age(d);
+      return `<tr><td>${esc(w)}</td><td>${esc(b)}</td><td${h > 36 ? ' class="old"' : ""}>${when(d)}${h > 36 ? `, ${Math.round(h / 24)} days old` : ""}</td></tr>`; }).join("") + "</tbody></table></div>" +
+    (errs.length ? `<p><b class="old">EVM blocks run ${btRun.date}: ${errs.length} failed</b> <span title="${esc(errs.join("\n"))}">(${esc(errs.slice(0, 4).join("; "))}${errs.length > 4 ? "; …" : ""})</span></p>` : "");
 }
 // Every table but the client tables folds.
 for (const t of document.querySelectorAll("table:not(.cl)")) {
