@@ -1,6 +1,27 @@
 # vm-bench
 
-Results: **https://erigontech.github.io/vm-bench/** (updated nightly).
+Results: **https://erigontech.github.io/vm-bench/** (EVM blocks tier nightly, other tiers when rerun).
+
+Cross-client EVM and node benchmarks for erigon: where erigon is slower than other clients, and whether erigon's
+`dbg` build (main + open PRs) regressed against main. Every number on the page can be rerun from this repository.
+
+```
+tier                what is timed                                         clients                          how to run
+EVM blocks          EEST tests-benchmark@v0.0.9 150M blocks through each  erigon geth nethermind evmone    run/all.sh (nightly, run/nightly.sh)
+                    client's blockchain-test tool, minus a no-block twin  revm gevm
+EVM per sub-test    one 150M block per EEST sub-test, erigon builds       erigon builds, nethermind        run/subtests.sh, see "Per sub-test"
+                    against each other
+Node                benchmarkoor engine_newPayload Mgas/s, small state    erigon reth nethermind geth      run/node.sh, see "Node tier"
+Node, BAL on        same on Amsterdam blocks with a block access list     + besu ethrex nimbus             run/nodebal.sh, see "BAL-on node tier"
+RPC                 replayable request corpora, open-loop rate ladder     erigon reth                      run/rpc.sh, see "RPC workloads"
+State tests         mainnet transactions as EEST state tests              erigon (geth revm evmone neth)   make bench, run/<client>.sh
+```
+
+Each run writes one snapshot `history/<UTC time>/*.csv` (+ `versions.csv`); `run/history.py` turns all snapshots into
+`docs/index.html`, the published page. Measure on a quiet Linux box, never a laptop, one run at a time under one lock
+(`BENCH_LOCK`).
+
+## State tests
 
 Real mainnet transactions as [EEST state tests](https://github.com/ethereum/execution-spec-tests), to compare EVM implementations on the same work.
 

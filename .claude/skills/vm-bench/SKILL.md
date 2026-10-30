@@ -9,15 +9,16 @@ Fair, reproducible numbers across EVM clients, published at https://erigontech.g
 (`docs/index.html`, GitHub Pages from `main:/docs`). Three tiers, each honest about what it measures:
 
 ```
-tier    what                                              clients                                 data
-EVM     EEST benchmark blocks through each client's own    erigon, geth, revm (reth's EVM),        history/<t>/blocktest.csv
-        blockchain-test tool, minus a no-block twin        evmone, nethermind
-node    benchmarkoor newPayload Mgas/s, EEST               erigon, reth, nethermind, geth          history/<t>/node.csv
-        tests-benchmark genesis per test (small state)
-RPC     replayable request corpora, open-loop rate ladder  erigon, reth (geth/neth full nodes      history/<t>/rpcw.csv
-                                                           cannot serve historical calls)
-RPC     8 recorded-request scenarios (m33, cal33, ...),    erigon                                  history/<t>/rpc.csv
-        16 connections; eth_call per mainnet fixture       erigon, reth                            history/<t>/calls.csv
+tier          what                                               clients                              script -> snapshot file
+EVM blocks    EEST benchmark blocks through each client's own    erigon, geth, revm, evmone,          run/all.sh -> blocktest.csv
+              blockchain-test tool, minus a no-block twin        nethermind, gevm
+EVM sub-test  one 150M block per EEST sub-test, erigon builds    erigon builds, nethermind            run/subtests.sh + run/subtests-publish.py
+              against each other (one exec worker)                                                     -> subtests.csv, subtest-arms.csv
+node          benchmarkoor newPayload Mgas/s, EEST genesis per   erigon, reth, nethermind, geth       run/node.sh -> node.csv, pass.csv
+              test (small state)
+node BAL-on   same on Amsterdam blocks with a BAL                + besu, ethrex, nimbus               run/balfix.sh, run/nodebal.sh -> nodebal.csv
+RPC           replayable request corpora, open-loop rate ladder  erigon, reth                         run/rpc.sh -> rpcw.csv
+RPC           recorded-request scenarios; eth_call per fixture   erigon (+ reth)                      run/rpc-import.py, run/calls.sh -> rpc.csv, calls.csv
 ```
 
 The older state-test runners (`run/<client>.sh`, `fixtures/`, `history/<t>/<client>.csv`) stay for erigon-vs-revm only:
@@ -39,7 +40,8 @@ marked `*` and must never be quoted as an EVM comparison.
   (`run/all.sh` does it itself). Never build, profile or run anything else on the box while a run holds the lock.
   Numbers taken without the lock are void; delete them from history. Never measure on a laptop.
 - **Setup is subtracted, not estimated.** Mgas/s = gas / (T(file) − T(twin)); the twin is the same genesis with no
-  blocks. Grey (excluded from the hero) when twin/T > 0.3 or net < 100 ms. A client with fewer than half its blocks valid
+  blocks. Grey (excluded from the hero and the trend) when twin/T > 0.3, net < 100 ms, or the file carries a setup block
+  before its benchmark block (gas > eight 150M blocks): the twin drops the setup, so the time would measure it. A client with fewer than half its blocks valid
   is left out of the hero.
 - **Same work for every client.** One test per file, eight sequential copies of its 150M-gas block
   (`run/eest-select.py <fixtures> 150M 8`), so runners that parallelise a file's tests (nethtest, revme) cannot.
@@ -68,6 +70,24 @@ workloads/<name>[@<block>]/{requests.jsonl,rates,README}     RPC corpora (plain 
 history/<UTC time>/                                          one snapshot per run: *.csv + versions.csv
 run/page.html  ->  run/history.py  ->  docs/index.html       page template, data inliner, published page
 ```
+
+## Refresh the page for today's main and dbg
+
+Every tier measures both builds: main feeds the trend, dbg (main + open PRs) feeds the tables.
+
+```
+make -C <erigon main checkout> evm  &&  make -C <erigon dbg checkout> evm     # one binary per build, note both shas
+ERIGON_EVM=<dbg evm> CLIENTS=erigon run/all.sh    # EVM blocks for dbg (the nightly cron does main and the other clients)
+run/subtests.sh main=<main evm> dbg=<dbg evm> nethermind > results/subtests.csv
+run/subtests-publish.py results/subtests.csv 'main=main <sha>' 'dbg=dbg <sha>'
+ERIGON_SRC=<checkout> ERIGON_LABEL=dbg run/node.sh                             # node tier, same for main
+ERIGON_SRC=<checkout> ERIGON_LABEL=dbg run/nodebal.sh                          # needs run/balfix.sh once
+run/history.py   # then the JS OK check below, then commit history/ + docs/
+```
+
+List erigon arms base build first: the sub-test table compares later builds with the first, and the last with nethermind.
+Each section of the page prints the build and date it shows; data older than 36 h is red. A section with stale data is
+rerun, not explained.
 
 ## Common tasks
 
