@@ -363,7 +363,7 @@ function stSection(px, groups) {
   const pct = Math.round(100 * (1 - REG)), peerNames = peers.map(nm).join(" and ");
   shown.push([(px === "sc-" ? "EEST benchmark scenario" : "EEST benchmark instruction") + " sub-tests", er.map(a => (label[a] || a).replace(/ \(.*$/, "")).join(" vs "), stRun.date]);
   document.getElementById(px + "st-sum").innerHTML = `<div class="build">erigon builds: ${er.map(a => a === top && a !== base ? `<b>${lb(a)}</b>` : lb(a)).join(" vs ")}, measured ${stRun.date.slice(0, 10)}</div>` +
-    `<p><b>${reg.length ? reg.length : "No"} sub-test${reg.length === 1 ? "" : "s"}</b> more than ${pct}% slower on ${rest.map(lb).join(", ")} than on ${lb(base)}.</p>` +
+    `<p><b>${reg.length ? `${reg.length} sub-test${reg.length === 1 ? " is" : "s are"}` : "No sub-test is"}</b> more than ${pct}% slower on ${rest.map(lb).join(", ")} than on ${lb(base)}.</p>` +
     (all ? worst("", all) + groups.map(c => [c, worstOf(c + "/")]).filter(([, r]) => r && r !== all).map(([c, r]) => worst(` in ${c}`, r)).join("") : "") +
     (peers.length ? `<h3>${bad.length} sub-tests where ${lb(top)} is under ×${BAD} of ${peerNames}</h3>${list(bad, r => r.vsBest)}` : "");
   document.getElementById(px + "st-note").innerHTML = `<p>${arms.filter(a => label[a]?.includes(" (")).map(a => `${lb(a)}: ${esc(label[a].replace(/^.*? \((.*)\)$/, "$1"))}. `).join("")}` +
