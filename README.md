@@ -148,7 +148,7 @@ BENCHMARKOOR=<benchmarkoor>/bin/benchmarkoor ERIGON_SRC=<erigon checkout> CPUSET
 
 The same harness on Amsterdam blocks, where every block carries a block-level access list (EIP-7928) and every client
 runs in its BAL mode. No published release holds the benchmark tests filled for Amsterdam, so
-`run/balfix.sh` fills them: execution-specs `tests-glamsterdam-devnet@v8.1.4` (commit `7341820b5b39`),
+`run/balfix.sh` downloads the published set (release `balfix-glamsterdam-devnet-v8.1.4`, sha256 checked); `FILL=1 run/balfix.sh` rebuilds it from execution-specs `tests-glamsterdam-devnet@v8.1.4` (commit `7341820b5b39`),
 `tests/benchmark/compute`, Amsterdam, 150M gas, t8n = go-ethereum `glamsterdam-devnet-8` at `aa1f2fcf5129` built with
 go1.25.7, plus geth/besu/nethermind genesis files made from the `0xfcc99d2c100c8860` group of the v0.0.9
 `benchmark_genesis.tar.gz`. The fill needs [uv](https://docs.astral.sh/uv/), takes hours and up to ~20 GB of RAM per
