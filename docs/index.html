@@ -316,14 +316,15 @@ function btSection(px, groups, what) {
     `trie-yes clients (erigon, geth, nethermind, evmone) compute the state root; trie-no clients (revme, gevm) keep state in memory, compute no state root and check the post-state account by account. Compare erigon with trie-yes; read trie-no as an upper bound.`,
     btClients.map(c => [c, btRun.versions[c + "-evm"] || btRun.versions[c], btTool[c]]),
     [`Erigon, geth and nethermind recover tx senders (ecrecover); evmone, revme and gevm take senders from the fixture. gevm checks the post-state against geth's dump of the same block.`,
-     `Grey = the no-block twin is more than 30% of the run or the net time is under 100 ms: setup-dominated or too short for a wall clock.`,
+     `Grey = the no-block twin is more than 30% of the run, the net time is under 100 ms, or the file has a setup block before the benchmark block (the twin drops it, so the time measures the setup): setup-dominated or too short for a wall clock.`,
      `This tier compares interpreters: every client executes the block on one thread, so erigon runs with one exec worker. With its default workers erigon runs the txs of one sender in parallel, about x2 on these blocks. The node tier runs each client's default node.`,
      `nethtest's dotnet start-up is ~3 s, so nethermind runs the file and the twin second in one process after a pass of the file: start-up and JIT warm-up cancel, nethermind is measured warm, and only the 100 ms floor greys its cells.`,
      `A client with fewer than half of its blocks valid is left out of the hero.`,
      `The precompile tests repeat one input, and geth and neth serve repeated precompile calls from a result cache, so that group compares caches, not precompiles; the hero uses instruction and scenario only.`,
      `Fixtures: <a href="https://github.com/ethereum/execution-specs/releases/tag/tests-benchmark%40v0.0.9">EEST tests-benchmark@v0.0.9</a>, 150M variant.`], "tool"));
   const btGgas = (f, c) => { const x = btRun.bt[f]?.[c]; return x && x.ms > x.twin ? x.gas / (x.ms - x.twin) / 1e6 : NaN; };
-  const btGrey = (f, c) => { const x = btRun.bt[f]?.[c]; return x && ((c !== "nethermind" && x.twin / x.ms > 0.3) || x.ms - x.twin < 100); };
+  // a file whose gas exceeds eight 150M blocks carries a setup block; its no-block twin drops it, so the time measures the setup
+  const btGrey = (f, c) => { const x = btRun.bt[f]?.[c]; return x && ((c !== "nethermind" && x.twin / x.ms > 0.3) || x.ms - x.twin < 100 || x.gas > 1.25e9); };
   const btBase = btClients.find(c => c.startsWith("erigon"));
   const heroFiles = files.filter(f => !f.startsWith("precompile/"));
   const means = btClients.map(c => ({ c, valid: heroFiles.filter(f => btRun.bt[f]?.[c] && !btGrey(f, c)).length, v: geomean(heroFiles.map(f => btGrey(f, c) ? NaN : btGgas(f, c))) })).filter(r => !isNaN(r.v) && r.valid * 2 >= heroFiles.length);
@@ -347,13 +348,13 @@ if (btRun) { btSection("sc-", ["scenario"], "scenario"); btSection("in-", ["inst
 const stRun = [...data.runs].reverse().find(r => Object.keys(r.st || {}).length);
 function stSection(px, groups) {
   for (const id of ["title", "st-sum", "st-title", "st-note", "st"]) document.getElementById(px + id).hidden = false;
-  const arms = stRun.stArms.map(r => r[0]).filter(a => !/^pr\d+$/.test(a)), label = Object.fromEntries(stRun.stArms), er = arms.filter(a => !["geth", "revme"].includes(a)), peers = arms.filter(a => a === "geth");
-  const base = er[0], rest = er.slice(1), nm = name;
+  const arms = stRun.stArms.map(r => r[0]).filter(a => !/^pr\d+$/.test(a)), label = Object.fromEntries(stRun.stArms), er = arms.filter(a => !["geth", "revme", "nethermind"].includes(a)), peers = arms.filter(a => a === "nethermind");
+  const base = er[0], rest = er.slice(1), top = er[er.length - 1], nm = name;
   const g = (x) => x && x.ms - x.twin >= 20 ? x.gas / (x.ms - x.twin) / 1e6 : NaN;
   const catRank = f => ["scenario", "instruction", "precompile"].indexOf(f.split("/")[0]);
   const rows = Object.entries(stRun.st).filter(([f]) => groups.includes(f.split("/")[0])).sort(([a], [b]) => catRank(a) - catRank(b) || a.localeCompare(b)).flatMap(([f, subs]) => Object.entries(subs).map(([s, x]) => {
     const v = Object.fromEntries(arms.map(a => [a, g(x[a])])), pv = peers.map(a => v[a]).filter(n => !isNaN(n)), best = pv.length ? Math.max(...pv) : NaN;
-    return { f, s, x, v, worst: Math.min(...rest.map(a => v[a] / v[base]).filter(n => !isNaN(n))), vsBest: v[base] / best };
+    return { f, s, x, v, worst: Math.min(...rest.map(a => v[a] / v[base]).filter(n => !isNaN(n))), vsBest: v[top] / best };
   }));
   const REG = 0.85, BAD = 0.33;
   const line = r => `<b>${esc(r.f)}</b> ${esc(r.s)}: ` + er.map(a => `${esc(label[a] || a)} ${fmt(r.v[a], 2)}`).join(" → ") + ` Ggas/s`;
@@ -363,10 +364,10 @@ function stSection(px, groups) {
   const worstOf = c => [...reg].filter(r => !c || r.f.startsWith(c)).sort((a, b) => a.worst - b.worst)[0];
   document.getElementById(px + "st-sum").innerHTML =
     worst("", worstOf()) + (groups.length > 1 ? groups.map(c => worst(` in ${c}`, worstOf(c + "/"))).join("") : "") +
-    `<h3>${bad.length} sub-tests where ${esc(label[base])} is under ×${BAD} of the faster of ${peers.map(nm).join(" and ")}</h3>${list(bad, r => r.vsBest)}` +
+    `<h3>${bad.length} sub-tests where ${esc(label[top])} is under ×${BAD} of ${peers.map(nm).join(" and ")}</h3>${list(bad, r => r.vsBest)}` +
     `<p class="gas">Measured ${stRun.date.slice(0, 10)}, one 150M block per process, Ggas/s = gas / (wall time − the same file with no blocks), best of 3, one exec worker; arms interleaved per sub-test on one box.</p>`;
-  document.getElementById(px + "st-note").innerHTML = `<p>${arms.map(a => `<b>${esc(nm(a))}</b> = ${esc(label[a] || a)}`).join(", ")}. Red rows: a newer build is more than ${Math.round(100 * (1 - REG))}% slower than ${esc(label[base])}, or ${esc(label[base])} is under ×${BAD} of the best reference client. Grey = under 20 ms net, too short for a wall clock.</p>`;
-  const cols = [...arms.map(a => `<th>${esc(nm(a))}</th>`), ...rest.map(a => `<th>${esc(nm(a))}/${esc(nm(base))}</th>`), `<th>${esc(nm(base))}/best</th>`].join("");
+  document.getElementById(px + "st-note").innerHTML = `<p>${arms.map(a => `<b>${esc(nm(a))}</b> = ${esc(label[a] || a)}`).join(", ")}. Red rows: a newer build is more than ${Math.round(100 * (1 - REG))}% slower than ${esc(label[base])}, or ${esc(label[top])} is under ×${BAD} of ${peers.map(nm).join(" and ")}. Grey = under 20 ms net, too short for a wall clock.</p>`;
+  const cols = [...arms.map(a => `<th>${esc(nm(a))}</th>`), ...rest.map(a => `<th>${esc(nm(a))}/${esc(nm(base))}</th>`), `<th>${esc(nm(top))}/${peers.map(nm).join("+") || "neth"}</th>`].join("");
   document.getElementById(px + "st").innerHTML = `<table><thead><tr><th>file</th><th>sub-test</th>${cols}</tr></thead><tbody>` +
     body([...reg, ...bad.filter(r => !reg.includes(r)), ...rows.filter(r => !reg.includes(r) && !bad.includes(r))].map(r => `<tr${r.worst < REG || r.vsBest < BAD ? ' class="flag"' : ""}><td class="f">${esc(r.f)}</td><td class="f" title="${esc(r.s)}">${esc(r.s)}</td>` +
       arms.map(a => `<td class="${isNaN(r.v[a]) ? "gas" : ""}" title="${r.x[a] ? r.x[a].ms + " ms, twin " + r.x[a].twin + " ms" : ""}">${fmt(r.v[a], 2)}</td>`).join("") +
