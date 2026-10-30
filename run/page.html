@@ -70,6 +70,7 @@ th{font-weight:500;color:var(--ink-2);text-align:right;padding:6px 6px 8px;borde
 td{padding:4px 6px;border-bottom:1px solid var(--rule-2);text-align:right;white-space:nowrap}
 th:first-child,td:first-child{text-align:left;padding-left:0;position:sticky;left:0;background:var(--paper)}
 td.f{overflow:hidden;text-overflow:ellipsis;max-width:22em}
+td.s{text-align:left}
 td.gas{color:var(--ink-2)}
 tr.group td{padding:22px 0 6px;border-bottom:1px solid var(--ink);font-weight:600;color:var(--ink);text-align:left}
 tbody tr:not(.group){cursor:pointer}
@@ -157,20 +158,20 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <div class="wrap" id="rpc"></div>
 
 <h2 id="sc-title" hidden>EEST benchmark scenario</h2>
-<div class="note" id="sc-st-sum" hidden></div>
 <div class="note" id="sc-bt-note" hidden></div>
 <section class="race" id="sc-bt-race" hidden></section>
 <h3 id="sc-st-title" hidden>erigon builds per scenario sub-test</h3>
+<div class="note" id="sc-st-sum" hidden></div>
 <div class="note" id="sc-st-note" hidden></div>
 <div class="wrap" id="sc-st" hidden></div>
 <h3 id="sc-bt-files" hidden>all clients per scenario file</h3>
 <div class="wrap" id="sc-bt" hidden></div>
 
 <h2 id="in-title" hidden>EEST benchmark instruction</h2>
-<div class="note" id="in-st-sum" hidden></div>
 <div class="note" id="in-bt-note" hidden></div>
 <section class="race" id="in-bt-race" hidden></section>
 <h3 id="in-st-title" hidden>erigon builds per instruction and precompile sub-test</h3>
+<div class="note" id="in-st-sum" hidden></div>
 <div class="note" id="in-st-note" hidden></div>
 <div class="wrap" id="in-st" hidden></div>
 <h3 id="in-bt-files" hidden>all clients per instruction and precompile file</h3>
@@ -356,22 +357,25 @@ function stSection(px, groups) {
     const v = Object.fromEntries(arms.map(a => [a, g(x[a])])), pv = peers.map(a => v[a]).filter(n => !isNaN(n)), best = pv.length ? Math.max(...pv) : NaN;
     return { f, s, x, v, worst: Math.min(...rest.map(a => v[a] / v[base]).filter(n => !isNaN(n))), vsBest: v[top] / best };
   }));
-  const REG = 0.85, BAD = 0.33;
-  const line = r => `<b>${esc(r.f)}</b> ${esc(r.s)}: ` + er.map(a => `${esc(label[a] || a)} ${fmt(r.v[a], 2)}`).join(" → ") + ` Ggas/s`;
+  const REG = 0.85, BAD = 0.33, lb = a => esc((label[a] || a).replace(/ \(.*$/, ""));
+  const line = r => `<b>${esc(r.f)}</b> ${esc(r.s)}: ` + er.map(a => `${lb(a)} ${fmt(r.v[a], 2)}`).join(" → ") + ` Ggas/s`;
   const reg = rows.filter(r => r.worst < REG).sort((a, b) => a.worst - b.worst), bad = rows.filter(r => r.vsBest < BAD).sort((a, b) => a.vsBest - b.vsBest);
   const list = (rs, k) => rs.length ? `<ol>${rs.slice(0, 25).map(r => `<li>${line(r)} (×${fmt(k(r), 2)})</li>`).join("")}</ol>${rs.length > 25 ? `<p>+${rs.length - 25} more in the table below.</p>` : ""}` : "<p>none</p>";
-  const worst = (k, r) => r ? `<p><b>Worst case${k}:</b> ${esc(r.f)} ${esc(r.s)} falls from ${fmt(r.v[base], 2)} Ggas/s on ${esc(label[base])} to ${rest.map(a => `${fmt(r.v[a], 2)} with ${esc(label[a])}`).join(", ")} (×${fmt(r.worst, 2)}).</p>` : "";
-  const worstOf = c => [...reg].filter(r => !c || r.f.startsWith(c)).sort((a, b) => a.worst - b.worst)[0];
-  document.getElementById(px + "st-sum").innerHTML =
-    worst("", worstOf()) + (groups.length > 1 ? groups.map(c => worst(` in ${c}`, worstOf(c + "/"))).join("") : "") +
-    `<h3>${bad.length} sub-tests where ${esc(label[top])} is under ×${BAD} of ${peers.map(nm).join(" and ")}</h3>${list(bad, r => r.vsBest)}` +
-    `<p class="gas">Measured ${stRun.date.slice(0, 10)}, one 150M block per process, Ggas/s = gas / (wall time − the same file with no blocks), best of 3, one exec worker; arms interleaved per sub-test on one box.</p>`;
-  document.getElementById(px + "st-note").innerHTML = `<p>${arms.map(a => `<b>${esc(nm(a))}</b> = ${esc(label[a] || a)}`).join(", ")}. Red rows: a newer build is more than ${Math.round(100 * (1 - REG))}% slower than ${esc(label[base])}, or ${esc(label[top])} is under ×${BAD} of ${peers.map(nm).join(" and ")}. Grey = under 20 ms net, too short for a wall clock.</p>`;
-  const cols = [...arms.map(a => `<th>${esc(nm(a))}</th>`), ...rest.map(a => `<th>${esc(nm(a))}/${esc(nm(base))}</th>`), `<th>${esc(nm(top))}/${peers.map(nm).join("+") || "neth"}</th>`].join("");
+  const worst = (k, r) => `<p><b>Worst case${k}:</b> ${esc(r.f)} ${esc(r.s)} falls from ${fmt(r.v[base], 2)} Ggas/s on ${lb(base)} to ${rest.map(a => `${fmt(r.v[a], 2)} with ${lb(a)}`).join(", ")} (×${fmt(r.worst, 2)}).</p>`;
+  const worstOf = c => reg.find(r => !c || r.f.startsWith(c)), all = worstOf();
+  const pct = Math.round(100 * (1 - REG)), peerNames = peers.map(nm).join(" and ");
+  document.getElementById(px + "st-sum").innerHTML = `<div class="build">erigon builds: ${er.map(a => a === top && a !== base ? `<b>${lb(a)}</b>` : lb(a)).join(" vs ")}, measured ${stRun.date.slice(0, 10)}</div>` +
+    `<p><b>${reg.length ? reg.length : "No"} sub-test${reg.length === 1 ? "" : "s"}</b> more than ${pct}% slower on ${rest.map(lb).join(", ")} than on ${lb(base)}.</p>` +
+    (all ? worst("", all) + groups.map(c => [c, worstOf(c + "/")]).filter(([, r]) => r && r !== all).map(([c, r]) => worst(` in ${c}`, r)).join("") : "") +
+    (peers.length ? `<h3>${bad.length} sub-tests where ${lb(top)} is under ×${BAD} of ${peerNames}</h3>${list(bad, r => r.vsBest)}` : "");
+  document.getElementById(px + "st-note").innerHTML = `<p>${arms.filter(a => label[a]?.includes(" (")).map(a => `${lb(a)}: ${esc(label[a].replace(/^.*? \((.*)\)$/, "$1"))}. `).join("")}` +
+    `One 150M block per process, Ggas/s = gas / (wall time − the same file with no blocks), best of 3, one exec worker, builds interleaved per sub-test. ` +
+    `Red rows: a newer build is more than ${pct}% slower than ${lb(base)}${peers.length ? `, or ${lb(top)} is under ×${BAD} of ${peerNames}` : ""}. Grey = under 20 ms net, too short for a wall clock.</p>`;
+  const cols = [...arms.map(a => `<th>${esc(nm(a))}</th>`), ...rest.map(a => `<th>${esc(nm(a))}/${esc(nm(base))}</th>`), ...peers.length ? [`<th>${esc(nm(top))}/${peers.map(nm).join("+")}</th>`] : []].join("");
   document.getElementById(px + "st").innerHTML = `<table><thead><tr><th>file</th><th>sub-test</th>${cols}</tr></thead><tbody>` +
-    body([...reg, ...bad.filter(r => !reg.includes(r)), ...rows.filter(r => !reg.includes(r) && !bad.includes(r))].map(r => `<tr${r.worst < REG || r.vsBest < BAD ? ' class="flag"' : ""}><td class="f">${esc(r.f)}</td><td class="f" title="${esc(r.s)}">${esc(r.s)}</td>` +
+    body([...reg, ...bad.filter(r => !reg.includes(r)), ...rows.filter(r => !reg.includes(r) && !bad.includes(r))].map(r => `<tr${r.worst < REG || r.vsBest < BAD ? ' class="flag"' : ""}><td class="f">${esc(r.f)}</td><td class="f s" title="${esc(r.s)}">${esc(r.s)}</td>` +
       arms.map(a => `<td class="${isNaN(r.v[a]) ? "gas" : ""}" title="${r.x[a] ? r.x[a].ms + " ms, twin " + r.x[a].twin + " ms" : ""}">${fmt(r.v[a], 2)}</td>`).join("") +
-      rest.map(a => ratioCell(r.v[a] / r.v[base])).join("") + ratioCell(r.vsBest) + "</tr>")) + "</tbody></table>";
+      rest.map(a => ratioCell(r.v[a] / r.v[base])).join("") + (peers.length ? ratioCell(r.vsBest) : "") + "</tr>")) + "</tbody></table>";
 }
 if (stRun) { stSection("sc-", ["scenario"]); stSection("in-", ["instruction", "precompile"]); }
 

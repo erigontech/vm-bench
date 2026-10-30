@@ -25,7 +25,7 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
                     run["st"].setdefault(file, {}).setdefault(sub, {})[arm] = {"gas": int(gas), "ms": int(ms), "twin": int(twin)}
             continue
         if f.name == "subtest-arms.csv":
-            run["stArms"] = [r for r in csv.reader(open(f)) if not re.fullmatch(r"pr\d+", r[0])]
+            run["stArms"] = [[r[0], ",".join(r[1:])] for r in csv.reader(open(f)) if not re.fullmatch(r"pr\d+", r[0])]  # a label may contain commas
             continue
         if f.name == "blocktest.csv":
             for file, client, gas, ms, twin in csv.reader(open(f)):
