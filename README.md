@@ -76,6 +76,61 @@ exists. The other two tiers on the page are honest about what they measure: the 
 newPayload Mgas/s (erigon, reth, geth, nethermind, no evmone), the RPC tier is eth_call rps on one mainnet node,
 erigon and reth only, as a regression tracker.
 
+## Node tier
+
+Each client runs as a real node in docker and imports the same EEST benchmark blocks through the engine API;
+[benchmarkoor](https://github.com/ethpandaops/benchmarkoor) times every `engine_newPayload` and the number is Mgas/s of
+the test block. Linux with docker, Go, python3 and benchmarkoor at commit `3a17faa08a5c` built with
+`make build-core` (binary `bin/benchmarkoor`):
+
+```
+BENCHMARKOOR=<benchmarkoor>/bin/benchmarkoor ERIGON_SRC=<erigon checkout> CPUSET=5,13,6,14,7,15 run/node.sh
+```
+
+- Fixtures: benchmarkoor downloads `tests-benchmark@v0.0.9` from the execution-specs release (`fixtures_benchmark.tar.gz`
+  sha256 above, `benchmark_genesis.tar.gz` sha256 `cb545c1ed581920004ffded3a4ef73ec5f7e168fefbc1a2b6972e11cbe8beaa8`),
+  every test filled for Osaka at 150M gas.
+- Clients: erigon is `make erigon` at the HEAD of a clean `ERIGON_SRC`, copied into
+  `ethpandaops/erigon:glamsterdam-devnet-7@sha256:4023a007fe97…` (Debian, glibc 2.41: build on a host with the same or an
+  older glibc), or any image in `ERIGON_IMAGE`. reth v2.7.0, nethermind 2.2.0 and geth v1.17.8 are the release images,
+  pinned by digest in `run/node.sh`; the run log prints the digest of every image it ran.
+- Method: every client first runs one smoke test, and the run stops unless all pass it. Then every client runs the whole
+  filter (default `value_150M`, the 150M-gas tests) in a fresh container, in the order erigon, reth, nethermind, geth and
+  then reversed. The first test of every genesis group is a warm-up and is dropped. A cell is the mean of the two passes
+  over the tests valid in all eight runs; `pass.csv` is each client's pass-2/pass-1 geomean, which should stay within 2%.
+- Env: `CPUSET` (full cores with their SMT siblings, default none: the page uses three), `MEMORY` (default 32g),
+  `ERIGON_LABEL=dbg` for a branch build, `WORK` (benchmarkoor cache, logs and raw results, default `results/node/`),
+  `BENCH_LOCK`. The result lands in `history/<UTC time>/{node,pass,versions}.csv`; `run/history.py` puts it on the page.
+- What it is: each client's default node, multi-core, on a small genesis state, so it measures execution plus the
+  engine API and state-root path of a node. What it is not: the large-state number. A mainnet-sized state makes reads
+  hit disk; that is benchmarkoor's stateful suite, not this tier.
+
+## BAL-on node tier
+
+The same harness on Amsterdam blocks, where every block carries a block-level access list (EIP-7928) and every client
+runs in its BAL mode. No published release holds the benchmark tests filled for Amsterdam, so
+`run/balfix.sh` fills them: execution-specs `tests-glamsterdam-devnet@v8.1.4` (commit `7341820b5b39`),
+`tests/benchmark/compute`, Amsterdam, 150M gas, t8n = go-ethereum `glamsterdam-devnet-8` at `aa1f2fcf5129` built with
+go1.25.7, plus geth/besu/nethermind genesis files made from the `0xfcc99d2c100c8860` group of the v0.0.9
+`benchmark_genesis.tar.gz`. The fill needs [uv](https://docs.astral.sh/uv/), takes hours and up to ~20 GB of RAM per
+worker; the script ends with a digest of every test's fixture hash and fails if it differs from the published set.
+
+```
+run/balfix.sh                    # -> balfix/
+BENCHMARKOOR=<benchmarkoor>/bin/benchmarkoor ERIGON_SRC=<erigon checkout> CPUSET=5,13,6,14,7,15 run/nodebal.sh
+```
+
+- Clients: erigon as above, with `--exec.no-merge=true --exec.no-prune=true --exec.no-background-maintenance
+  --experimental.parallel-commitment`; reth, nethermind, geth, besu, ethrex and nimbus are the ethpandaops
+  glamsterdam-devnet-8 images with the BAL-mode flags of
+  [benchmarkoor-tests](https://github.com/ethpandaops/benchmarkoor-tests) `clients.yaml`, pinned by digest in
+  `run/nodebal.sh`. `ORDER` picks the clients.
+- Method: as the node tier, except that a client that fails the smoke test is left out (`NOT_RUN` in the log) and each
+  client keeps the tests valid in both of its passes. Output: `history/<UTC time>/{nodebal,passbal,versions}.csv`.
+- What it is: Amsterdam gas costs and BAL parallel execution on a small state. What it is not: comparable to the Osaka
+  node tier cell by cell (Amsterdam reprices gas), and not the large-state number. 14 of the 1177 tests are absent:
+  filling them ran out of memory.
+
 ## RPC workloads
 
 `workloads/<name>/` is a request corpus anyone can replay against their own mainnet node: `requests.jsonl` (one
