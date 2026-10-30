@@ -1,6 +1,6 @@
 # node-lib.sh: the part run/node.sh and run/nodebal.sh share. Sourced after the caller fills IMG (client -> image reference).
 # Env: ERIGON_SRC=<clean erigon checkout> (make erigon at its HEAD) or ERIGON_IMAGE=<image>; ERIGON_LABEL (main|dbg, default main);
-# BENCHMARKOOR (binary, default from PATH); WORK (cache, logs and raw results, default results/node); CPUSET (e.g. 5,13,6,14,7,15:
+# BENCHMARKOOR (binary, default from PATH); WORK (cache, logs and raw results, default results/node); CPUSET (e.g. 0-5:
 # full cores, default none); MEMORY (default 32g); BENCH_LOCK (default /tmp/bench.lock); NAME (run name). Relative paths are
 # relative to the repo root.
 set -uo pipefail

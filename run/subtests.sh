@@ -17,7 +17,7 @@ for a in "$@"; do
 done
 idx=blocktests/subtests/index.tsv
 [ -f $idx ] || run/subtests-split.py >&2 || exit 1
-exec 9>"${BENCH_LOCK:-/tmp/n5bench.lock}"; flock 9
+exec 9>"${BENCH_LOCK:-/tmp/bench.lock}"; flock 9
 export PATH=$HOME/go/bin:$HOME/.cargo/bin:$PATH
 export DOTNET_ROOT=${DOTNET_ROOT:-$HOME/.dotnet} NETHTEST=${NETHTEST:-$HOME/nethtest/nethtest}
 now() { perl -MTime::HiRes=time -e 'printf "%.0f", time * 1e3'; }

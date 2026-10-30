@@ -123,7 +123,7 @@ the test block. Linux with docker, Go, python3 and benchmarkoor at commit `3a17f
 `make build-core` (binary `bin/benchmarkoor`):
 
 ```
-BENCHMARKOOR=<benchmarkoor>/bin/benchmarkoor ERIGON_SRC=<erigon checkout> CPUSET=5,13,6,14,7,15 run/node.sh
+BENCHMARKOOR=<benchmarkoor>/bin/benchmarkoor ERIGON_SRC=<erigon checkout> CPUSET=<cores> run/node.sh
 ```
 
 - Fixtures: benchmarkoor downloads `tests-benchmark@v0.0.9` from the execution-specs release (`fixtures_benchmark.tar.gz`
@@ -156,7 +156,7 @@ worker; the script ends with a digest of every test's fixture hash and fails if 
 
 ```
 run/balfix.sh                    # -> balfix/
-BENCHMARKOOR=<benchmarkoor>/bin/benchmarkoor ERIGON_SRC=<erigon checkout> CPUSET=5,13,6,14,7,15 run/nodebal.sh
+BENCHMARKOOR=<benchmarkoor>/bin/benchmarkoor ERIGON_SRC=<erigon checkout> CPUSET=<cores> run/nodebal.sh
 ```
 
 - Clients: erigon as above, with `--exec.no-merge=true --exec.no-prune=true --exec.no-background-maintenance
