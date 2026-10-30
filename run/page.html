@@ -64,9 +64,10 @@ a{color:inherit}
 .build{margin:4px 0 8px;font-size:13px}.build b{color:#c2410c}
 
 /* fixture table */
-.wrap{margin-top:14px;overflow-x:auto;scrollbar-width:thin;padding-bottom:6px}
+.wrap{margin-top:14px;overflow:auto;max-height:calc(100vh - 24px);scrollbar-width:thin;padding-bottom:6px}
 table{border-collapse:collapse;width:100%;font-size:13px}
-th{font-weight:500;color:var(--ink-2);text-align:right;padding:6px 6px 8px;border-bottom:1px solid var(--ink);position:sticky;top:0;z-index:2;background:var(--paper);white-space:nowrap}
+th{font-weight:500;color:var(--ink-2);text-align:right;padding:6px 6px 8px;border-bottom:1px solid var(--ink);background:var(--paper);white-space:nowrap}
+thead{position:sticky;top:0;z-index:2}
 td{padding:4px 6px;border-bottom:1px solid var(--rule-2);text-align:right;white-space:nowrap}
 th:first-child,td:first-child{text-align:left;padding-left:0;position:sticky;left:0;background:var(--paper)}
 td.f{overflow:hidden;text-overflow:ellipsis;max-width:22em}
