@@ -331,7 +331,8 @@ function btSection(px, groups, what) {
   const bars = (t, rs, ratio) => `<div><h3>${heroFiles.length} ${what} blocks, ${t}, ${btRun.date.slice(0, 10)}, geometric mean Ggas/s</h3><div class="bars">` +
     rs.map(r => { const k = vsBase(r.c), show = ratio && r.c !== btBase && !isNaN(k); return `<div class="c">${name(r.c)}</div><div class="b ${r.c === btBase ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div><div class="v">${fmt(r.v, 2)}</div><div class="r ${show ? cls(k) : ""}">${show ? "×" + fmt(k, 2) : ""}</div>`; }).join("") + "</div></div>";
   document.getElementById(px + "bt-race").innerHTML = ref ? bars("trie-yes", means.filter(r => !noTrie(r.c)), true) +
-    (means.some(r => noTrie(r.c)) ? bars("trie-no (no state root, not comparable with erigon)", means.filter(r => noTrie(r.c)), false) : "") : "";
+    (means.some(r => noTrie(r.c)) ? bars("trie-no (no state root, not comparable with erigon)", means.filter(r => noTrie(r.c)), false) : "") :
+    `<p class="note">No hero: fewer than half of erigon's ${heroFiles.length} ${what} blocks are valid (not grey).</p>`;
   const bo = btClients.filter(c => c !== btBase);
   const span = (cs, l) => cs.length ? `<th colspan="${cs.length}">${l}</th>` : "";
   document.getElementById(px + "bt").innerHTML = `<table><thead><tr><th></th>${span(btClients.filter(c => !noTrie(c)), "trie-yes")}${span(btClients.filter(noTrie), "trie-no")}${span(bo.filter(c => !noTrie(c)), "trie-yes")}${span(bo.filter(noTrie), "trie-no")}</tr><tr><th>file</th>${btClients.map(c => `<th>${name(c)}</th>`).join("")}${bo.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +

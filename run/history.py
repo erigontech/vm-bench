@@ -58,11 +58,12 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
             continue
     runs.append(run)
 # Scenario blocks per run, before the per-tier pruning below drops older bt data: erigon's geometric mean Mgas/s and erigon / best client,
-# both over cells that are not grey (twin under 30% of the run, net at least 100 ms). revme and gevm compute no state root, so they are no peers.
+# both over cells that are not grey (twin under 30% of the run, net at least 100 ms, no setup block: gas at most 1.25e9, as the page's btGrey).
+# revme and gevm compute no state root, so they are no peers.
 def scenario_point(run):
     def mgas(f, c):
         x = run["bt"][f].get(c)
-        return x["gas"] / (x["ms"] - x["twin"]) / 1e3 if x and x["ms"] - x["twin"] >= 100 and (c == "nethermind" or x["twin"] / x["ms"] <= 0.3) else None
+        return x["gas"] / (x["ms"] - x["twin"]) / 1e3 if x and x["ms"] - x["twin"] >= 100 and x["gas"] <= 1.25e9 and (c == "nethermind" or x["twin"] / x["ms"] <= 0.3) else None
     gm = lambda xs: math.exp(sum(map(math.log, xs)) / len(xs))
     files = [f for f in run["bt"] if f.startswith("scenario/")]
     e = {f: mgas(f, "erigon") for f in files}
@@ -73,11 +74,15 @@ def scenario_point(run):
         both = [f for f in files if e[f] and mgas(f, c)]
         if len(both) * 2 >= len(files):
             peers[c] = gm([e[f] for f in both]) / gm([mgas(f, c) for f in both])
-    best = min(peers, key=peers.get) if peers else None
+    if not peers:
+        return None
+    best = min(peers, key=peers.get)
     build = run["versions"].get("erigon-evm") or run["versions"].get("erigon", "")
     return {"date": run["date"], "build": build, "blocks": len(files), "mgas": round(gm([v for v in e.values() if v]), 1),
-            "ratio": round(peers[best], 3) if best else None, "best": best}
-scenario = [p for p in map(scenario_point, (r for r in runs if r["bt"])) if p]
+            "ratio": round(peers[best], 3), "best": best}
+scenario = list(map(scenario_point, (r for r in runs if r["bt"])))
+# a trend whose newest run gives no point would show an old number as current
+scenario = [p for p in scenario if p] if scenario and scenario[-1] else []
 # The page shows one table per tier: the latest dbg build (main + open PRs) unless a later main run exists, else the latest run.
 isdbg = lambda r: r["versions"].get("erigon", "").startswith("dbg")
 for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "stArms")):
