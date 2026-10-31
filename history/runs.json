@@ -1438,5 +1438,66 @@
       "fixtures": "glamsterdam-devnet@v8.1.4"
     },
     "note": "dbg: main 2026-10-29 + #25480, #25494, #25463, #25465, #25493 and other open PRs"
+  },
+  {
+    "date": "2026-10-31",
+    "old": "3d61103b24cccc44f02c92e2cf46d36c35c74c6d",
+    "new": "198678df9c2250d7c6bada1611a7a8659d49db28",
+    "evm": {
+      "mgas": 992.2,
+      "ratio": 0.686,
+      "best": "nethermind",
+      "valid": 50,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 6114.0,
+      "ratio": 1.165,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 5783.0,
+      "ratio": 0.816,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-10-31 198678df9c"
+  },
+  {
+    "date": "2026-10-31",
+    "dbg": true,
+    "old": "198678df9c2250d7c6bada1611a7a8659d49db28",
+    "new": "0953092438d64fddffbb6ff9ab4a6225e87725bc",
+    "evm": {
+      "mgas": 1044.7,
+      "ratio": 0.712,
+      "best": "nethermind",
+      "valid": 52,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 6278.7,
+      "ratio": 1.183,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 5826.5,
+      "ratio": 0.811,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "dbg: main 2026-10-31 + 17 open PRs and #25621 (dispatch window for blocks without a BAL)"
   }
 ]
