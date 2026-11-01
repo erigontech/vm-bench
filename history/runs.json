@@ -1406,7 +1406,23 @@
       "noise": 0.3,
       "fixtures": "glamsterdam-devnet@v8.1.4"
     },
-    "note": "main 2026-10-29 3d61103b24; EVM tier runs with EVM.run at a different code alignment than 5709c66569 (0 vs 32), so its -6% is layout"
+    "note": "main 2026-10-29 3d61103b24; EVM tier runs with EVM.run at a different code alignment than 5709c66569 (0 vs 32), so its -6% is layout",
+    "shipped": [
+      "#25037 cache successful expensive precompile calls",
+      "#25479 cache precompile calls below 2,000 gas",
+      "#25226 shift on DIV by a power of two",
+      "#25378 read state .bt files into memory",
+      "#25223 recover BAL-block senders in the exec workers",
+      "#25347 index readers by address, check the exact cell per write",
+      "#25439 publish each tx's origins once",
+      "#25345 origin code reads reuse the committed account memo",
+      "#25327 write view reuses the code hash in the version map"
+    ],
+    "better": [],
+    "worse": [],
+    "bottlenecks": [
+      "no per-family snapshot of this main; its changes show in the 10-31 card"
+    ]
   },
   {
     "date": "2026-10-29",
@@ -1467,7 +1483,26 @@
       "noise": 0.3,
       "fixtures": "glamsterdam-devnet@v8.1.4"
     },
-    "note": "main 2026-10-31 198678df9c"
+    "note": "main 2026-10-31 198678df9c",
+    "shipped": [
+      "#25550 reuse finished task goroutines in the parallel executor",
+      "#25494 recover a block's EIP-7702 authorities in the pre-pass",
+      "#23844 .vi perfect hash replaced by two Elias-Fano sequences",
+      "#25304 inverted index values stored as txNum chunks",
+      "#25500 VersionMap origin storage in a typed concurrent map",
+      "#25505 publish each origin once",
+      "#25498 #25499 #25507 hold write-set values by value, reuse one VersionedWrite",
+      "#25497 keep the lent code buffer across a worker's tasks"
+    ],
+    "better": [
+      "precompiles vs 10-25 main (the 10-29 caches #25037, #25479): node alt_bn128_benchmark x58, bls12_pairing x26, p256verify x26, bls12_381 x12; BAL-on bls12_g1_msm x54, alt_bn128_benchmark x50; EVM ecrecover x37, point_evaluation x16"
+    ],
+    "worse": [
+      "node ether_transfers_to_precompile x0.78 (36), calldatasize x0.80 (8), returndatasize_nonzero x0.86 (12), extcodecopy_warm x0.88 (5)",
+      "BAL-on selfdestruct_initcode x0.83, tload x0.83, calldatasize x0.84, jumpdest_analysis x0.85",
+      "EVM shifts x0.76, calldatasize x0.79, blobhash x0.85, block_context_ops x0.85, msize x0.86"
+    ],
+    "bottlenecks": []
   },
   {
     "date": "2026-10-31",
@@ -1528,7 +1563,26 @@
       "noise": 0.3,
       "fixtures": "glamsterdam-devnet@v8.1.4"
     },
-    "note": "main 2026-11-01 333b263292"
+    "note": "main 2026-11-01 333b263292",
+    "shipped": [
+      "#25607 keccak cache hits only load the bucket",
+      "#25606 cache point additions",
+      "#25608 shorten lock holds on the exec read path",
+      "#25330 parallel-exec follow-up: version+valStatus validation",
+      "#25601 #25599 charge the sender of a value call or creation at validation"
+    ],
+    "better": [
+      "keccak x1.82 node, x1.78 BAL-on (18 tests, #25607)",
+      "bls12_381 x1.77 node, x2.50 BAL-on; alt_bn128 x1.17 BAL-on, x5.78 EVM (#25606)",
+      "calldatasize x1.22, returndatasize_nonzero x1.20 node; EVM shifts x1.32, calldatasize x1.29, msize x1.23 (back from the 10-31 drop)"
+    ],
+    "worse": [
+      "contract_creation x0.75 node (6), x0.63 EVM",
+      "calldataload x0.90 node; p256verify x0.74 BAL-on (3)"
+    ],
+    "bottlenecks": [
+      "EVM jumpi_fallthrough and clz_same: PUSH0 and CLZ are dispatched through two compare trees (CLZ then through the jump table); fixed in #25645"
+    ]
   },
   {
     "date": "2026-11-01",
@@ -1558,6 +1612,20 @@
       "valid": 1161,
       "noise": 0.3,
       "fixtures": "glamsterdam-devnet@v8.1.4"
-    }
+    },
+    "note": "dbg: main 2026-11-01 + 11 open PRs and #25621, #25631, #25638",
+    "shipped": [
+      "#25638 merge a block's state writes into the latest state once per block",
+      "#25631 mark committed writes Done under the entry's read lock",
+      "#25621 bounded dispatch window for blocks without a BAL",
+      "#25637 no-bump for fresh creates and at commit",
+      "#25633 notify balance and nonce writes from their keys",
+      "#25627 VersionMap lookups on xsync.Map",
+      "#25590 re-check only readers of the written paths",
+      "#25609 credit a code-less recipient at validation"
+    ],
+    "worse": [
+      "instruction tests x0.96 against main 333b263292 (780 tests, interleaved A/B); bisected to the block buffer or #25621, under investigation"
+    ]
   }
 ]
