@@ -1,11 +1,11 @@
 {
- "date": "2026-10-31",
- "base": "198678df9c",
+ "date": "2026-11-01",
+ "base": "c657e503c4",
  "lines": [
-  "gd8 stateful suite (devnet-8 state, BAL on, 6 CPUs = 3 cores, newPayload time): dbg 71c21bd1ad (main + 17 open PRs + #25621, #25624, #25627) vs main 198678df9c: 1.9% less total time (0.981); ether_transfers_onchain_receivers 5.8% faster, sstore_variants 12% slower",
-  "#25624 (in-memory latest state sharded by key, so the apply loop's writes stop waiting for readers of other keys): 2.9% less total time on its own (0.972), ether_transfers_onchain_receivers 7.8% faster; on the EIP-7928 BAL blocks mixed_dependency_graph max_txs 1.23-1.39x",
-  "#24792 (lock-free byte-bounded cache layer): 2.4% more total time on its own (1.024); account_access spends the extra CPU in the cache's insert path and in re-interning addresses (unique.Make) after more GC; sstore_variants 1.15x",
-  "Within noise or slower: cache fills admitted on the second miss 1.6% slower; commitment driven by the BAL off 0.997; exec worker count 4 1.005",
-  "Where the time goes: ether_transfers_onchain_receivers is the commitment fold (28% of CPU) and sender recovery (12%); account_access reads the code of every CALL target for the EIP-7702 check (16%) and registers a weak pointer per newly interned address (7% in the runtime)"
+  "gd8 stateful suite (devnet-8 state, BAL on, 6 CPUs = 3 cores, newPayload time): dbg a5d197a44e (main + 11 open PRs + #25621, #25631, #25638) vs main c657e503c4: 5.7% less total time (0.943); ether_transfers_onchain_receivers 10.7% faster, account_access 3.9% faster",
+  "#25638 (a block's state writes merged into the latest state once per block; replaces #25624): 3.1% less total time on its own (0.969), ether_transfers_onchain_receivers 7.7% faster; on the EIP-7928 BAL blocks mixed_dependency_graph max_txs 1.19-1.35x",
+  "#25641 (SetCode authorities recovered once for all executions): within noise on this suite (0.998); the auth_transaction block is 9% faster",
+  "Within noise: 6 trie warm-up workers (0.998 / 1.007)",
+  "Where the time goes: account_access reads the code of every CALL target for the EIP-7702 check (18% of CPU) and the BAL warm-up reads the same code (18%); ether_transfers_onchain_receivers is the commitment fold (28%) and sender recovery (12%)"
  ]
 }
