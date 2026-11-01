@@ -1625,7 +1625,7 @@
       "#25609 credit a code-less recipient at validation"
     ],
     "worse": [
-      "instruction tests x0.96 against main 333b263292 (780 tests, interleaved A/B); bisected to the block buffer or #25621, under investigation"
+      "instruction tests x0.96 against main 333b263292 (780 tests, interleaved A/B): the accounts-only block-buffer prototype (x0.82 on the worst 36); the current #25638 is x1.16 faster on the same tests"
     ]
   }
 ]
