@@ -232,7 +232,7 @@ if (prog.length) {
   const sha = s => s.slice(0, 10);
   shown.push(["Progress", `main ${sha(pl.new)}${dbgPt ? `, dbg ${sha(dbgPt.new)}` : ""}`, pl.date]);
   document.getElementById("prog-note").textContent = `Erigon on each measured main; the other clients keep their published numbers. ` +
-    `EVM: geometric mean over the instruction and scenario blocks, noise ±${pl.evm.noise}%. Node: geometric mean over all tests, noise ±${pl.node.noise}%. ` +
+    `EVM: geometric mean over the instruction and scenario blocks, noise ±${pl.evm.noise}%. Node: geometric mean over all tests, noise ±${prog.filter(r => r.node).pop().node.noise}%. ` +
     `Erigon / best client: erigon's geometric mean divided by the best other client's on the same cells. The journal's Better and Worse list only cells that moved past their noise.`;
   // one series per fixture tag: a fixture change starts a new line, the old points stay, a dashed rule marks the break
   const spark = (vals, f, fx, rows = prog, dv) => {
@@ -278,7 +278,7 @@ if (prog.length) {
   const JOURNAL = 7, cards = [...prog, ...(dbgPt ? [dbgPt] : [])].reverse().map((r, i) =>
     `<details class="card"${i ? "" : " open"}><summary><b>${r.date}</b>${r.dbg ? ` · <b class="tag" style="color:#c2410c">dbg (main + open PRs) ${sha(r.new)}</b>` : ""} · ` +
     (r.old ? `<a href="https://github.com/erigontech/erigon/compare/${r.old}...${r.new}">${sha(r.old)}..${sha(r.new)}</a>` : `main ${sha(r.new)}, first point`) +
-    ` · EVM ${r.evm.mgas.toFixed(1)}, node ${r.node.mgas.toFixed(1)} Mgas/s` +
+    ` · EVM ${r.evm.mgas.toFixed(1)}${r.node ? `, node ${r.node.mgas.toFixed(1)}` : ""} Mgas/s` +
     (prog.indexOf(r) > 0 && r.evm.fixtures !== prog[prog.indexOf(r) - 1].evm.fixtures ? ` · EVM fixtures now ${r.evm.fixtures}, not comparable with earlier points` : "") + (r.note ? ` · ${r.note}` : "") + `</summary>` +
     sec("Shipped", r.shipped) + sec("Better", r.better) + sec("Worse", r.worse) + sec("Bottlenecks", r.bottlenecks) + "</details>");
   document.getElementById("prog-journal").innerHTML = `<h3 style="margin:28px 0 6px;font-size:15px">Journal</h3>` + cards.slice(0, JOURNAL).join("") +

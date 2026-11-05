@@ -1627,5 +1627,114 @@
     "worse": [
       "instruction tests x0.96 against main 333b263292 (780 tests, interleaved A/B): the accounts-only block-buffer prototype (x0.82 on the worst 36); the current #25638 is x1.16 faster on the same tests"
     ]
+  },
+  {
+    "date": "2026-11-03",
+    "old": "333b26329283bd5a914e31920ee6baeb1f6bb17f",
+    "new": "0d5c830b7f4b04458254902896bbc2242fa6fb48",
+    "evm": {
+      "mgas": 1105.5,
+      "ratio": 0.824,
+      "best": "nethermind",
+      "valid": 49,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 6649.6,
+      "ratio": 1.285,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 6156.1,
+      "ratio": 0.866,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-03 0d5c830b7f; gevm failed storage_access_cold, auth_transaction and unchunkified_bytecode in every run since",
+    "shipped": [
+      "#25560 pause-free exec worker pool; #25645 PUSH0 in the hot path, CLZ in the cold one",
+      "#25641 recover SetCode authorities once; #25648 reuse a MULMOD reciprocal; #25627 #25633 #25637 #25609 #25590 from the 11-01 dbg"
+    ],
+    "better": [
+      "contract_creation x2.14 node, x2.43 EVM; ether_transfers x1.48 node (60 tests) (#25560)",
+      "jumpi_fallthrough x1.36 node, x1.75 BAL-on; clz_same x1.31 node, x1.39 BAL-on; EVM push x1.64 (#25645); auth_transaction x1.20 node (#25641)"
+    ],
+    "worse": [
+      "BAL-on parallel_execution_serial_chain x0.76, deploy_then_interact x0.84 (5): likely #25560",
+      "node bls12_g1_msm x0.68 (4, back to x1.54 in the dbg run), comparison x0.88; EVM call_frame_context_ops x0.88"
+    ]
+  },
+  {
+    "date": "2026-11-03",
+    "dbg": true,
+    "old": "0d5c830b7f4b04458254902896bbc2242fa6fb48",
+    "new": "a547bc7e0a87b04b31a20bb6eda31ede75bab5d0",
+    "evm": {
+      "mgas": 1110.7,
+      "ratio": 0.822,
+      "best": "nethermind",
+      "valid": 51,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 6603.4,
+      "ratio": 1.25,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 6096.8,
+      "ratio": 0.849,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "dbg: main 2026-11-03 + 12 open branches",
+    "shipped": [
+      "#25678 ExecuteBlockEphemerally on NoMaterialize; #25675 receipts on NoMaterialize; #25695 warmup reads storage slots without interning",
+      "BAL io_uring prefault (#25486), W-TinyLFU code cache, remote KV and snapshot error-path fixes"
+    ],
+    "better": [
+      "node bls12_g1_msm x1.54 (4), bls12_381 x1.14; BAL-on creates_reverting_initcode x1.14 (6)"
+    ],
+    "worse": [
+      "node x0.99, BAL-on x0.99 of main: storage_access_cold x0.87 node (14), x0.89 BAL-on; storage_access_warm_benchmark x0.83 node: likely #25695",
+      "BAL-on blake2f x0.68 (1), ext_account_query_cold x0.70 (2), create x0.87 (20); EVM shifts x0.83, codesize x0.87"
+    ]
+  },
+  {
+    "date": "2026-11-04",
+    "old": "0d5c830b7f4b04458254902896bbc2242fa6fb48",
+    "new": "a80c005240ad4eeba7c2430a4190d60f17c2d36d",
+    "evm": {
+      "mgas": 1094.2,
+      "ratio": 0.802,
+      "best": "nethermind",
+      "valid": 50,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "note": "main 2026-11-04 a80c005240, EVM tier only (no node runs since 11-03); 95b0d8d303 from 11-04 morning measured the same (x1.00)",
+    "shipped": [
+      "#25678 #25675 #25717 ExecuteBlockEphemerally, receipts and block building on NoMaterialize; #25695 warmup without interning",
+      "#25631 #25734 mark writes Done under the read lock; #25699 commitment hashed keys on first read"
+    ],
+    "better": [
+      "EVM push x1.08, comparison x1.08, iszero x1.07, arithmetic x1.06"
+    ],
+    "worse": [
+      "EVM x0.99, erigon/neth x0.82 to x0.80: shifts x0.82, codesize x0.84, call_frame_context_ops x0.86, jumpdests x0.87, selfbalance x0.89",
+      "the 11-03 dbg lost the same files and 95b0d8d303 (before #25717) too: likely #25678 or #25675; single EVM files move up to 12% between runs of one commit"
+    ]
   }
 ]
