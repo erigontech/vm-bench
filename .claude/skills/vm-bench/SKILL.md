@@ -17,7 +17,7 @@ EVM sub-test  one 150M block per EEST sub-test, erigon builds    erigon builds, 
 node          benchmarkoor newPayload Mgas/s, EEST genesis per   erigon, reth, nethermind, geth       run/node.sh -> node.csv, pass.csv
               test (small state)
 node BAL-on   same on Amsterdam blocks with a BAL                + besu, ethrex, nimbus               run/balfix.sh, run/nodebal.sh -> nodebal.csv
-RPC           recorded-request scenarios; eth_call per fixture   erigon (+ reth)                      run/rpc-import.py, run/calls.sh -> rpc.csv, calls.csv
+RPC           eth_call per fixture                               erigon (+ reth)                      run/calls.sh -> calls.csv
 ```
 
 The older state-test runners (`run/<client>.sh`, `fixtures/`, `history/<t>/<client>.csv`) stay for erigon-vs-revm only:
@@ -31,8 +31,7 @@ marked `*` and must never be quoted as an EVM comparison.
   replaced by that day's main point the next day; older dbg entries stay in the file but are never drawn. Every table
   shows the latest dbg run (`versions.csv` has `erigon,dbg-<sha>`) and falls back to the latest main run when dbg has no
   data for the tier or a later day has a main run; each table names the build it shows. Measure main HEAD and dbg HEAD
-  every night in every tier, the RPC throughput scenarios (`rpcenv.sh <ref> m33,cal33,callmany11,est33,trace33,trc33,trcblk33,trcmany11 base=`
-  on the RPC box, then `run/rpc-import.py <log>`) and `run/calls.sh` included; when the RPC box is busy with another
+  every night in every tier, `run/calls.sh` included; when the RPC box is busy with another
   run, skip it that night and say so. Main feeds the trend and the nightly diff, dbg feeds the tables and today's point. A
   journal card compares main with the previous main point, never with a dbg build. One page only: no per-branch pages.
 - **Layout-sensitive EVM files.** The files in `run/layout-sensitive.txt` move 5–29% when erigon's `(*EVM).run` moves

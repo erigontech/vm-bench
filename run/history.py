@@ -9,7 +9,7 @@ hidden = {"besu", "ethrex", "nimbus"}
 runs = []
 src, page, branch = (root / sys.argv[1], root / sys.argv[2], sys.argv[3]) if len(sys.argv) > 3 else (root / "history", root / "docs" / "index.html", None)
 for d in sorted(p for p in src.iterdir() if p.is_dir()):
-    run = {"date": d.name, "versions": {}, "rpc": [], "calls": {}, "bt": {}, "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}, "st": {}, "stArms": [], "callsprof": {}}
+    run = {"date": d.name, "versions": {}, "calls": {}, "bt": {}, "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}, "st": {}, "stArms": [], "callsprof": {}}
     if (d / "errors.txt").exists():
         run["errors"] = (d / "errors.txt").read_text().split("\n")[:-1]
     for f in d.glob("*.csv"):
@@ -51,8 +51,6 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
             for r in csv.reader(open(f)):
                 run["calls"].setdefault(r[0], {})[r[1]] = {**dict(zip(("rps", "p50", "p99", "err"), map(float, r[2:6]))), "at": r[6] if len(r) > 6 else "block"}
             continue
-        if f.name == "rpc.csv":
-            run["rpc"] = [dict(zip(("scenario", "client", "rps", "p50", "p99"), (r[0], r[1], *map(float, r[2:])))) for r in csv.reader(open(f))]
             continue
     runs.append(run)
 # Scenario blocks per run, before the per-tier pruning below drops older bt data: erigon's geometric mean Mgas/s and erigon / best client,
