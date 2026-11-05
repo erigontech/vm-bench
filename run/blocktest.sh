@@ -27,6 +27,7 @@ for f in blocktests/eest/*/${FILTER:-*}.json; do
 	name=${f#blocktests/eest/}; name=${name%.json}
 	gas=$(python3 -c 'import json,sys; print(sum(int(b["blockHeader"]["gasUsed"],16) for t in json.load(open(sys.argv[1])).values() for b in t["blocks"]))' "$f")
 	warm=; [ "$client" = nethermind ] && warm=$f
+	[ "$client" = gevm ] && grep -qx "$name" run/gevm-skip.txt && continue
 	src=$f; [ "$client" = gevm ] && src=blocktests/eest-gevm/$name.json
 	t=$(best $warm "$src") || { echo "$client: $name failed" >&2; continue; }
 	tw=$(best $warm "blocktests/eest-twin/$name.json") || { echo "$client: $name twin failed" >&2; continue; }

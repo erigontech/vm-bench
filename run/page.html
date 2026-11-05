@@ -471,7 +471,7 @@ if (callRuns.length) {
   const age = d => (Date.now() - Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10), +d.slice(11, 13) || 0, +d.slice(13, 15) || 0)) / 36e5;
   const when = d => d.slice(0, 10) + (d[10] === "T" ? ` ${d.slice(11, 13)}:${d.slice(13, 15)} UTC` : "");
   const errs = btRun?.errors || [];
-  document.getElementById("status").innerHTML = `<div class="wrap"><table class="cl"><thead><tr><th>section</th><th>erigon</th><th>measured</th></tr></thead><tbody>` +
+  document.getElementById("status").innerHTML = `<p><b>updated ${esc(data.updated || "")}, main ${esc(data.mainSha || "?")}</b></p><div class="wrap"><table class="cl"><thead><tr><th>section</th><th>erigon</th><th>measured</th></tr></thead><tbody>` +
     shown.sort((a, b) => rank(a[0]) - rank(b[0])).map(([w, b, d]) => { const h = age(d);
       return `<tr><td>${esc(w)}</td><td>${esc(b)}</td><td${h > 36 ? ' class="old"' : ""}>${when(d)}${h > 36 ? `, ${Math.round(h / 24)} days old` : ""}</td></tr>`; }).join("") + "</tbody></table></div>" +
     (errs.length ? `<p><b class="old">EVM blocks run ${btRun.date}: ${errs.length} failed</b> <span title="${esc(errs.join("\n"))}">(${esc(errs.slice(0, 4).join("; "))}${errs.length > 4 ? "; …" : ""})</span></p>` : "");

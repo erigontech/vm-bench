@@ -1,0 +1,5 @@
+# EVM blocks files gevm cannot run, left out of its column (2026-11-05):
+# auth_transaction and storage_access_cold fail gevm's post-state check; unchunkified_bytecode has no gevm fixture.
+scenario/auth_transaction
+scenario/unchunkified_bytecode
+instruction/storage_access_cold

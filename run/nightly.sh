@@ -18,6 +18,8 @@ else
 	echo "erigon-evm: build of main failed, see results/erigon-build.log" > results/build-errors.txt
 fi
 BLOCKTEST_ONLY=1 REPEAT=3 run/all.sh > /dev/null
+# Loud staleness check: the verdict goes to nightly.log and ~/vm-bench-selfcheck.txt, which the patrol reads.
+run/selfcheck.py || echo "SELFCHECK FAILED: $(cat "$HOME/vm-bench-selfcheck.txt")"
 git add history docs
 git -c user.name=vm-bench -c user.email=vm-bench@erigon.tech commit -q -m "history: $(ls history | tail -1)" || exit 0
 git push -q origin HEAD:main || { echo "push failed, history kept in the tree"; git reset -q origin/main; }

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build docs/index.html from history/*/.
 run/history.py <dir> <page> <branch>: the same page for a branch build, e.g. branches/dbg docs/dbg.html dbg."""
+import datetime
 import csv, json, math, re, sys
 from pathlib import Path
 
@@ -95,7 +96,7 @@ progress = json.load(open(progress)) if progress.exists() else []
 callFixtures = {f"{p.parent.name}/{p.stem}": int(next(iter(json.load(open(p)).values()))["env"]["currentNumber"], 16) for p in root.glob("fixtures/mainnet*/*.json")}
 stateful = src / "stateful.json"
 stateful = json.load(open(stateful)) if stateful.exists() else None
-html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "stateful": stateful, "branch": branch, "callFixtures": callFixtures, "layoutSensitive": [l for l in (root / "run" / "layout-sensitive.txt").read_text().split("\n") if l and not l.startswith("#")], "scenario": scenario}))
+html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "stateful": stateful, "branch": branch, "callFixtures": callFixtures, "layoutSensitive": [l for l in (root / "run" / "layout-sensitive.txt").read_text().split("\n") if l and not l.startswith("#")], "scenario": scenario, "updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"), "mainSha": next((r["versions"].get("erigon-evm", "")[5:] for r in reversed(runs) if r["versions"].get("erigon-evm", "").startswith("main-")), "")}))
 (root / "docs").mkdir(exist_ok=True)
 (root / "docs" / ".nojekyll").touch()
 page.write_text(html)
