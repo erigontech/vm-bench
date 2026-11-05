@@ -18,6 +18,10 @@ else
 	echo "erigon-evm: build of main failed, see results/erigon-build.log" > results/build-errors.txt
 fi
 BLOCKTEST_ONLY=1 REPEAT=3 run/all.sh > /dev/null
+# The node tiers re-measure erigon main only; history.py fills the other clients from their latest full run.
+export BENCHMARKOOR=${BENCHMARKOOR:-$HOME/bm24402727/src/benchmarkoor/bin/benchmarkoor}
+ERIGON_SRC=$src ORDER=erigon run/node.sh > results/node-nightly.log 2>&1 || echo "node tier failed, see results/node-nightly.log" >> results/build-errors.txt
+BALFIX=${BALFIX:-$HOME/bench/balfix} ERIGON_SRC=$src ORDER=erigon run/nodebal.sh > results/nodebal-nightly.log 2>&1 || echo "BAL-on node tier failed, see results/nodebal-nightly.log" >> results/build-errors.txt
 # Loud staleness check: the verdict goes to nightly.log and ~/vm-bench-selfcheck.txt, which the patrol reads.
 run/selfcheck.py || echo "SELFCHECK FAILED: $(cat "$HOME/vm-bench-selfcheck.txt")"
 git add history docs

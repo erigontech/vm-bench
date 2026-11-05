@@ -5,7 +5,7 @@
 import csv, glob, json, math, sys
 
 pre, out = sys.argv[1:3]
-C = ["erigon", "reth", "nethermind", "geth"]
+C = sys.argv[3:] or ["erigon", "reth", "nethermind", "geth"]
 g = lambda xs: math.exp(sum(map(math.log, xs)) / len(xs))
 
 

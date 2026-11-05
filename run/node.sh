@@ -4,7 +4,7 @@
 # and pass. Smoke every client on <smoke filter> (one test; stops unless every client passes it), then <filter> in ORDER and
 # reversed, then run/node-csv.py into history/<UTC time>/{node,pass,versions}.csv. Env: see run/node-lib.sh.
 FILTER=${1:-value_150M} SMOKE=${2:-absent_accounts_False-opcode_BALANCE-benchmark-gas-value_150M}
-FIX=tests-benchmark@v0.0.9 TIER=node ORDER="erigon reth nethermind geth"
+FIX=tests-benchmark@v0.0.9 TIER=node ORDER=${ORDER:-"erigon reth nethermind geth"}
 declare -A IMG=(
 	[reth]=ghcr.io/paradigmxyz/reth:v2.7.0@sha256:a7f059d470878a5a59f3c575f3fc81b536d0d2d56d7a1cbed73e717a4f766336
 	[nethermind]=nethermind/nethermind:2.2.0@sha256:5cc0061e6a317e9249e1e1f537a0a40a2036525c62f1cb250943432f4c000a38
@@ -16,7 +16,7 @@ echo "filter=$FILTER smoke=$SMOKE fixtures=$FIX"
 {
 	echo "fixtures,$FIX"
 	echo "erigon,$EV"
-	for c in reth nethermind geth; do r=${REF[$c]%@*}; echo "$c,${r##*:}"; done
+	for c in $ORDER; do [ $c = erigon ] || { r=${REF[$c]%@*}; echo "$c,${r##*:}"; }; done
 } > "$D/versions.csv"
 
 bad=""
@@ -27,5 +27,5 @@ done
 [ -z "$bad" ] || fail "SMOKE_FAIL$bad" "$D/run-smoke-${bad##* }.log"
 echo SMOKE_OK
 passes "$FILTER" $ORDER
-snapshot node-csv.py "node.csv pass.csv"
+snapshot node-csv.py "node.csv pass.csv" $ORDER
 echo NODE_DONE

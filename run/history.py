@@ -74,6 +74,19 @@ for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "st
     has = [r for r in runs if r[ks[0]]]
     d = [r for r in has if isdbg(r)]
     keep = d[-1] if d and d[-1] is has[-1] else has[-1] if has else None
+    # A nightly node-tier run measures erigon only: fill each other client from its latest earlier run.
+    if keep and ks[0] in ("node", "nodebal"):
+        for old in reversed(has):
+            if old is keep:
+                continue
+            for c in {c for row in old[ks[0]].values() for c in row} - {c for row in keep[ks[0]].values() for c in row}:
+                for test, row in old[ks[0]].items():
+                    if c in row and test in keep[ks[0]]:
+                        keep[ks[0]][test][c] = row[c]
+                if c in old[ks[1]]:
+                    keep[ks[1]][c] = old[ks[1]][c]
+                if c in old["versions"] and c not in keep["versions"]:
+                    keep["versions"][c] = f"{old['versions'][c]} (measured {old['date'][:10]})"
     for run in has:
         if run is not keep:
             for k in ks:
