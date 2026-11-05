@@ -74,6 +74,19 @@ for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "st
     has = [r for r in runs if r[ks[0]]]
     d = [r for r in has if isdbg(r)]
     keep = d[-1] if d and d[-1] is has[-1] else has[-1] if has else None
+    # A nightly sub-test run measures erigon builds only: keep each other client's column from its latest earlier run.
+    if keep and ks[0] == "st":
+        peers = {"nethermind", "geth", "revme", "evmone"}
+        for old in reversed(has):
+            if old is keep:
+                continue
+            for arm, label in old["stArms"]:
+                if arm in peers and arm not in {a for a, _ in keep["stArms"]}:
+                    keep["stArms"].append([arm, f"{label} (measured {old['date'][:10]})"])
+                    for file, subs in old["st"].items():
+                        for sub, row in subs.items():
+                            if arm in row and sub in keep["st"].get(file, {}):
+                                keep["st"][file][sub][arm] = row[arm]
     # A nightly node-tier run measures erigon only: fill each other client from its latest earlier run.
     if keep and ks[0] in ("node", "nodebal"):
         for old in reversed(has):
