@@ -35,6 +35,9 @@ marked `*` and must never be quoted as an EVM comparison.
   on the RPC box, then `run/rpc-import.py <log>`) and `run/calls.sh` included; when the RPC box is busy with another
   run, skip it that night and say so. Main feeds the trend and the nightly diff, dbg feeds the tables and today's point. A
   journal card compares main with the previous main point, never with a dbg build. One page only: no per-branch pages.
+- **Layout-sensitive EVM files.** The files in `run/layout-sensitive.txt` move 5–29% when erigon's `(*EVM).run` moves
+  between offset 0 and 32 mod 64 (`erigon-evm-run64` in `versions.csv`). A journal card lists them under Better or Worse only
+  when `erigon-evm-run64` is the same in both runs; when it changed, say "run%64 a -> b" once instead.
 - **Measure only on the bench box, under its lock.** Every measuring script takes the lock in `BENCH_LOCK`
   (`run/all.sh` does it itself). Never build, profile or run anything else on the box while a run holds the lock.
   Numbers taken without the lock are void; delete them from history. Never measure on a laptop.

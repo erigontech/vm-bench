@@ -293,6 +293,7 @@ function ratioCell(k) {
 }
 // EEST benchmark blocks: latest snapshot that has them.
 const btRun = [...data.runs].reverse().find(r => Object.keys(r.bt).length);
+const layoutTag = f => (data.layoutSensitive || []).includes(f) ? ' <span class="tag" title="moves with (*EVM).run offset mod 64">layout</span>' : "";
 // px: the section's id prefix; groups: the EEST file groups it shows.
 function btSection(px, groups, what) {
   for (const id of ["title", "bt-note", "bt-race", "bt", "bt-files"]) document.getElementById(px + id).hidden = false;
@@ -302,7 +303,9 @@ function btSection(px, groups, what) {
   const btClients = [...new Set(files.flatMap(f => Object.keys(btRun.bt[f])))].sort((a, b) => (a !== "erigon") - (b !== "erigon") || noTrie(a) - noTrie(b) || a.localeCompare(b));
   const btTool = { geth: "evm blocktest", erigon: "evm blocktest", revme: "revme blockchaintest", nethermind: "nethtest -b", evmone: "evmone test", gevm: "RunBlockchainTestFile" };
   const title = px === "sc-" ? "EEST benchmark scenario" : "EEST benchmark instruction";
+  const run64 = btRun.versions["erigon-evm-run64"];
   document.getElementById(px + "bt-note").innerHTML = buildTag(btRun.versions["erigon-evm"] || btRun.versions.erigon, btRun.date, title + " blocks") +
+    `<p>erigon (*EVM).run at offset ${run64 ?? "?"} mod 64. Files tagged <span class="tag">layout</span> move 5–29% when it moves between 0 and 32: code layout, not a code change.</p>` +
     `<p>Grey cells are setup-dominated or too short for a wall clock and stay out of the hero.</p>` + (px !== "sc-" ? `<p>Method, clients and versions as in <a href="#eest-benchmark-scenario">EEST benchmark scenario</a>.</p>` : fold(clientNote(
     `Eight copies of one 150M-gas block per file, run one after another through each client's own blockchain-test tool, one block per process. ` +
     `Ggas/s = gas / (wall time of the file − wall time of the same file with no blocks), best of 3. ` +
@@ -332,7 +335,7 @@ function btSection(px, groups, what) {
   const bo = btClients.filter(c => c !== btBase);
   const span = (cs, l) => cs.length ? `<th colspan="${cs.length}">${l}</th>` : "";
   document.getElementById(px + "bt").innerHTML = `<table><thead><tr><th></th>${span(btClients.filter(c => !noTrie(c)), "trie-yes")}${span(btClients.filter(noTrie), "trie-no")}${span(bo.filter(c => !noTrie(c)), "trie-yes")}${span(bo.filter(noTrie), "trie-no")}</tr><tr><th>file</th>${btClients.map(c => `<th>${name(c)}</th>`).join("")}${bo.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
-    body([...new Set(files.map(f => f.split("/")[0]))].sort((a, b) => (a !== "scenario") - (b !== "scenario") || a.localeCompare(b)).flatMap(g => [`<tr class="group"><td colspan="${1 + btClients.length + bo.length}">${g}</td></tr>`, ...files.filter(f => f.startsWith(g + "/")).map(f => `<tr><td class="f">${f.slice(g.length + 1)}</td>` +
+    body([...new Set(files.map(f => f.split("/")[0]))].sort((a, b) => (a !== "scenario") - (b !== "scenario") || a.localeCompare(b)).flatMap(g => [`<tr class="group"><td colspan="${1 + btClients.length + bo.length}">${g}</td></tr>`, ...files.filter(f => f.startsWith(g + "/")).map(f => `<tr><td class="f">${f.slice(g.length + 1)}${layoutTag(f)}</td>` +
       btClients.map(c => `<td class="${btGrey(f, c) ? "gas" : ""}" title="${btRun.bt[f]?.[c] ? btRun.bt[f][c].ms + " ms, twin " + btRun.bt[f][c].twin + " ms" : ""}">${fmt(btGgas(f, c), 2)}</td>`).join("") +
       bo.map(c => btGrey(f, c) || btGrey(f, btBase) ? `<td class="ratio"><span class="n even">–</span></td>` : ratioCell(btGgas(f, btBase) / btGgas(f, c))).join("") + "</tr>")])) + "</tbody></table>";
 }
@@ -367,7 +370,7 @@ function stSection(px, groups) {
     `Red rows: a newer build is more than ${pct}% slower than ${lb(base)}${peers.length ? `, or ${lb(top)} is under ×${BAD} of ${peerNames}` : ""}. Grey = under 20 ms net, too short for a wall clock.</p>`;
   const cols = [...arms.map(a => `<th>${esc(nm(a))}</th>`), ...rest.map(a => `<th>${esc(nm(a))}/${esc(nm(base))}</th>`), ...peers.length ? [`<th>${esc(nm(top))}/${peers.map(nm).join("+")}</th>`] : []].join("");
   document.getElementById(px + "st").innerHTML = `<table><thead><tr><th>file</th><th>sub-test</th>${cols}</tr></thead><tbody>` +
-    body([...reg, ...bad.filter(r => !reg.includes(r)), ...rows.filter(r => !reg.includes(r) && !bad.includes(r))].map(r => `<tr${r.worst < REG || r.vsBest < BAD ? ' class="flag"' : ""}><td class="f">${esc(r.f)}</td><td class="f s" title="${esc(r.s)}">${esc(r.s)}</td>` +
+    body([...reg, ...bad.filter(r => !reg.includes(r)), ...rows.filter(r => !reg.includes(r) && !bad.includes(r))].map(r => `<tr${r.worst < REG || r.vsBest < BAD ? ' class="flag"' : ""}><td class="f">${esc(r.f)}${layoutTag(r.f)}</td><td class="f s" title="${esc(r.s)}">${esc(r.s)}</td>` +
       arms.map(a => `<td class="${isNaN(r.v[a]) ? "gas" : ""}" title="${r.x[a] ? r.x[a].ms + " ms, twin " + r.x[a].twin + " ms" : ""}">${fmt(r.v[a], 2)}</td>`).join("") +
       rest.map(a => ratioCell(r.v[a] / r.v[base])).join("") + (peers.length ? ratioCell(r.vsBest) : "") + "</tr>")) + "</tbody></table>";
 }

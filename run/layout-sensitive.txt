@@ -1,0 +1,28 @@
+# EVM blocks files whose erigon time moves more than 5% when (*EVM).run moves between offset 0 and 32 mod 64
+# (code layout, not a code change): erigon main 6007769927 vs fc4843a2cf on n5, 2026-11-05.
+instruction/blobhash
+instruction/block_context_ops
+instruction/call_context.call_frame_context_ops
+instruction/calldatacopy_from_call
+instruction/calldatacopy_from_origin
+instruction/calldatasize
+instruction/callvalue_from_origin
+instruction/clz_diff
+instruction/codecopy
+instruction/codesize
+instruction/comparison
+instruction/gas_op
+instruction/jumpdests
+instruction/keccak_max_permutations
+instruction/memory_access
+instruction/msize
+instruction/not_op
+instruction/pc_op
+instruction/returndatasize_nonzero
+instruction/returndatasize_zero
+instruction/selfbalance
+instruction/shifts
+instruction/tx_context.call_frame_context_ops
+precompile/alt_bn128
+scenario/auth_transaction
+scenario/unchunkified_bytecode

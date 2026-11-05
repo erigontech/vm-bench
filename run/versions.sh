@@ -4,6 +4,9 @@ cd "$(dirname "$0")/.."
 echo "erigon,$(go list -m -f '{{.Version}}' github.com/erigontech/erigon)"
 evm=${ERIGON_EVM:-$HOME/bin/erigon-evm}
 [ -x "$evm" ] && echo "erigon-evm,$(cat "$evm.version" 2>/dev/null || "$evm" --version 2>/dev/null | awk '{print $NF}')"
+# Offset of the interpreter loop in its 64-byte line: the layout-sensitive files move with it (run/layout-sensitive.txt).
+run=$( { nm "$evm" 2>/dev/null || go tool nm "$evm" 2>/dev/null; } | awk '/execution\/vm\.\(\*EVM\)\.run$/{print $1; exit}')
+[ -x "$evm" ] && [ -n "$run" ] && echo "erigon-evm-run64,$((16#$run % 64))"
 command -v evm >/dev/null && echo "geth,$(evm --version | awk '{print $NF}')"
 command -v revme >/dev/null && echo "revme,$(cargo install --list 2>/dev/null | grep -o 'revm#[0-9a-f]*' | head -1)"
 [ -x "${EVMONE:-}" ] && echo "evmone,$("$EVMONE" --version | awk '{print $2}')"
