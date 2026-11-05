@@ -17,7 +17,6 @@ EVM sub-test  one 150M block per EEST sub-test, erigon builds    erigon builds, 
 node          benchmarkoor newPayload Mgas/s, EEST genesis per   erigon, reth, nethermind, geth       run/node.sh -> node.csv, pass.csv
               test (small state)
 node BAL-on   same on Amsterdam blocks with a BAL                + besu, ethrex, nimbus               run/balfix.sh, run/nodebal.sh -> nodebal.csv
-RPC           replayable request corpora, open-loop rate ladder  erigon, reth                         run/rpc.sh -> rpcw.csv
 RPC           recorded-request scenarios; eth_call per fixture   erigon (+ reth)                      run/rpc-import.py, run/calls.sh -> rpc.csv, calls.csv
 ```
 
@@ -95,7 +94,6 @@ rerun, not explained.
 run/all.sh                                  # state tests + EEST blocks for every client, snapshot, page (takes the lock)
 CLIENTS="erigon" run/all.sh                 # one client; replaces only its rows
 FILTER="keccak*" REPEAT=1 run/blocktest.sh <client>    # quick check of a few EEST files
-run/rpc.sh <workload> <url> <client>        # one RPC workload's ladder
 run/rpc-regen.sh <url> <rpc-tests checkout> # new qa-mixed@<head>, qa-getlogs@<head>; old corpora stay
 run/rpc-workload.py <name> <corpus> <block> <rates...>   # new workload from vegeta targets or JSON-RPC bodies
 make fetch TX=0xhash=label,... GROUP=mainnet-popular      # add a mainnet tx as a state test

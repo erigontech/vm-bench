@@ -13,7 +13,6 @@ EVM per sub-test    one 150M block per EEST sub-test, erigon builds       erigon
                     against each other
 Node                benchmarkoor engine_newPayload Mgas/s, small state    erigon reth nethermind geth      run/node.sh, see "Node tier"
 Node, BAL on        same on Amsterdam blocks with a block access list     + besu ethrex nimbus             run/nodebal.sh, see "BAL-on node tier"
-RPC                 replayable request corpora, open-loop rate ladder     erigon reth                      run/rpc.sh, see "RPC workloads"
 State tests         mainnet transactions as EEST state tests              erigon (geth revm evmone neth)   make bench, run/<client>.sh
 ```
 
