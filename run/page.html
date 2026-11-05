@@ -146,10 +146,6 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <div class="wrap" id="nodebal-fam" hidden></div>
 <div class="wrap" id="nodebal" hidden></div>
 
-<h2 id="calls-title" hidden>eth_call per transaction</h2>
-<div class="note" id="calls-note" hidden></div>
-<div id="calls" hidden></div>
-
 <h2 id="sc-title" hidden>EEST benchmark scenario</h2>
 <div class="note" id="sc-bt-note" hidden></div>
 <section class="race" id="sc-bt-race" hidden></section>
@@ -427,47 +423,9 @@ nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp,
 
 if (data.branch) document.querySelector(".lede").innerHTML = `Branch build <span class="tag">${esc(data.branch)}</span>: erigon is main plus open PRs, the other clients are the same runs as on the <a href="./">main page</a>. ` +
   `Use it to find the next bottlenecks; the main page and its Progress trend stay main only.`;
-// eth_call per transaction: the latest snapshot with calls, change against the one before it.
-const callRuns = data.runs.filter(r => Object.keys(r.calls).length);
-if (callRuns.length) {
-  for (const id of ["calls-title", "calls-note", "calls"]) document.getElementById(id).hidden = false;
-  const pick = (by, p) => Object.entries(by || {}).find(([c]) => c.startsWith(p)) || [];
-  const erigonOf = r => pick(Object.values(r.calls)[0], "erigon")[0] || "", isDbg = r => erigonOf(r).includes("dbg");
-  // tables = dbg: the latest dbg run unless a later day has a main run; the change column compares with main
-  const last = callRuns[callRuns.length - 1], lastDbg = callRuns.filter(isDbg).pop();
-  const cr = lastDbg && lastDbg.date.slice(0, 10) >= last.date.slice(0, 10) ? lastDbg : last;
-  const prev = callRuns.filter(r => r !== cr && !isDbg(r) && (isDbg(cr) || r.date < cr.date)).pop();
-  const nr = data.runs.filter(r => Object.keys(r.callsneth || {}).length).pop();
-  const [ec] = pick(Object.values(cr.calls)[0], "erigon"), [rc] = pick(Object.values(cr.calls)[0], "reth"), pc = prev && erigonOf(prev);
-  const [ne0] = pick(nr && Object.values(nr.callsneth)[0], "erigon"), [nn0] = pick(nr && Object.values(nr.callsneth)[0], "nethermind");
-  const chHead = isDbg(cr) ? "dbg/main" : "vs prev main";
-  document.getElementById("calls-note").innerHTML = buildTag(ec, cr.date, "eth_call per transaction") + "<p>" + esc(`Against reth ${(rc || "").replace(/^reth-/, "")} in the same run. ` +
-    `One mainnet transaction per row, replayed as eth_call at its own block, 16 connections; "at latest" = the block is older than the state the node keeps; a row without numbers is a call that fails on this node.`) + "</p>" +
-    (pc ? `<p>${chHead} = erigon rps against ${esc(buildName(pc))}, measured ${short(prev.date)}.</p>` : "") +
-    (nr ? "<p>" + esc(`neth, e/n: a separate run at "latest", ${ne0 ? "erigon " + buildName(ne0) : "erigon"} against Nethermind ${(nn0 || "").replace(/^nethermind-/, "")}, measured ${short(nr.date)}; e/n compares gas per second, since a call can take a different path on each head; – = the call reverted or errored on one of them.`) + "</p>" : "");
-  const rows = Object.keys(cr.calls).map(f => {
-    const [, e] = pick(cr.calls[f], "erigon"), [, r] = pick(cr.calls[f], "reth"), [, p] = pick(prev?.calls[f], "erigon");
-    const [, ne] = pick(nr?.callsneth[f], "erigon"), [, nn] = pick(nr?.callsneth[f], "nethermind");
-    return { f, latest: e?.at === "latest", e: e?.rps, r: r?.rps, ch: e && p ? e.rps / p.rps : NaN, en: ne && nn ? (ne.rps * (ne.gas || 1)) / (nn.rps * (nn.gas || 1)) : NaN, n: nn?.rps };
-  });
-  const chCell = k => { if (isNaN(k)) return `<td class="gas">–</td>`; const s = (100 * (k - 1)).toFixed(1).replace(/^-0\.0$/, "0.0"); return `<td class="${k > 1.03 ? "up" : k < 0.97 ? "down" : ""}">${s.startsWith("-") ? s : "+" + s}%</td>`; };
-  const tot = { e: geomean(rows.map(x => x.e)), r: geomean(rows.map(x => x.r)), ch: geomean(rows.map(x => x.ch)), en: geomean(rows.map(x => x.en)), n: geomean(rows.map(x => x.n)) };
-  const enCell = k => isNaN(k) ? `<td class="gas">–</td>` : ratioCell(k);
-  const byF = Object.fromEntries(rows.map(x => [x.f, x])), oldest = Math.min(...rows.map(x => data.callFixtures[x.f]));
-  // bottleneck = the CPU-profile bucket with the largest flat share while the row's eth_call runs, from the latest profiled build.
-  const pr = data.runs.filter(r => Object.keys(r.callsprof || {}).length).pop(), bn = f => { const b = pr?.callsprof[f]; return b ? `<td class="gas" title="${esc(b.frames)}">${esc(b.bucket)} ${b.share}%</td>` : `<td class="gas">–</td>`; };
-  if (pr) document.getElementById("calls-note").innerHTML += "<p>" + esc(`bottleneck: the largest share of erigon's CPU profile while the call runs, erigon ${buildName(pr.versions.erigon)}, measured ${short(pr.date)}; ` +
-    `evm = the interpreter, state = state reads (mdbx, snapshot files), sched/net = HTTP serving and syscalls, bn256 = the alt_bn128 precompiles; hover a cell for its top frames.`) + "</p>";
-  document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>reth rps</th><th>e/r</th><th>neth rps ${nr ? short(nr.date) : ""}</th><th>e/n</th><th>${chHead}</th><th>bottleneck ${pr ? short(pr.date) : ""}</th></tr></thead><tbody>` +
-    Object.keys({ ...data.callFixtures, ...cr.calls }).sort((a, b) => a.localeCompare(b, "en", { numeric: true })).map(f => { const x = byF[f];
-      return x ? `<tr><td class="f" title="${x.f}">${x.f}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}<td>${fmt(x.n, 0)}</td>${enCell(x.en)}${chCell(x.ch)}${bn(x.f)}</tr>`
-        : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="7">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
-    `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.r, 0)}</b></td>${ratioCell(tot.e / tot.r)}<td><b>${fmt(tot.n, 0)}</b></td>${enCell(tot.en)}${chCell(tot.ch)}<td></td></tr></tbody></table></div>`;
-}
-
 // Status: the build and date each section shows, in page order, and what failed in the run behind the EVM blocks tables.
 {
-  const rank = w => ["Progress", "Stateful", "newPayload BAL-off", "newPayload BAL-on", "eth_call", "EEST benchmark scenario", "EEST benchmark instruction"].findIndex(p => w.startsWith(p));
+  const rank = w => ["Progress", "Stateful", "newPayload BAL-off", "newPayload BAL-on", "EEST benchmark scenario", "EEST benchmark instruction"].findIndex(p => w.startsWith(p));
   const age = d => (Date.now() - Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10), +d.slice(11, 13) || 0, +d.slice(13, 15) || 0)) / 36e5;
   const when = d => d.slice(0, 10) + (d[10] === "T" ? ` ${d.slice(11, 13)}:${d.slice(13, 15)} UTC` : "");
   const errs = btRun?.errors || [];

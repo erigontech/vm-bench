@@ -8,7 +8,7 @@ import sys
 root = pathlib.Path(__file__).resolve().parent.parent
 marker = pathlib.Path(os.environ.get("SELFCHECK_MARKER", pathlib.Path.home() / "vm-bench-selfcheck.txt"))
 sections = {"EEST blocks": "blocktest.csv", "EEST sub-tests": "subtests.csv", "newPayload BAL-off": "node.csv",
-            "newPayload BAL-on": "nodebal.csv", "eth_call": "calls.csv"}
+            "newPayload BAL-on": "nodebal.csv"}
 now = datetime.datetime.now(datetime.timezone.utc)
 stale = []
 for name, f in sections.items():
