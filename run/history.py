@@ -10,7 +10,7 @@ hidden = {"besu", "ethrex", "nimbus"}
 runs = []
 src, page, branch = (root / sys.argv[1], root / sys.argv[2], sys.argv[3]) if len(sys.argv) > 3 else (root / "history", root / "docs" / "index.html", None)
 for d in sorted(p for p in src.iterdir() if p.is_dir()):
-    run = {"date": d.name, "versions": {}, "bt": {}, "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "st": {}, "stArms": [] }
+    run = {"date": d.name, "versions": {}, "calls": {}, "bt": {}, "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}, "st": {}, "stArms": [], "callsprof": {}}
     if (d / "errors.txt").exists():
         run["errors"] = (d / "errors.txt").read_text().split("\n")[:-1]
     for f in d.glob("*.csv"):
@@ -39,6 +39,18 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
             continue
         if f.name in ("pass.csv", "passbal.csv"):
             run["nodePass" if f.name == "pass.csv" else "nodebalPass"] = {client: float(r) for client, r in csv.reader(open(f)) if client not in hidden}
+            continue
+            continue
+        if f.name == "callsneth.csv":
+            for r in csv.reader(open(f)):
+                run[f.stem].setdefault(r[0], {})[r[1]] = dict(zip(("rps", "p50", "p99", "err", "gas"), map(float, r[2:])))
+            continue
+        if f.name == "callsprof.csv":
+            run["callsprof"] = {r[0]: {"bucket": r[1], "share": float(r[2]), "frames": r[3]} for r in csv.reader(open(f))}
+            continue
+        if f.name == "calls.csv":
+            for r in csv.reader(open(f)):
+                run["calls"].setdefault(r[0], {})[r[1]] = {**dict(zip(("rps", "p50", "p99", "err"), map(float, r[2:6]))), "at": r[6] if len(r) > 6 else "block"}
             continue
             continue
     runs.append(run)
@@ -106,9 +118,11 @@ for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "st
                 run[k] = {}
 progress = src / "runs.json"
 progress = json.load(open(progress)) if progress.exists() else []
+# eth_call fixture -> block, so the page can list the fixtures a node could not run.
+callFixtures = {f"{p.parent.name}/{p.stem}": int(next(iter(json.load(open(p)).values()))["env"]["currentNumber"], 16) for p in root.glob("fixtures/mainnet*/*.json")}
 stateful = src / "stateful.json"
 stateful = json.load(open(stateful)) if stateful.exists() else None
-html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "stateful": stateful, "branch": branch, "layoutSensitive": [l for l in (root / "run" / "layout-sensitive.txt").read_text().split("\n") if l and not l.startswith("#")], "scenario": scenario, "updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"), "mainSha": next((r["versions"].get("erigon-evm", "")[5:] for r in reversed(runs) if r["versions"].get("erigon-evm", "").startswith("main-")), "")}))
+html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "stateful": stateful, "branch": branch, "callFixtures": callFixtures, "layoutSensitive": [l for l in (root / "run" / "layout-sensitive.txt").read_text().split("\n") if l and not l.startswith("#")], "scenario": scenario, "updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"), "mainSha": next((r["versions"].get("erigon-evm", "")[5:] for r in reversed(runs) if r["versions"].get("erigon-evm", "").startswith("main-")), "")}))
 (root / "docs").mkdir(exist_ok=True)
 (root / "docs" / ".nojekyll").touch()
 page.write_text(html)

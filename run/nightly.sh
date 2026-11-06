@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Cron entry point: pull, run every runner, commit the history snapshot and the page, push if the box can.
-# crontab: 30 3 * * * BENCH_LOCK=/tmp/bench.lock flock -n /tmp/vmbench.lock ~/vm-bench/run/nightly.sh >> ~/vm-bench/nightly.log 2>&1
+# crontab: 30 3 * * * BENCH_LOCK=/tmp/bench.lock CALLS_FROM=<host>:vm-bench-calls/out/ flock -n /tmp/vmbench.lock ~/vm-bench/run/nightly.sh >> ~/vm-bench/nightly.log 2>&1
 # BENCH_LOCK is the box's bench lock, shared with every other measuring script on the box.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -35,6 +35,20 @@ fi
 export BENCHMARKOOR=${BENCHMARKOOR:-$HOME/bm24402727/src/benchmarkoor/bin/benchmarkoor}
 ERIGON_SRC=$src ORDER=erigon run/node.sh > results/node-nightly.log 2>&1 || echo "node tier failed, see results/node-nightly.log" >> results/build-errors.txt
 BALFIX=${BALFIX:-$HOME/bench/balfix} ERIGON_SRC=$src ORDER=erigon run/nodebal.sh > results/nodebal-nightly.log 2>&1 || echo "BAL-on node tier failed, see results/nodebal-nightly.log" >> results/build-errors.txt
+# eth_call tier: the box with the mainnet node measures it from its own cron (CALLS_FROM = rsync source of its CSVs,
+# named <UTC stamp>-<arm>.csv); each CSV becomes history/<stamp>/calls.csv.
+if [ -n "${CALLS_FROM:-}" ]; then
+	in=$HOME/vm-bench-calls-in
+	mkdir -p "$in"
+	rsync -q --remove-source-files -e "ssh -o BatchMode=yes -o ConnectTimeout=20" "$CALLS_FROM" "$in/" || echo "eth_call: import from $CALLS_FROM failed"
+	for f in "$in"/*.csv; do
+		[ -e "$f" ] || break
+		s=$(basename "$f" .csv)
+		mkdir -p "history/${s%-*}"
+		mv "$f" "history/${s%-*}/calls.csv"
+	done
+	run/history.py
+fi
 # Loud staleness check: the verdict goes to nightly.log and ~/vm-bench-selfcheck.txt, which the patrol reads.
 run/selfcheck.py || echo "SELFCHECK FAILED: $(cat "$HOME/vm-bench-selfcheck.txt")"
 git add history docs
