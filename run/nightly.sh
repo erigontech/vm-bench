@@ -5,7 +5,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 git checkout -q -- docs
-git pull -q --ff-only
+git pull -q --rebase || { git rebase --abort; echo "pull failed"; }
 # The EVM blocks table measures erigon main of tonight: rebuild the runner under the box lock, or say it failed.
 src=${ERIGON_MAIN:-$HOME/erigon-vmb-main}
 [ -d "$src" ] || git -C "$HOME/erigon" worktree add -q --detach "$src" origin/main
@@ -52,6 +52,16 @@ if [ -n "${CALLS_FROM:-}" ]; then
 fi
 # Loud staleness check: the verdict goes to nightly.log and ~/vm-bench-selfcheck.txt, which the patrol reads.
 run/selfcheck.py || echo "SELFCHECK FAILED: $(cat "$HOME/vm-bench-selfcheck.txt")"
-git add history docs
+# Commit the snapshot alone, rebase it onto main (daytime edits push there too), rebuild the page on the merged tree, push;
+# a rejected push drops only the page commit and tries again. The snapshot commit is never dropped.
+git checkout -q -- docs
+git add history
 git -c user.name=vm-bench -c user.email=vm-bench@erigon.tech commit -q -m "history: $(ls history | tail -1)" || exit 0
-git push -q origin HEAD:main || { echo "push failed, history kept in the tree"; git reset -q origin/main; }
+for i in 1 2 3; do
+	git pull -q --rebase origin main || { git rebase --abort; echo "rebase failed, the snapshot commit stays on this clone"; exit 1; }
+	run/history.py
+	git add docs && git -c user.name=vm-bench -c user.email=vm-bench@erigon.tech commit -q -m "page: $(ls history | tail -1)"
+	git push -q origin HEAD:main && exit 0
+	echo "push attempt $i failed"; [[ $(git log -1 --format=%s) == page:* ]] && git reset -q --hard HEAD~1; sleep 30
+done
+echo "push failed, the snapshot commit stays on this clone"

@@ -55,9 +55,20 @@ if step "sub-tests (geth revme nethermind)" run/subtests.sh geth revme nethermin
 	step "sub-tests publish" run/subtests-publish.py results/st-weekly.csv "geth=geth $(evm --version | awk '{print $NF}')" \
 		"revme=revm $(cargo install --list | grep -o 'revm#[0-9a-f]*' | head -1)" "nethermind=nethermind $("$NETHTEST" --version)" > /dev/null
 fi
-run/history.py
-git add history docs
-git -c user.name=vm-bench -c user.email=vm-bench@erigon.tech commit -q -m "weekly: other clients $(date -u +%F)" &&
-	{ git push -q origin HEAD:main || { fails+=("push"); git reset -q origin/main; }; }
+# Commit the snapshot alone, rebase it onto main, rebuild the page on the merged tree, push; a rejected push drops only the
+# page commit and tries again. The snapshot commit is never dropped.
+git checkout -q -- docs
+git add history
+if git -c user.name=vm-bench -c user.email=vm-bench@erigon.tech commit -q -m "weekly: other clients $(date -u +%F)"; then
+	pushed=
+	for i in 1 2 3; do
+		git pull -q --rebase origin main || { git rebase --abort; fails+=("rebase"); break; }
+		run/history.py
+		git add docs && git -c user.name=vm-bench -c user.email=vm-bench@erigon.tech commit -q -m "page: $(ls history | tail -1)"
+		git push -q origin HEAD:main && { pushed=1; break; }
+		[[ $(git log -1 --format=%s) == page:* ]] && git reset -q --hard HEAD~1; sleep 30
+	done
+	[ -n "$pushed" ] || fails+=("push")
+fi
 verdict=$([ ${#fails[@]} = 0 ] && echo OK || printf 'FAILED %s; ' "${fails[@]}")
 echo "$(date -u +%FT%H:%MZ) $verdict" | tee "$report"
