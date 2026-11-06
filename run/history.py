@@ -86,13 +86,12 @@ for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "st
     has = [r for r in runs if r[ks[0]]]
     d = [r for r in has if isdbg(r)]
     keep = d[-1] if d and d[-1] is has[-1] else has[-1] if has else None
-    # A nightly run measures erigon only; other clients come from their weekly run, if it is at most 8 days old.
-    weekly = lambda r: (datetime.datetime.now(datetime.timezone.utc).date() - datetime.date.fromisoformat(r["date"][:10])).days <= 8
+    # A nightly run measures erigon only; other clients come from their latest (weekly) run, labelled with its date.
     # A nightly sub-test run measures erigon builds only: keep each other client's column from its latest earlier run.
     if keep and ks[0] == "st":
         peers = {"nethermind", "geth", "revme", "evmone"}
         for old in reversed(has):
-            if old is keep or not weekly(old):
+            if old is keep:
                 continue
             for arm, label in old["stArms"]:
                 if arm in peers and arm not in {a for a, _ in keep["stArms"]}:
@@ -104,7 +103,7 @@ for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "st
     # A nightly node-tier run measures erigon only: fill each other client from its latest earlier run.
     if keep and ks[0] in ("node", "nodebal"):
         for old in reversed(has):
-            if old is keep or not weekly(old):
+            if old is keep:
                 continue
             for c in {c for row in old[ks[0]].values() for c in row} - {c for row in keep[ks[0]].values() for c in row}:
                 for test, row in old[ks[0]].items():

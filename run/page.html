@@ -69,6 +69,7 @@ table{border-collapse:collapse;width:100%;font-size:13px}
 th{font-weight:500;color:var(--ink-2);text-align:right;padding:6px 6px 8px;border-bottom:1px solid var(--ink);background:var(--paper);white-space:nowrap}
 thead th{position:sticky;top:0;z-index:2}
 thead th:first-child{z-index:3}
+.stale{display:inline-block;margin-left:6px;padding:0 6px;border-radius:3px;background:#c2410c;color:#fff;font-size:11px;font-weight:600;letter-spacing:.02em;vertical-align:1px}
 th.sort{cursor:pointer;user-select:none}th.sort:hover{color:var(--ink)}
 th.sort::after{content:" \2195";opacity:.35}th[aria-sort=ascending]::after{content:" \25B2";opacity:1}th[aria-sort=descending]::after{content:" \25BC";opacity:1}
 td{padding:4px 6px;border-bottom:1px solid var(--rule-2);text-align:right;white-space:nowrap}
@@ -185,14 +186,18 @@ const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(
 const flags = p => { const [, f, n] = p.match(/^(.*?)\s*(\(.*\))?$/); return f.split(" ").map(x => x[0] === "-" ? `<span class="fl">${esc(x)}</span>` : esc(x)).join(" ") + (n ? ` <span class="mu">${esc(n)}</span>` : ""); };
 const clientNote = (desc, rows, facts, head = "run parameters") => `<p>${desc}</p>` +
   `<div class="wrap"><table class="cl"><thead><tr><th>client</th><th>version</th>${rows.some(r => r[2]) ? `<th>${head}</th>` : ""}</tr></thead><tbody>` +
-  rows.map(([c, v, p]) => `<tr><td>${name(c)}</td><td>${esc(v)}</td>${p ? `<td>${head === "tool" ? `<span class="fl">${esc(p)}</span>` : flags(p)}</td>` : rows.some(r => r[2]) ? "<td></td>" : ""}</tr>`).join("") + "</tbody></table></div>" +
+  rows.map(([c, v, p]) => `<tr><td>${name(c)}</td><td>${esc(v)}${clientStale(v)}</td>${p ? `<td>${head === "tool" ? `<span class="fl">${esc(p)}</span>` : flags(p)}</td>` : rows.some(r => r[2]) ? "<td></td>" : ""}</tr>`).join("") + "</tbody></table></div>" +
   `<ul>${facts.map(f => `<li>${f}</li>`).join("")}</ul>`;
 // erigon build names: "dbg-<sha>" (main + open PRs), "main-<sha>" or a bare main sha, with or without an "erigon-" prefix
 const buildName = v => { v = String(v || "").replace(/^erigon-/, ""); return v.startsWith("dbg-") ? "dbg " + v.slice(4) : /^(main-)?[0-9a-f]{7,}$/.test(v) ? "main " + v.replace(/^main-/, "") : v; };
 // every section names the build and date it shows; the status table at the top lists them
 const shown = [];
+// A section stays on the page at any age; past 36 h (erigon) or 8 days (another client's weekly run) it carries a stale badge.
+const ageH = d => (Date.now() - Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10), +d.slice(11, 13) || 0, +d.slice(13, 15) || 0)) / 36e5;
+const staleBadge = (d, h = 36) => ageH(d) > h ? ` <span class="stale">stale</span>` : "";
+const clientStale = v => { const m = String(v).match(/\(measured (\d{4}-\d\d-\d\d)\)/); return m ? staleBadge(m[1], 8 * 24) : ""; };
 const buildTag = (v, date, what) => { if (what) shown.push([what, buildName(v), date]); const b = buildName(v);
-  return `<div class="build">erigon ${b.startsWith("dbg") ? `<b>${esc(b)}</b> (main + open PRs)` : esc(b)}, measured ${date.slice(0, 10)}</div>`; };
+  return `<div class="build">erigon ${b.startsWith("dbg") ? `<b>${esc(b)}</b> (main + open PRs)` : esc(b)}, measured ${date.slice(0, 10)}${staleBadge(date)}</div>`; };
 const fold = (h, t = "method, clients and versions") => `<details class="fold"><summary>${t}</summary>${h}</details>`;
 const modeMap = m => Object.fromEntries((m ? m.split("; ") : []).map(x => [x.split(" ")[0], x.slice(x.indexOf(" ") + 1)]));
 const short = d => d.slice(5, 10);
@@ -349,7 +354,7 @@ function stSection(px, groups) {
   const worstOf = c => reg.find(r => !c || r.f.startsWith(c)), all = worstOf();
   const pct = Math.round(100 * (1 - REG)), peerNames = peers.map(nm).join(" and ");
   shown.push([(px === "sc-" ? "EEST benchmark scenario" : "EEST benchmark instruction") + " sub-tests", er.map(a => (label[a] || a).replace(/ \(.*$/, "")).join(" vs "), stRun.date]);
-  document.getElementById(px + "st-sum").innerHTML = `<div class="build">erigon builds: ${er.map(a => a === top && a !== base ? `<b>${lb(a)}</b>` : lb(a)).join(" vs ")}, measured ${stRun.date.slice(0, 10)}</div>` +
+  document.getElementById(px + "st-sum").innerHTML = `<div class="build">erigon builds: ${er.map(a => a === top && a !== base ? `<b>${lb(a)}</b>` : lb(a)).join(" vs ")}, measured ${stRun.date.slice(0, 10)}${staleBadge(stRun.date)}</div>` +
     `<p><b>${reg.length ? `${reg.length} sub-test${reg.length === 1 ? " is" : "s are"}` : "No sub-test is"}</b> more than ${pct}% slower on ${rest.map(lb).join(", ")} than on ${lb(base)}.</p>` +
     (all ? worst("", all) + groups.map(c => [c, worstOf(c + "/")]).filter(([, r]) => r && r !== all).map(([c, r]) => worst(` in ${c}`, r)).join("") : "") +
     (peers.length ? `<h3>${bad.length} sub-tests where ${lb(top)} is under ×${BAD} of ${peerNames}</h3>${list(bad, r => r.vsBest)}` : "");
@@ -458,18 +463,6 @@ if (callRuns.length) {
     `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.mg, 0)}</b></td><td><b>${fmt(tot.xm, 0)}</b></td><td><b>${fmt(tot.ov, 0)}</b></td><td></td><td><b>${fmt(tot.r, 0)}</b></td>${ratioCell(tot.e / tot.r)}${nr ? `<td><b>${fmt(tot.n, 0)}</b></td>${isNaN(tot.en) ? "<td></td>" : ratioCell(tot.en)}` : ""}${chCell(tot.ch)}</tr></tbody></table></div>`;
 }
 
-// An erigon section measured more than 36 h ago is not shown: every visible number is from the last night.
-const SECTION_IDS = { "Progress": ["prog-title", "prog-note", "prog-trend", "prog-journal"], "newPayload BAL-off": ["node-title", "node-note", "node-race", "node-fam", "node"],
-  "newPayload BAL-on": ["nodebal-title", "nodebal-note", "nodebal-race", "nodebal-fam", "nodebal"], "eth_call per transaction": ["calls-title", "calls-note", "calls"],
-  "EEST benchmark scenario blocks": ["sc-bt-note", "sc-bt-race", "sc-bt-files", "sc-bt"], "EEST benchmark instruction blocks": ["in-bt-note", "in-bt-race", "in-bt-files", "in-bt"],
-  "EEST benchmark scenario sub-tests": ["sc-st-title", "sc-st-sum", "sc-st-note", "sc-st"], "EEST benchmark instruction sub-tests": ["in-st-title", "in-st-sum", "in-st-note", "in-st"] };
-const ageH = d => (Date.now() - Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10), +d.slice(11, 13) || 0, +d.slice(13, 15) || 0)) / 36e5;
-const notShown = shown.filter(([w, , d]) => ageH(d) > 36).map(([w]) => w);
-for (const w of notShown) for (const id of SECTION_IDS[w] || []) { const e = document.getElementById(id); if (e) e.hidden = true; }
-for (const [px, a, b] of [["sc", "EEST benchmark scenario blocks", "EEST benchmark scenario sub-tests"], ["in", "EEST benchmark instruction blocks", "EEST benchmark instruction sub-tests"]])
-  if (notShown.includes(a) && notShown.includes(b)) document.getElementById(px + "-title").hidden = true;
-shown.splice(0, shown.length, ...shown.filter(([w]) => !notShown.includes(w)));
-
 // Status: the build and date each section shows, in page order, and what failed in the run behind the EVM blocks tables.
 {
   const rank = w => ["Progress", "Stateful", "newPayload BAL-off", "newPayload BAL-on", "eth_call", "EEST benchmark scenario", "EEST benchmark instruction"].findIndex(p => w.startsWith(p));
@@ -478,8 +471,7 @@ shown.splice(0, shown.length, ...shown.filter(([w]) => !notShown.includes(w)));
   const errs = btRun?.errors || [];
   document.getElementById("status").innerHTML = `<p><b>updated ${esc(data.updated || "")}, main ${esc(data.mainSha || "?")}</b></p><div class="wrap"><table class="cl"><thead><tr><th>section</th><th>erigon</th><th>measured</th></tr></thead><tbody>` +
     shown.sort((a, b) => rank(a[0]) - rank(b[0])).map(([w, b, d]) => { const h = age(d);
-      return `<tr><td>${esc(w)}</td><td>${esc(b)}</td><td${h > 36 ? ' class="old"' : ""}>${when(d)}${h > 36 ? `, ${Math.round(h / 24)} days old` : ""}</td></tr>`; }).join("") + "</tbody></table></div>" +
-    (notShown.length ? `<p class="old">not shown, no erigon run in the last 36 h: ${esc(notShown.join("; "))}</p>` : "") +
+      return `<tr><td>${esc(w)}</td><td>${esc(b)}</td><td${h > 36 ? ' class="old"' : ""}>${when(d)}${h > 36 ? `, ${Math.round(h / 24)} days old` : ""}${staleBadge(d)}</td></tr>`; }).join("") + "</tbody></table></div>" +
     (errs.length ? `<p><b class="old">EVM blocks run ${btRun.date}: ${errs.length} failed</b> <span title="${esc(errs.join("\n"))}">(${esc(errs.slice(0, 4).join("; "))}${errs.length > 4 ? "; …" : ""})</span></p>` : "");
 }
 // Every table: a header row stays in view while its table scrolls, and a click on a column header sorts the rows by that
