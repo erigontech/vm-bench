@@ -1736,5 +1736,30 @@
       "EVM x0.99, erigon/neth x0.82 to x0.80: shifts x0.82, codesize x0.84, call_frame_context_ops x0.86, jumpdests x0.87, selfbalance x0.89",
       "the 11-03 dbg lost the same files and 95b0d8d303 (before #25717) too: likely #25678 or #25675; single EVM files move up to 12% between runs of one commit"
     ]
+  },
+  {
+    "date": "2026-11-05",
+    "old": "0d5c830b7f4b04458254902896bbc2242fa6fb48",
+    "new": "10c35bcd28c8112614a1b8e19c3cc2dd54d71b5b",
+    "evm": {
+      "mgas": 1100.8,
+      "ratio": 0.814,
+      "best": "nethermind",
+      "valid": 50,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "note": "main 2026-11-05 10c35bcd28, EVM tier only (the node tiers of this night were still running); no failed rows, gevm passes all files again",
+    "shipped": [
+      "#25491 fold commitment from the version map; #25486 BAL cold pages in io_uring batches; #25559 skip arrival validation; #25751 BAL-marked accounts from origin",
+      "#25743 RPC replays share code by hash; #25748 seek in inverted index files; #25766 faster uint256 Div; #25243 EIP-8141 frames"
+    ],
+    "better": [
+      "EVM x1.01, erigon/neth x0.80 to x0.81: selfbalance x1.15, jumpdests x1.12 (both layout-sensitive), dup x1.07, swap x1.07, callvalue x1.06"
+    ],
+    "worse": [
+      "precompile *_uncachable x0.53 to x0.56 (sha256, ripemd160, identity, blake2f, alt_bn128): #25491, bisected (parent 1487 ms, #25491 2359 ms on sha256_uncachable)",
+      "selfdestruct_initcode x0.89, selfdestruct_created x0.90, storage_access_cold_benchmark x0.91: likely #25491 too, not bisected"
+    ]
   }
 ]
