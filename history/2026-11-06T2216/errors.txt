@@ -1,0 +1,1 @@
+sub-tests failed, see results/st.err
