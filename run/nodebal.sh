@@ -13,6 +13,8 @@ declare -A IMG=(
 	[besu]=ethpandaops/besu:main-cf89071@sha256:97f9d2b125a7c6610336d1c37e542307553deb2e5e48a3c6b76cc741accce77d
 	[ethrex]=ethpandaops/ethrex:main@sha256:da185f9e7fe28f1d9b54feab76b2b9e88359fccaa7cd13d6c052d879e40f933b
 	[nimbus]=ethpandaops/nimbus-eth1:glamsterdam-devnet-8@sha256:e3ffa4a47745753b651d5ef115807086cf5a448d2dca92bfb88520a49f93dd9e)
+# IMG_<client>=<image> overrides a pin (the weekly job passes each client's latest release).
+for c in "${!IMG[@]}"; do v=IMG_$c; [ -z "${!v:-}" ] || IMG[$c]=${!v}; done
 declare -A ARGS=(
 	[erigon]="--exec.no-merge=true --exec.no-prune=true --exec.no-background-maintenance --experimental.parallel-commitment"
 	[geth]="--cache.noprecompile --engine.maxreorgdepth=1024"

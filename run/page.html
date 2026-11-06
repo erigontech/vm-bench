@@ -432,23 +432,28 @@ if (callRuns.length) {
   const cr = lastDbg && lastDbg.date.slice(0, 10) >= last.date.slice(0, 10) ? lastDbg : last;
   const prev = callRuns.filter(r => r !== cr && !isDbg(r) && (isDbg(cr) || r.date < cr.date)).pop();
   const [ec] = pick(Object.values(cr.calls)[0], "erigon"), [rc] = pick(Object.values(cr.calls)[0], "reth"), pc = prev && erigonOf(prev);
+  // Nethermind runs with erigon main only; its columns come from the newest main run that has it.
+  const hasNeth = r => Object.values(r.calls).some(v => pick(v, "nethermind")[0]), nr = callRuns.filter(hasNeth).pop();
+  const [nn0] = nr ? pick(Object.values(nr.calls).find(v => pick(v, "nethermind")[0]), "nethermind") : [];
   const chHead = isDbg(cr) ? "dbg/main" : "vs prev main";
   document.getElementById("calls-note").innerHTML = buildTag(ec, cr.date, "eth_call per transaction") + "<p>" + esc(`Against reth ${(rc || "").replace(/^reth-/, "")} in the same run. ` +
+    (nr ? `neth = ${(nn0 || "").replace(/^nethermind-/, "Nethermind ")}, measured ${short(nr.date)}, in the erigon main run of that night; it keeps only the latest state, so its rows run at latest; e/n compares gas per second, erigon main against neth. ` : "") +
     `One mainnet transaction per row, replayed as eth_call at its own block, 16 connections; "at latest" = the block is older than the state the node keeps; a row without numbers is a call that fails on this node; Mgas/s = erigon rps × the call's gas (its debug_traceCall gasUsed, or the mainnet receipt's for older runs).`) + "</p>" +
     (pc ? `<p>${chHead} = erigon rps against ${esc(buildName(pc))}, measured ${short(prev.date)}.</p>` : "") +
     "";
   const rows = Object.keys(cr.calls).map(f => {
     const [, e] = pick(cr.calls[f], "erigon"), [, r] = pick(cr.calls[f], "reth"), [, p] = pick(prev?.calls[f], "erigon");
-    return { f, latest: e?.at === "latest", e: e?.rps, mg: e ? e.rps * (e.gas || data.callGas[f] || NaN) / 1e6 : NaN, r: r?.rps, ch: e && p ? e.rps / p.rps : NaN };
+    const [, nn] = pick(nr?.calls[f], "nethermind"), [, ne] = pick(nr?.calls[f], "erigon");
+    return { f, latest: e?.at === "latest", e: e?.rps, mg: e ? e.rps * (e.gas || data.callGas[f] || NaN) / 1e6 : NaN, r: r?.rps, n: nn?.rps, en: ne && nn && ne.gas && nn.gas ? (ne.rps * ne.gas) / (nn.rps * nn.gas) : NaN, ch: e && p ? e.rps / p.rps : NaN };
   });
   const chCell = k => { if (isNaN(k)) return `<td class="gas">–</td>`; const s = (100 * (k - 1)).toFixed(1).replace(/^-0\.0$/, "0.0"); return `<td class="${k > 1.03 ? "up" : k < 0.97 ? "down" : ""}">${s.startsWith("-") ? s : "+" + s}%</td>`; };
-  const tot = { e: geomean(rows.map(x => x.e)), mg: geomean(rows.map(x => x.mg)), r: geomean(rows.map(x => x.r)), ch: geomean(rows.map(x => x.ch)) };
+  const tot = { e: geomean(rows.map(x => x.e)), mg: geomean(rows.map(x => x.mg)), n: geomean(rows.map(x => x.n)), en: geomean(rows.map(x => x.en)), r: geomean(rows.map(x => x.r)), ch: geomean(rows.map(x => x.ch)) };
   const byF = Object.fromEntries(rows.map(x => [x.f, x])), oldest = Math.min(...rows.map(x => data.callFixtures[x.f]));
-  document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>erigon Mgas/s</th><th>reth rps</th><th>e/r</th><th>${chHead}</th></tr></thead><tbody>` +
+  document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>erigon Mgas/s</th><th>reth rps</th><th>e/r</th>${nr ? "<th>neth rps</th><th>e/n</th>" : ""}<th>${chHead}</th></tr></thead><tbody>` +
     Object.keys({ ...data.callFixtures, ...cr.calls }).sort((a, b) => a.localeCompare(b, "en", { numeric: true })).map(f => { const x = byF[f];
-      return x ? `<tr><td class="f" title="${x.f}">${x.f}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.mg, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}${chCell(x.ch)}</tr>`
-        : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="5">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
-    `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.mg, 0)}</b></td><td><b>${fmt(tot.r, 0)}</b></td>${ratioCell(tot.e / tot.r)}${chCell(tot.ch)}</tr></tbody></table></div>`;
+      return x ? `<tr><td class="f" title="${x.f}">${x.f}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.mg, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}${nr ? `<td>${fmt(x.n, 0)}</td>${isNaN(x.en) ? `<td class="gas">–</td>` : ratioCell(x.en)}` : ""}${chCell(x.ch)}</tr>`
+        : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="${nr ? 7 : 5}">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
+    `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.mg, 0)}</b></td><td><b>${fmt(tot.r, 0)}</b></td>${ratioCell(tot.e / tot.r)}${nr ? `<td><b>${fmt(tot.n, 0)}</b></td>${isNaN(tot.en) ? "<td></td>" : ratioCell(tot.en)}` : ""}${chCell(tot.ch)}</tr></tbody></table></div>`;
 }
 
 // An erigon section measured more than 36 h ago is not shown: every visible number is from the last night.

@@ -9,6 +9,8 @@ declare -A IMG=(
 	[reth]=ghcr.io/paradigmxyz/reth:v2.7.0@sha256:a7f059d470878a5a59f3c575f3fc81b536d0d2d56d7a1cbed73e717a4f766336
 	[nethermind]=nethermind/nethermind:2.2.0@sha256:5cc0061e6a317e9249e1e1f537a0a40a2036525c62f1cb250943432f4c000a38
 	[geth]=ethereum/client-go:v1.17.8@sha256:abf3605177f8bdcfce436985a8054cca4ae59256323a4ffb72c56c04f3d1fadd)
+# IMG_<client>=<image> overrides a pin (the weekly job passes each client's latest release).
+for c in "${!IMG[@]}"; do v=IMG_$c; [ -z "${!v:-}" ] || IMG[$c]=${!v}; done
 SOURCE="          github_repo: ethereum/execution-specs
           github_release: $FIX"
 . "$(dirname "$0")/node-lib.sh"
