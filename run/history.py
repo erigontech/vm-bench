@@ -50,7 +50,7 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
             continue
         if f.name == "calls.csv":
             for r in csv.reader(open(f)):
-                run["calls"].setdefault(r[0], {})[r[1]] = {**dict(zip(("rps", "p50", "p99", "err"), map(float, r[2:6]))), "at": r[6] if len(r) > 6 else "block", **({"gas": int(r[7])} if len(r) > 7 and r[7] else {})}
+                run["calls"].setdefault(r[0], {})[r[1]] = {**dict(zip(("rps", "p50", "p99", "err"), map(float, r[2:6]))), "at": r[6] if len(r) > 6 else "block", **({"gas": int(r[7])} if len(r) > 7 and r[7] else {}), **({"exec": float(r[8]), "over": float(r[9])} if len(r) > 9 and r[8] and r[9] else {})}
             continue
             continue
     runs.append(run)
