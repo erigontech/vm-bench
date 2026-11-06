@@ -86,11 +86,13 @@ for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "st
     has = [r for r in runs if r[ks[0]]]
     d = [r for r in has if isdbg(r)]
     keep = d[-1] if d and d[-1] is has[-1] else has[-1] if has else None
+    # A nightly run measures erigon only; other clients come from their weekly run, if it is at most 8 days old.
+    weekly = lambda r: (datetime.datetime.now(datetime.timezone.utc).date() - datetime.date.fromisoformat(r["date"][:10])).days <= 8
     # A nightly sub-test run measures erigon builds only: keep each other client's column from its latest earlier run.
     if keep and ks[0] == "st":
         peers = {"nethermind", "geth", "revme", "evmone"}
         for old in reversed(has):
-            if old is keep:
+            if old is keep or not weekly(old):
                 continue
             for arm, label in old["stArms"]:
                 if arm in peers and arm not in {a for a, _ in keep["stArms"]}:
@@ -102,7 +104,7 @@ for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "st
     # A nightly node-tier run measures erigon only: fill each other client from its latest earlier run.
     if keep and ks[0] in ("node", "nodebal"):
         for old in reversed(has):
-            if old is keep:
+            if old is keep or not weekly(old):
                 continue
             for c in {c for row in old[ks[0]].values() for c in row} - {c for row in keep[ks[0]].values() for c in row}:
                 for test, row in old[ks[0]].items():
@@ -123,9 +125,7 @@ callFx = {f"{p.parent.name}/{p.stem}": next(iter(json.load(open(p)).values())) f
 callFixtures = {f: int(fx["env"]["currentNumber"], 16) for f, fx in callFx.items()}
 # The mainnet receipt's gas, for rows measured before calls.csv carried the call's own gas.
 callGas = {f: int(fx["_info"]["gasUsed"], 16) for f, fx in callFx.items() if "gasUsed" in fx.get("_info", {})}
-stateful = src / "stateful.json"
-stateful = json.load(open(stateful)) if stateful.exists() else None
-html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "stateful": stateful, "branch": branch, "callFixtures": callFixtures, "callGas": callGas, "layoutSensitive": [l for l in (root / "run" / "layout-sensitive.txt").read_text().split("\n") if l and not l.startswith("#")], "scenario": scenario, "updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"), "mainSha": next((r["versions"].get("erigon-evm", "")[5:] for r in reversed(runs) if r["versions"].get("erigon-evm", "").startswith("main-")), "")}))
+html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "branch": branch, "callFixtures": callFixtures, "callGas": callGas, "layoutSensitive": [l for l in (root / "run" / "layout-sensitive.txt").read_text().split("\n") if l and not l.startswith("#")], "scenario": scenario, "updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"), "mainSha": next((r["versions"].get("erigon-evm", "")[5:] for r in reversed(runs) if r["versions"].get("erigon-evm", "").startswith("main-")), "")}))
 (root / "docs").mkdir(exist_ok=True)
 (root / "docs" / ".nojekyll").touch()
 page.write_text(html)

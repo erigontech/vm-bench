@@ -19,13 +19,14 @@ else
 fi
 BLOCKTEST_ONLY=1 REPEAT=3 run/all.sh > /dev/null
 # Sub-tests: erigon main and the newest dbg branch (alex/dbg_<YYYYMMDD>, main + open PRs); history.py keeps nethermind's column from its latest run.
+# subtests.sh takes the box lock itself: wrapping it in flock here deadlocks.
 dsrc=${ERIGON_DBG:-$HOME/erigon-vmb-dbg}
 [ -d "$dsrc" ] || git -C "$HOME/erigon" worktree add -q --detach "$dsrc" origin/main
 dref=$(git -C "$dsrc" ls-remote --heads origin 'alex/dbg_20*' | sort -k2 | tail -1 | cut -f1)
 if [ -n "$dref" ] && git -C "$dsrc" fetch -q origin "$dref" && git -C "$dsrc" checkout -q --detach "$dref" &&
 	flock "${BENCH_LOCK:-/tmp/bench.lock}" make -C "$dsrc" evm > results/erigon-dbg-build.log 2>&1; then
 	cp "$dsrc/build/bin/evm" "$HOME/bin/erigon-evm-dbg"
-	flock "${BENCH_LOCK:-/tmp/bench.lock}" run/subtests.sh main="$HOME/bin/erigon-evm" dbg="$HOME/bin/erigon-evm-dbg" > results/st.csv 2> results/st.err &&
+	run/subtests.sh main="$HOME/bin/erigon-evm" dbg="$HOME/bin/erigon-evm-dbg" > results/st.csv 2> results/st.err &&
 		run/subtests-publish.py results/st.csv "main=$(cat "$HOME/bin/erigon-evm.version")" "dbg=dbg-${dref:0:10}" > /dev/null ||
 		echo "sub-tests failed, see results/st.err" >> results/build-errors.txt
 else

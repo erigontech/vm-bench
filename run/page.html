@@ -134,8 +134,6 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <div class="charts" id="prog-trend"></div>
 <div id="prog-journal"></div>
 
-<h2 id="sf-title" hidden>Stateful benchmarkoor A/B</h2>
-<div class="note" id="sf" hidden></div>
 
 <h2 id="node-title" hidden>newPayload BAL-off</h2>
 <div class="note" id="node-note" hidden></div>
@@ -211,13 +209,6 @@ document.addEventListener("click", e => {
 });
 
 
-// stateful: A/B results of single changes against one main build, not part of the main trend
-if (data.stateful) {
-  for (const id of ["sf-title", "sf"]) document.getElementById(id).hidden = false;
-  shown.push(["Stateful benchmarkoor A/B", "main " + data.stateful.base + " vs single changes", data.stateful.date]);
-  document.getElementById("sf").innerHTML = `<div class="build">erigon main ${esc(data.stateful.base)} against the builds each line names, measured ${data.stateful.date}; none of these changes is in main yet</div><ul>` +
-    data.stateful.lines.map(x => `<li>${esc(x).replace(/#(\d+)/g, '<a href="https://github.com/erigontech/erigon/pull/$1">#$1</a>')}</li>`).join("") + "</ul>";
-}
 // progress: one entry per measured main in history/runs.json, oldest first
 const allProg = data.progress || [], prog = allProg.filter(r => !r.dbg);
 // today's dbg build (main + open PRs): drawn only while no main point is newer
@@ -440,33 +431,37 @@ if (callRuns.length) {
   const last = callRuns[callRuns.length - 1], lastDbg = callRuns.filter(isDbg).pop();
   const cr = lastDbg && lastDbg.date.slice(0, 10) >= last.date.slice(0, 10) ? lastDbg : last;
   const prev = callRuns.filter(r => r !== cr && !isDbg(r) && (isDbg(cr) || r.date < cr.date)).pop();
-  const nr = data.runs.filter(r => Object.keys(r.callsneth || {}).length).pop();
   const [ec] = pick(Object.values(cr.calls)[0], "erigon"), [rc] = pick(Object.values(cr.calls)[0], "reth"), pc = prev && erigonOf(prev);
-  const [ne0] = pick(nr && Object.values(nr.callsneth)[0], "erigon"), [nn0] = pick(nr && Object.values(nr.callsneth)[0], "nethermind");
   const chHead = isDbg(cr) ? "dbg/main" : "vs prev main";
   document.getElementById("calls-note").innerHTML = buildTag(ec, cr.date, "eth_call per transaction") + "<p>" + esc(`Against reth ${(rc || "").replace(/^reth-/, "")} in the same run. ` +
     `One mainnet transaction per row, replayed as eth_call at its own block, 16 connections; "at latest" = the block is older than the state the node keeps; a row without numbers is a call that fails on this node; Mgas/s = erigon rps × the call's gas (its debug_traceCall gasUsed, or the mainnet receipt's for older runs).`) + "</p>" +
     (pc ? `<p>${chHead} = erigon rps against ${esc(buildName(pc))}, measured ${short(prev.date)}.</p>` : "") +
-    (nr ? "<p>" + esc(`neth, e/n: a separate run at "latest", ${ne0 ? "erigon " + buildName(ne0) : "erigon"} against Nethermind ${(nn0 || "").replace(/^nethermind-/, "")}, measured ${short(nr.date)}; e/n compares gas per second, since a call can take a different path on each head; – = the call reverted or errored on one of them.`) + "</p>" : "");
+    "";
   const rows = Object.keys(cr.calls).map(f => {
     const [, e] = pick(cr.calls[f], "erigon"), [, r] = pick(cr.calls[f], "reth"), [, p] = pick(prev?.calls[f], "erigon");
-    const [, ne] = pick(nr?.callsneth[f], "erigon"), [, nn] = pick(nr?.callsneth[f], "nethermind");
-    return { f, latest: e?.at === "latest", e: e?.rps, mg: e ? e.rps * (e.gas || data.callGas[f] || NaN) / 1e6 : NaN, r: r?.rps, ch: e && p ? e.rps / p.rps : NaN, en: ne && nn ? (ne.rps * (ne.gas || 1)) / (nn.rps * (nn.gas || 1)) : NaN, n: nn?.rps };
+    return { f, latest: e?.at === "latest", e: e?.rps, mg: e ? e.rps * (e.gas || data.callGas[f] || NaN) / 1e6 : NaN, r: r?.rps, ch: e && p ? e.rps / p.rps : NaN };
   });
   const chCell = k => { if (isNaN(k)) return `<td class="gas">–</td>`; const s = (100 * (k - 1)).toFixed(1).replace(/^-0\.0$/, "0.0"); return `<td class="${k > 1.03 ? "up" : k < 0.97 ? "down" : ""}">${s.startsWith("-") ? s : "+" + s}%</td>`; };
-  const tot = { e: geomean(rows.map(x => x.e)), mg: geomean(rows.map(x => x.mg)), r: geomean(rows.map(x => x.r)), ch: geomean(rows.map(x => x.ch)), en: geomean(rows.map(x => x.en)), n: geomean(rows.map(x => x.n)) };
-  const enCell = k => isNaN(k) ? `<td class="gas">–</td>` : ratioCell(k);
+  const tot = { e: geomean(rows.map(x => x.e)), mg: geomean(rows.map(x => x.mg)), r: geomean(rows.map(x => x.r)), ch: geomean(rows.map(x => x.ch)) };
   const byF = Object.fromEntries(rows.map(x => [x.f, x])), oldest = Math.min(...rows.map(x => data.callFixtures[x.f]));
-  // bottleneck = the CPU-profile bucket with the largest flat share while the row's eth_call runs, from the latest profiled build.
-  const pr = data.runs.filter(r => Object.keys(r.callsprof || {}).length).pop(), bn = f => { const b = pr?.callsprof[f]; return b ? `<td class="gas" title="${esc(b.frames)}">${esc(b.bucket)} ${b.share}%</td>` : `<td class="gas">–</td>`; };
-  if (pr) document.getElementById("calls-note").innerHTML += "<p>" + esc(`bottleneck: the largest share of erigon's CPU profile while the call runs, erigon ${buildName(pr.versions.erigon)}, measured ${short(pr.date)}; ` +
-    `evm = the interpreter, state = state reads (mdbx, snapshot files), sched/net = HTTP serving and syscalls, bn256 = the alt_bn128 precompiles; hover a cell for its top frames.`) + "</p>";
-  document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>erigon Mgas/s</th><th>reth rps</th><th>e/r</th><th>neth rps ${nr ? short(nr.date) : ""}</th><th>e/n</th><th>${chHead}</th><th>bottleneck ${pr ? short(pr.date) : ""}</th></tr></thead><tbody>` +
+  document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>erigon Mgas/s</th><th>reth rps</th><th>e/r</th><th>${chHead}</th></tr></thead><tbody>` +
     Object.keys({ ...data.callFixtures, ...cr.calls }).sort((a, b) => a.localeCompare(b, "en", { numeric: true })).map(f => { const x = byF[f];
-      return x ? `<tr><td class="f" title="${x.f}">${x.f}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.mg, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}<td>${fmt(x.n, 0)}</td>${enCell(x.en)}${chCell(x.ch)}${bn(x.f)}</tr>`
-        : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="8">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
-    `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.mg, 0)}</b></td><td><b>${fmt(tot.r, 0)}</b></td>${ratioCell(tot.e / tot.r)}<td><b>${fmt(tot.n, 0)}</b></td>${enCell(tot.en)}${chCell(tot.ch)}<td></td></tr></tbody></table></div>`;
+      return x ? `<tr><td class="f" title="${x.f}">${x.f}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.mg, 0)}</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.e / x.r)}${chCell(x.ch)}</tr>`
+        : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="5">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
+    `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.mg, 0)}</b></td><td><b>${fmt(tot.r, 0)}</b></td>${ratioCell(tot.e / tot.r)}${chCell(tot.ch)}</tr></tbody></table></div>`;
 }
+
+// An erigon section measured more than 36 h ago is not shown: every visible number is from the last night.
+const SECTION_IDS = { "Progress": ["prog-title", "prog-note", "prog-trend", "prog-journal"], "newPayload BAL-off": ["node-title", "node-note", "node-race", "node-fam", "node"],
+  "newPayload BAL-on": ["nodebal-title", "nodebal-note", "nodebal-race", "nodebal-fam", "nodebal"], "eth_call per transaction": ["calls-title", "calls-note", "calls"],
+  "EEST benchmark scenario blocks": ["sc-bt-note", "sc-bt-race", "sc-bt-files", "sc-bt"], "EEST benchmark instruction blocks": ["in-bt-note", "in-bt-race", "in-bt-files", "in-bt"],
+  "EEST benchmark scenario sub-tests": ["sc-st-title", "sc-st-sum", "sc-st-note", "sc-st"], "EEST benchmark instruction sub-tests": ["in-st-title", "in-st-sum", "in-st-note", "in-st"] };
+const ageH = d => (Date.now() - Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10), +d.slice(11, 13) || 0, +d.slice(13, 15) || 0)) / 36e5;
+const notShown = shown.filter(([w, , d]) => ageH(d) > 36).map(([w]) => w);
+for (const w of notShown) for (const id of SECTION_IDS[w] || []) { const e = document.getElementById(id); if (e) e.hidden = true; }
+for (const [px, a, b] of [["sc", "EEST benchmark scenario blocks", "EEST benchmark scenario sub-tests"], ["in", "EEST benchmark instruction blocks", "EEST benchmark instruction sub-tests"]])
+  if (notShown.includes(a) && notShown.includes(b)) document.getElementById(px + "-title").hidden = true;
+shown.splice(0, shown.length, ...shown.filter(([w]) => !notShown.includes(w)));
 
 // Status: the build and date each section shows, in page order, and what failed in the run behind the EVM blocks tables.
 {
@@ -477,6 +472,7 @@ if (callRuns.length) {
   document.getElementById("status").innerHTML = `<p><b>updated ${esc(data.updated || "")}, main ${esc(data.mainSha || "?")}</b></p><div class="wrap"><table class="cl"><thead><tr><th>section</th><th>erigon</th><th>measured</th></tr></thead><tbody>` +
     shown.sort((a, b) => rank(a[0]) - rank(b[0])).map(([w, b, d]) => { const h = age(d);
       return `<tr><td>${esc(w)}</td><td>${esc(b)}</td><td${h > 36 ? ' class="old"' : ""}>${when(d)}${h > 36 ? `, ${Math.round(h / 24)} days old` : ""}</td></tr>`; }).join("") + "</tbody></table></div>" +
+    (notShown.length ? `<p class="old">not shown, no erigon run in the last 36 h: ${esc(notShown.join("; "))}</p>` : "") +
     (errs.length ? `<p><b class="old">EVM blocks run ${btRun.date}: ${errs.length} failed</b> <span title="${esc(errs.join("\n"))}">(${esc(errs.slice(0, 4).join("; "))}${errs.length > 4 ? "; …" : ""})</span></p>` : "");
 }
 // Every table: a header row stays in view while its table scrolls, and a click on a column header sorts the rows by that
