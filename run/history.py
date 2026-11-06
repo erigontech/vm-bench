@@ -50,7 +50,7 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
             continue
         if f.name == "calls.csv":
             for r in csv.reader(open(f)):
-                run["calls"].setdefault(r[0], {})[r[1]] = {**dict(zip(("rps", "p50", "p99", "err"), map(float, r[2:6]))), "at": r[6] if len(r) > 6 else "block"}
+                run["calls"].setdefault(r[0], {})[r[1]] = {**dict(zip(("rps", "p50", "p99", "err"), map(float, r[2:6]))), "at": r[6] if len(r) > 6 else "block", **({"gas": int(r[7])} if len(r) > 7 and r[7] else {})}
             continue
             continue
     runs.append(run)
@@ -119,10 +119,13 @@ for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "st
 progress = src / "runs.json"
 progress = json.load(open(progress)) if progress.exists() else []
 # eth_call fixture -> block, so the page can list the fixtures a node could not run.
-callFixtures = {f"{p.parent.name}/{p.stem}": int(next(iter(json.load(open(p)).values()))["env"]["currentNumber"], 16) for p in root.glob("fixtures/mainnet*/*.json")}
+callFx = {f"{p.parent.name}/{p.stem}": next(iter(json.load(open(p)).values())) for p in root.glob("fixtures/mainnet*/*.json")}
+callFixtures = {f: int(fx["env"]["currentNumber"], 16) for f, fx in callFx.items()}
+# The mainnet receipt's gas, for rows measured before calls.csv carried the call's own gas.
+callGas = {f: int(fx["_info"]["gasUsed"], 16) for f, fx in callFx.items() if "gasUsed" in fx.get("_info", {})}
 stateful = src / "stateful.json"
 stateful = json.load(open(stateful)) if stateful.exists() else None
-html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "stateful": stateful, "branch": branch, "callFixtures": callFixtures, "layoutSensitive": [l for l in (root / "run" / "layout-sensitive.txt").read_text().split("\n") if l and not l.startswith("#")], "scenario": scenario, "updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"), "mainSha": next((r["versions"].get("erigon-evm", "")[5:] for r in reversed(runs) if r["versions"].get("erigon-evm", "").startswith("main-")), "")}))
+html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "stateful": stateful, "branch": branch, "callFixtures": callFixtures, "callGas": callGas, "layoutSensitive": [l for l in (root / "run" / "layout-sensitive.txt").read_text().split("\n") if l and not l.startswith("#")], "scenario": scenario, "updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"), "mainSha": next((r["versions"].get("erigon-evm", "")[5:] for r in reversed(runs) if r["versions"].get("erigon-evm", "").startswith("main-")), "")}))
 (root / "docs").mkdir(exist_ok=True)
 (root / "docs" / ".nojekyll").touch()
 page.write_text(html)
