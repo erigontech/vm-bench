@@ -67,7 +67,10 @@ a{color:inherit}
 .wrap{margin-top:14px;overflow:auto;max-height:calc(100vh - 24px);scrollbar-width:thin;padding-bottom:6px}
 table{border-collapse:collapse;width:100%;font-size:13px}
 th{font-weight:500;color:var(--ink-2);text-align:right;padding:6px 6px 8px;border-bottom:1px solid var(--ink);background:var(--paper);white-space:nowrap}
-thead{position:sticky;top:0;z-index:2}
+thead th{position:sticky;top:0;z-index:2}
+thead th:first-child{z-index:3}
+th.sort{cursor:pointer;user-select:none}th.sort:hover{color:var(--ink)}
+th.sort::after{content:" \2195";opacity:.35}th[aria-sort=ascending]::after{content:" \25B2";opacity:1}th[aria-sort=descending]::after{content:" \25BC";opacity:1}
 td{padding:4px 6px;border-bottom:1px solid var(--rule-2);text-align:right;white-space:nowrap}
 th:first-child,td:first-child{text-align:left;padding-left:0;position:sticky;left:0;background:var(--paper)}
 td.f{overflow:hidden;text-overflow:ellipsis;max-width:22em}
@@ -476,6 +479,38 @@ if (callRuns.length) {
       return `<tr><td>${esc(w)}</td><td>${esc(b)}</td><td${h > 36 ? ' class="old"' : ""}>${when(d)}${h > 36 ? `, ${Math.round(h / 24)} days old` : ""}</td></tr>`; }).join("") + "</tbody></table></div>" +
     (errs.length ? `<p><b class="old">EVM blocks run ${btRun.date}: ${errs.length} failed</b> <span title="${esc(errs.join("\n"))}">(${esc(errs.slice(0, 4).join("; "))}${errs.length > 4 ? "; …" : ""})</span></p>` : "");
 }
+// Every table: a header row stays in view while its table scrolls, and a click on a column header sorts the rows by that
+// column (numbers by value, "%", "×", "ms" stripped; empty and "–" cells last). Group rows keep their place and sort
+// their own rows; a geometric-mean row stays at the end of its group.
+for (const t of document.querySelectorAll("table")) {
+  const hr = t.tHead?.rows;
+  if (!hr?.length) continue;
+  for (let i = 1; i < hr.length; i++) for (const th of hr[i].cells) th.style.top = [...hr].slice(0, i).reduce((h, r) => h + r.offsetHeight, 0) + "px";
+  [...hr[hr.length - 1].cells].forEach((th, col) => {
+    th.classList.add("sort");
+    th.addEventListener("click", () => {
+      const more = t.querySelector("tr.more button");
+      if (more) more.closest("tr").outerHTML = lazyRows[more.dataset.rest];
+      const dir = th.getAttribute("aria-sort") === "ascending" ? -1 : 1;
+      for (const o of hr[hr.length - 1].cells) o.removeAttribute("aria-sort");
+      th.setAttribute("aria-sort", dir > 0 ? "ascending" : "descending");
+      const cellAt = r => { let c = 0; for (const td of r.cells) { if (c === col || (c < col && c + td.colSpan > col)) return td.colSpan > 1 ? null : td; c += td.colSpan; } return null; };
+      const key = r => { const s = cellAt(r)?.textContent.trim() ?? ""; if (!s || s === "–") return null;
+        const n = parseFloat(s.replace(/[%×,]|\bms\b|^\+/g, "")); return isNaN(n) || !/^[+-]?[\d.]/.test(s) ? s : n; };
+      const cmp = (a, b) => { const x = key(a), y = key(b); if (x === null || y === null) return (x === null) - (y === null);
+        return dir * (typeof x === "number" && typeof y === "number" ? x - y : String(x).localeCompare(String(y), "en", { numeric: true })); };
+      for (const tb of t.tBodies) {
+        const segs = [[]];
+        for (const r of tb.rows) r.classList.contains("group") ? segs.push([r], []) : segs[segs.length - 1].push(r);
+        const out = segs.flatMap(rs => { if (rs[0]?.classList.contains("group")) return rs;
+          const pin = rs.filter(r => /^geometric mean/.test(r.cells[0]?.textContent.trim()) || r.classList.contains("more"));
+          return [...rs.filter(r => !pin.includes(r)).sort(cmp), ...pin]; });
+        tb.append(...out);
+      }
+    });
+  });
+}
+
 // Every table but the client tables folds.
 for (const t of document.querySelectorAll("table:not(.cl)")) {
   const rows = t.querySelector("tr.more")?.dataset.n ?? t.tBodies[0]?.rows.length ?? 0, d = document.createElement("details"), sum = document.createElement("summary");
