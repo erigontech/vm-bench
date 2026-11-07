@@ -1749,17 +1749,75 @@
       "noise": 0.8,
       "fixtures": "tests-benchmark@v0.0.9"
     },
-    "note": "main 2026-11-05 10c35bcd28, EVM tier only (the node tiers of this night were still running); no failed rows, gevm passes all files again",
+    "note": "main 2026-11-05 10c35bcd28; node tiers measured 11-06 morning; no failed rows, gevm passes all files again",
     "shipped": [
       "#25491 fold commitment from the version map; #25486 BAL cold pages in io_uring batches; #25559 skip arrival validation; #25751 BAL-marked accounts from origin",
       "#25743 RPC replays share code by hash; #25748 seek in inverted index files; #25766 faster uint256 Div; #25243 EIP-8141 frames"
     ],
     "better": [
+      "node x1.50, BAL-on x1.53 against 11-03, held on 11-06: every family, EVM-bound ones too (push x1.92, dup x1.79), while the EVM tier stays x1.01, so a per-block newPayload cost went away; not bisected, candidates #25491, #25717, #25559",
       "EVM x1.01, erigon/neth x0.80 to x0.81: selfbalance x1.15, jumpdests x1.12 (both layout-sensitive), dup x1.07, swap x1.07, callvalue x1.06"
     ],
     "worse": [
       "precompile *_uncachable x0.53 to x0.56 (sha256, ripemd160, identity, blake2f, alt_bn128): #25491, bisected (parent 1487 ms, #25491 2359 ms on sha256_uncachable)",
-      "selfdestruct_initcode x0.89, selfdestruct_created x0.90, storage_access_cold_benchmark x0.91: likely #25491 too, not bisected"
+      "selfdestruct_initcode x0.89, selfdestruct_created x0.90 EVM, x0.83 BAL-on (unconfirmed), storage_access_cold_benchmark x0.91 EVM: likely #25491 too, not bisected; node alt_bn128_benchmark x0.69 (5), back to x1.20 on 11-06"
+    ],
+    "node": {
+      "mgas": 9973.9,
+      "ratio": 1.924,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 9402.3,
+      "ratio": 1.337,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    }
+  },
+  {
+    "date": "2026-11-06",
+    "old": "10c35bcd28c8112614a1b8e19c3cc2dd54d71b5b",
+    "new": "731cb6417cfd3994394f515b984889f3703b3082",
+    "evm": {
+      "mgas": 1090.5,
+      "ratio": 0.763,
+      "best": "nethermind",
+      "valid": 52,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10050.1,
+      "ratio": 1.927,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 9595.9,
+      "ratio": 1.355,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-06 731cb6417c; the sub-test run reported a failure but its table was published; no failed rows in the other tiers",
+    "shipped": [
+      "#25770 read a version-map account under one lock; #25828 stripe TemporalMemBatch latest maps over 32 shards; #24792 GenericCache on the lock-free layer; #25746 gate the BAL trie prefetch",
+      "#25824 skip Transfer on a zero-value call to a code account; #25655 share the inverted index's last DB txNum; #25814 sync an account cell's path on a propagate fold; #21729 fork-scoped REST + SSZ Engine API"
+    ],
+    "better": [
+      "node x1.01, BAL-on x1.02: node clz_same x1.25, tstore x1.21 (4), auth_transaction x1.13 (16); BAL-on ether_transfers_to_precompile x1.30 (36), bls12_381 x1.24 (unconfirmed)"
+    ],
+    "worse": [
+      "EVM x0.96, erigon/neth x0.81 to x0.76 (neth x1.05, geth x1.00 on the same box): jumpdests x0.79, mcopy x0.84, returndatacopy x0.84, codecopy x0.86; the only EVM change is #25824, jumpdests and codecopy are layout-sensitive: one night, unconfirmed",
+      "node ripemd160_uncachable x0.53 (3), calldataload x0.86 (8): the EVM tier has ripemd160_uncachable flat and BAL-on x1.10, likely noise; BAL-on blake2f x0.79 (1), block_full_data x0.82 (2): unconfirmed"
     ]
   }
 ]
