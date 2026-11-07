@@ -48,6 +48,13 @@ if [ -n "${CALLS_FROM:-}" ]; then
 		mkdir -p "history/${s%-*}"
 		mv "$f" "history/${s%-*}/calls.csv"
 	done
+	# Per-fixture CPU profiles of the last 7 nights (main and dbg), outside the repo: ~/vm-bench-prof/<stamp>-<arm>/<fixture>.pb.gz.
+	for f in "$in"/*.prof.tgz; do
+		[ -e "$f" ] || break
+		d=$HOME/vm-bench-prof/$(basename "$f" .prof.tgz)
+		mkdir -p "$d" && tar -xzf "$f" -C "$d" && rm -f "$f"
+	done
+	ls -1d "$HOME"/vm-bench-prof/*/ 2>/dev/null | sort | head -n -14 | xargs -r rm -rf
 	run/history.py
 fi
 # Loud staleness check: the verdict goes to nightly.log and ~/vm-bench-selfcheck.txt, which the patrol reads.
