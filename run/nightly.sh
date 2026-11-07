@@ -41,7 +41,7 @@ BALFIX=${BALFIX:-$HOME/bench/balfix} ERIGON_SRC=$src ORDER=erigon run/nodebal.sh
 if [ -n "${CALLS_FROM:-}" ]; then
 	in=$HOME/vm-bench-calls-in
 	mkdir -p "$in"
-	rsync -q --remove-source-files -e "ssh -o BatchMode=yes -o ConnectTimeout=20" "$CALLS_FROM" "$in/" || echo "eth_call: import from $CALLS_FROM failed"
+	rsync -qr --remove-source-files -e "ssh -o BatchMode=yes -o ConnectTimeout=20" "$CALLS_FROM" "$in/" || echo "eth_call: import from $CALLS_FROM failed"
 	for f in "$in"/*.csv; do
 		[ -e "$f" ] || break
 		s=$(basename "$f" .csv)
