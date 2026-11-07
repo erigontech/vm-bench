@@ -57,8 +57,10 @@ if [ -n "${CALLS_FROM:-}" ]; then
 	ls -1d "$HOME"/vm-bench-prof/*/ 2>/dev/null | sort | head -n -14 | xargs -r rm -rf
 	run/history.py
 fi
-# Loud staleness check: the verdict goes to nightly.log and ~/vm-bench-selfcheck.txt, which the patrol reads.
-run/selfcheck.py || echo "SELFCHECK FAILED: $(cat "$HOME/vm-bench-selfcheck.txt")"
+# Loud staleness check: the verdict goes to nightly.log, ~/vm-bench-selfcheck.txt and the system journal; the page is
+# still published, then the run exits 1.
+sc=0
+run/selfcheck.py || { sc=1; echo "SELFCHECK FAILED: $(cat "$HOME/vm-bench-selfcheck.txt")" | tee >(logger -t vm-bench -p user.err); }
 # Commit the snapshot alone, rebase it onto main (daytime edits push there too), rebuild the page on the merged tree, push;
 # a rejected push drops only the page commit and tries again. The snapshot commit is never dropped.
 git checkout -q -- docs
@@ -68,7 +70,8 @@ for i in 1 2 3; do
 	git pull -q --rebase origin main || { git rebase --abort; echo "rebase failed, the snapshot commit stays on this clone"; exit 1; }
 	run/history.py
 	git add docs && git -c user.name=vm-bench -c user.email=vm-bench@erigon.tech commit -q -m "page: $(ls history | tail -1)"
-	git push -q origin HEAD:main && exit 0
+	git push -q origin HEAD:main && exit $sc
 	echo "push attempt $i failed"; [[ $(git log -1 --format=%s) == page:* ]] && git reset -q --hard HEAD~1; sleep 30
 done
 echo "push failed, the snapshot commit stays on this clone"
+exit 1
