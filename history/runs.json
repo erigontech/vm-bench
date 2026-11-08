@@ -1819,5 +1819,29 @@
       "EVM x0.96, erigon/neth x0.81 to x0.76 (neth x1.05, geth x1.00 on the same box): jumpdests x0.79, mcopy x0.84, returndatacopy x0.84, codecopy x0.86; the only EVM change is #25824, jumpdests and codecopy are layout-sensitive: one night, unconfirmed",
       "node ripemd160_uncachable x0.53 (3), calldataload x0.86 (8): the EVM tier has ripemd160_uncachable flat and BAL-on x1.10, likely noise; BAL-on blake2f x0.79 (1), block_full_data x0.82 (2): unconfirmed"
     ]
+  },
+  {
+    "date": "2026-11-07",
+    "old": "731cb6417cfd3994394f515b984889f3703b3082",
+    "new": "365d22b07fa3e1dc7dbc771016c987eefa3c122e",
+    "evm": {
+      "mgas": 1138.1,
+      "ratio": 0.825,
+      "best": "nethermind",
+      "valid": 52,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "note": "main 2026-11-07 365d22b07f, EVM and sub-test tiers only (the node tiers still wait for the box lock); no failed rows",
+    "shipped": [
+      "#25864 ReadResult in registers on version-map reads; #25794 WasDestroyed under GetAccount's entry lock; #25830 storage btree under shard 0; #25801 fold only keys touched since the last step edge",
+      "#25798 validate every arrival again (undoes #25559, a candidate for the 11-05 node x1.50); #25859 MODEXP to evmone for big exponents; #25874 ETL spill files with RWF_DONTCACHE"
+    ],
+    "better": [
+      "EVM x1.04, erigon/neth x0.76 to x0.82: returndatacopy x1.21, mcopy x1.18, codecopy x1.16, jumpdests x1.13 win back the 11-06 losses; against 11-05 the tier is x0.99, so the 11-06 dip was noise"
+    ],
+    "worse": [
+      "EVM push x0.89 against both 11-06 and 11-05; the only EVM-path change is #25859 (MODEXP), so likely code layout: one night, unconfirmed"
+    ]
   }
 ]
