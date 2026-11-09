@@ -1832,16 +1832,34 @@
       "noise": 0.8,
       "fixtures": "tests-benchmark@v0.0.9"
     },
-    "note": "main 2026-11-07 365d22b07f, EVM and sub-test tiers only (the node tiers still wait for the box lock); no failed rows",
+    "note": "main 2026-11-07 365d22b07f; node tiers measured 11-08 morning; no failed rows. BAL-on erigon/best x1.36 to x0.80 is not erigon: the 11-08 weekly re-measured reth x1.73, geth x1.99 over 11-03",
     "shipped": [
       "#25864 ReadResult in registers on version-map reads; #25794 WasDestroyed under GetAccount's entry lock; #25830 storage btree under shard 0; #25801 fold only keys touched since the last step edge",
       "#25798 validate every arrival again (undoes #25559, a candidate for the 11-05 node x1.50); #25859 MODEXP to evmone for big exponents; #25874 ETL spill files with RWF_DONTCACHE"
     ],
     "better": [
-      "EVM x1.04, erigon/neth x0.76 to x0.82: returndatacopy x1.21, mcopy x1.18, codecopy x1.16, jumpdests x1.13 win back the 11-06 losses; against 11-05 the tier is x0.99, so the 11-06 dip was noise"
+      "EVM x1.04, erigon/neth x0.76 to x0.82: returndatacopy x1.21, mcopy x1.18, codecopy x1.16, jumpdests x1.13 win back the 11-06 losses; against 11-05 the tier is x0.99, so the 11-06 dip was noise",
+      "node x1.00, BAL-on x1.01: node modexp_uncachable x1.20 (3, likely #25859), p256verify x1.26 (3); ripemd160_uncachable x1.85 (3) and calldataload x1.14 (8) win back the 11-06 drop; BAL-on mcopy x1.06 (48), bitwise x1.08 (7): unconfirmed"
     ],
     "worse": [
-      "EVM push x0.89 against both 11-06 and 11-05; the only EVM-path change is #25859 (MODEXP), so likely code layout: one night, unconfirmed"
-    ]
+      "EVM push x0.89 against both 11-06 and 11-05; the only EVM-path change is #25859 (MODEXP), so likely code layout: one night, unconfirmed",
+      "node create x0.89 (20) and contract_creation x0.92 (6) against 11-05, below x0.95 on both nights, BAL-on flat: candidates #25770, #25798, not bisected; BAL-on ext_account_query_cold x0.88 (2), also two nights; node iszero x0.76 (1), BAL-on modexp_length_above_upper_bound x0.82 (3): one night, unconfirmed"
+    ],
+    "node": {
+      "mgas": 10022.6,
+      "ratio": 1.92,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 9652.8,
+      "ratio": 0.802,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    }
   }
 ]
