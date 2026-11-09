@@ -17,7 +17,7 @@ for a in "$@"; do
 done
 idx=blocktests/subtests/index.tsv
 [ -f $idx ] || run/subtests-split.py >&2 || exit 1
-exec 9>"${BENCH_LOCK:-/tmp/bench.lock}"; flock 9
+exec 9>"${BENCH_LOCK:-/tmp/bench.lock}" # taken per sub-test, so a full pass cannot hold the box for hours
 export PATH=$HOME/go/bin:$HOME/.cargo/bin:$PATH
 export DOTNET_ROOT=${DOTNET_ROOT:-$HOME/.dotnet} NETHTEST=${NETHTEST:-$HOME/nethtest/nethtest}
 now() { perl -MTime::HiRes=time -e 'printf "%.0f", time * 1e3'; }
@@ -36,10 +36,12 @@ for cat in ${CATS:-scenario instruction precompile}; do
 	while IFS=$'\t' read -r n c f gas sub <&3; do
 		[ "$c" = "$cat" ] || continue
 		t=blocktests/subtests/t/$n.json w=blocktests/subtests/w/$n.json
+		flock 9
 		for i in "${!names[@]}"; do
 			ms=$(best "$i" "$t" "$t") || { echo "${names[$i]}: $c/$f $sub failed" >&2; continue; }
 			tw=$(best "$i" "$t" "$w") || { echo "${names[$i]}: $c/$f $sub twin failed" >&2; continue; }
 			echo "$c/$f,\"${sub//\"/\"\"}\",${names[$i]},$gas,$ms,$tw"
 		done
+		flock -u 9
 	done 3< $idx
 done
