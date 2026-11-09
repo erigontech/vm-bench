@@ -54,7 +54,7 @@ if [ -n "${CALLS_FROM:-}" ]; then
 		d=$HOME/vm-bench-prof/$(basename "$f" .prof.tgz)
 		mkdir -p "$d" && tar -xzf "$f" -C "$d" && rm -f "$f"
 	done
-	ls -1d "$HOME"/vm-bench-prof/*/ 2>/dev/null | sort | head -n -14 | xargs -r rm -rf
+	ls -1d "$HOME"/vm-bench-prof/*/ 2>/dev/null | sort | head -n -14 | xargs -r rm -rf || true # no profiles yet must not end the run
 	run/history.py
 fi
 # Loud staleness check: the verdict goes to nightly.log, ~/vm-bench-selfcheck.txt and the system journal; the page is
