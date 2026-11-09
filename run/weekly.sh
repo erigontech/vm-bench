@@ -22,7 +22,7 @@ up_revme() { local t; t=$(latest bluealloy/revm) && cargo install -q --locked --
 up_evmone() {
 	local t url tmp; t=$(latest ethereum/evmone) || return 1
 	url=$(curl -sfL "https://api.github.com/repos/ethereum/evmone/releases/tags/$t" | jq -re '.assets[] | select(.name | test("linux-x86_64.tar.gz$")) | .browser_download_url') || return 1
-	tmp=$HOME/evmone.new; rm -rf "$tmp" && mkdir "$tmp" && curl -sfL "$url" | tar xz -C "$tmp" &&
+	tmp=$HOME/evmone.new; rm -rf "$tmp" && mkdir "$tmp" && curl -sfL --retry 5 --retry-delay 10 "$url" | tar xz -C "$tmp" &&
 		LD_LIBRARY_PATH=$tmp/lib "$tmp/bin/evmone" --version > /dev/null && rm -rf "$HOME/evmone" && mv "$tmp" "$HOME/evmone"
 }
 up_nethtest() {
