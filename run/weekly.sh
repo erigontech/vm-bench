@@ -8,12 +8,13 @@ cd "$(dirname "$0")/.."
 export PATH=$HOME/go/bin:$HOME/.cargo/bin:$HOME/.dotnet:$PATH DOTNET_ROOT=${DOTNET_ROOT:-$HOME/.dotnet}
 export EVMONE=${EVMONE:-$HOME/evmone/bin/evmone} NETHTEST=${NETHTEST:-$HOME/nethtest/nethtest}
 export LD_LIBRARY_PATH=$HOME/evmone/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
-export BENCHMARKOOR=${BENCHMARKOOR:-$HOME/bm24402727/src/benchmarkoor/bin/benchmarkoor}
+export BENCHMARKOOR=${BENCHMARKOOR:-$HOME/vm-bench-tools/benchmarkoor}
 report=$HOME/vm-bench-weekly.txt fails=()
 echo "weekly $(date -u +%FT%TZ)"
 git pull -q --ff-only || fails+=("git pull")
 latest() { curl -sfL "https://api.github.com/repos/$1/releases/latest" | jq -re .tag_name; }
-step() { local what=$1; shift; echo "== $what"; "$@" || { echo "FAILED $what"; fails+=("$what"); return 1; }; }
+# Progress goes to stderr: a step can redirect the stdout of its command into a results file.
+step() { local what=$1; shift; echo "== $what" >&2; "$@" || { echo "FAILED $what" >&2; fails+=("$what"); return 1; }; }
 
 # EVM tier tools (the nightly runs them)
 up_geth() { local t; t=$(latest ethereum/go-ethereum) && go install "github.com/ethereum/go-ethereum/cmd/evm@$t"; }
@@ -21,8 +22,8 @@ up_revme() { local t; t=$(latest bluealloy/revm) && cargo install -q --locked --
 up_evmone() {
 	local t url tmp; t=$(latest ethereum/evmone) || return 1
 	url=$(curl -sfL "https://api.github.com/repos/ethereum/evmone/releases/tags/$t" | jq -re '.assets[] | select(.name | test("linux-x86_64.tar.gz$")) | .browser_download_url') || return 1
-	tmp=$(mktemp -d) && curl -sfL "$url" | tar xz -C "$tmp" && rm -rf "$HOME/evmone.new" && mv "$tmp"/* "$HOME/evmone.new" &&
-		"$HOME/evmone.new/bin/evmone" --version > /dev/null && rm -rf "$HOME/evmone" && mv "$HOME/evmone.new" "$HOME/evmone"
+	tmp=$HOME/evmone.new; rm -rf "$tmp" && mkdir "$tmp" && curl -sfL "$url" | tar xz -C "$tmp" &&
+		LD_LIBRARY_PATH=$tmp/lib "$tmp/bin/evmone" --version > /dev/null && rm -rf "$HOME/evmone" && mv "$tmp" "$HOME/evmone"
 }
 up_nethtest() {
 	local t src=$HOME/nethermind-src; t=$(latest NethermindEth/nethermind) || return 1

@@ -21,13 +21,15 @@ echo "filter=$FILTER smoke=$SMOKE fixtures=$FIX"
 	for c in $ORDER; do [ $c = erigon ] || { r=${REF[$c]%@*}; echo "$c,${r##*:}"; }; done
 } > "$D/versions.csv"
 
-bad=""
+bad="" ok=""
 for c in $ORDER; do
 	arm $c smoke-$c "$SMOKE"
-	passed1 smoke-$c || bad="$bad $c"
+	if passed1 smoke-$c; then ok="$ok $c"; else bad="$bad $c"; echo "NOT_RUN $c"; fi
 done
-[ -z "$bad" ] || fail "SMOKE_FAIL$bad" "$D/run-smoke-${bad##* }.log"
+[ -n "$ok" ] || fail "SMOKE_FAIL$bad" "$D/run-smoke-${bad##* }.log"
+ORDER=${ok# }
 echo SMOKE_OK
 passes "$FILTER" $ORDER
 snapshot node-csv.py "node.csv pass.csv" $ORDER
 echo NODE_DONE
+[ -z "$bad" ] || { echo "NOT_RUN$bad"; exit 1; }
