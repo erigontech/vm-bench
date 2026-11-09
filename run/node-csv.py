@@ -35,13 +35,15 @@ pp = {c: g([runs[c, 2][0][t] / runs[c, 1][0][t] for t in tests]) for c in C}
 with open(f"{out}/pass.csv", "w") as f:
     f.writelines(f"{c},{pp[c]:.4f}\n" for c in C)
 gm = {c: g([mean[t, c] for t in tests]) for c in C}
+has_erigon = "erigon" in C  # the weekly run measures the other clients alone
 print(f"VERDICT {len(tests)} tests in all runs; geomean Mgas/s " + ", ".join(
-    f"{c} {gm[c]:.1f} (x{gm['erigon'] / gm[c]:.2f} erigon/{c}, p2/p1 {100 * (pp[c] - 1):+.2f}%)" for c in C))
+    f"{c} {gm[c]:.1f} ({f'x{gm['erigon'] / gm[c]:.2f} erigon/{c}, ' if has_erigon else ''}p2/p1 {100 * (pp[c] - 1):+.2f}%)" for c in C))
 for c in C:
     if abs(pp[c] - 1) > 0.02:
         print(f"PASS_TO_PASS_OUTSIDE_2% {c} {100 * (pp[c] - 1):+.2f}%")
-gap = sorted(tests, key=lambda t: mean[t, "erigon"] / max(mean[t, c] for c in C))
-print("erigon furthest behind the best client:")
+gap = sorted(tests, key=lambda t: mean[t, "erigon"] / max(mean[t, c] for c in C)) if has_erigon else []
+if has_erigon:
+    print("erigon furthest behind the best client:")
 for t in gap[:5]:
     best = max(C, key=lambda c: mean[t, c])
     print(f"  {mean[t, 'erigon'] / mean[t, best]:.2f}  erigon {mean[t, 'erigon']:.1f} vs {best} {mean[t, best]:.1f}  {t}")
