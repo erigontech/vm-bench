@@ -6,7 +6,7 @@ import csv, json, math, re, sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parent.parent
-hidden = {"besu", "ethrex", "nimbus"}
+hidden = {"besu", "nimbus"}
 runs = []
 src, page, branch = (root / sys.argv[1], root / sys.argv[2], sys.argv[3]) if len(sys.argv) > 3 else (root / "history", root / "docs" / "index.html", None)
 for d in sorted(p for p in src.iterdir() if p.is_dir()):
