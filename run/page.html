@@ -115,12 +115,14 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 .tier .win{color:var(--win)}.tier .loss{color:var(--loss)}.tier .even,.tier .ne,.tier .ne b{color:var(--ink-2)}
 .tier .d{display:block;font-size:13px}
 .chart .reg{fill:var(--loss)}
+#worst table th{white-space:normal}
 @media (max-width:600px){
   body{padding:24px 14px 64px}
   h1{font-size:26px}
   h2{margin-top:44px}
   .bars{grid-template-columns:5.5em 1fr 4.5em 3.5em;gap:6px 8px}
   .tier{grid-template-columns:repeat(3,minmax(0,1fr))}.tier .tn{grid-column:1/-1}
+  #worst td.f{white-space:normal;overflow-wrap:anywhere;max-width:9em}
   .chart .tick,.chart .end{font-size:14px}
   td.f{max-width:12em}
 }
@@ -139,6 +141,7 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <h1>vm-bench <a href="https://github.com/erigontech/vm-bench" style="font-size:15px;font-weight:500;color:var(--ink-2);margin-left:10px;vertical-align:middle">github.com/erigontech/vm-bench</a></h1>
 <p class="lede">Where <span class="tag">erigon</span> is slower than reth, Nethermind, geth, evmone and revm, and whether the dbg build (main + open PRs) regressed. Measured every night: the Progress trend shows main, the tables show the latest dbg build unless a section says main.</p>
 <div id="tiers"></div>
+<div id="worst"></div>
 <div class="note" id="status"></div>
 
 <h2 id="prog-title" hidden>Progress</h2>
@@ -485,6 +488,38 @@ nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp,
    (nc.length > hc.length ? `; ${nc.filter(c => !hc.includes(c)).join(", ")} passed fewer than half of the tests and shows in the per-test table only.` : "."),
    `neth * = ${NETH_CACHE}: a precompile test that repeats one input; no e/neth ratio, and no geometric mean uses it.`,
    ...extra.map(esc), ...(nv["not run"] ? [`Not run: ${esc(nv["not run"])}.`] : [])]));
+
+// Worst families: each row's erigon against the best other client on the page, so a family cannot hide in a tier's mean.
+{
+  const upperMedian = xs => [...xs].sort((a, b) => a - b)[xs.length >> 1];
+  const tiers = [["node", "BAL-off"], ["nodebal", "BAL-on"]].flatMap(([key, label]) => {
+    const run = [...data.runs].reverse().find(r => Object.keys(r[key]).length);
+    if (!run) return [];
+    const rows = Object.entries(run[key]).flatMap(([t, r]) => {
+      const others = Object.entries(r).filter(([c]) => c !== "erigon");
+      if (!r.erigon || !others.length) return [];
+      const [best, v] = others.reduce((a, b) => b[1] > a[1] ? b : a);
+      return [{ f: t.split("::")[1].replace(/\[.*/, ""), k: r.erigon / v, cache: best === "nethermind" && /compute\/precompile\//.test(t) && !t.includes("uncachable") }];
+    });
+    const peers = [...new Set(Object.values(run[key]).flatMap(r => Object.keys(r)))].filter(c => c !== "erigon").map(c => `${name(c)} ${esc((String(run.versions[c]).match(/measured \d{4}-(\d\d-\d\d)/) || [, short(run.date)])[1])}${clientStale(run.versions[c])}`);
+    return [{ label, rows, ks: rows.map(r => r.k), run, peers }];
+  });
+  if (tiers.length) {
+    const fams = [...new Set(tiers.flatMap(t => t.rows.map(r => r.f)))].map(f => {
+      const by = tiers.map(t => { const rs = t.rows.filter(r => r.f === f); return rs.length ? { m: upperMedian(rs.map(r => r.k)), under: rs.filter(r => r.k < 0.5).length, n: rs.length, cache: rs.some(r => r.cache) } : null; });
+      return { f, by, worst: Math.min(...by.filter(Boolean).map(b => b.m)) };
+    }).sort((a, b) => a.worst - b.worst);
+    const listed = fams.filter(x => x.worst < 0.5);
+    const cols = by => by.map(b => b ? `<td class="${b.m < 0.5 ? "down" : ""}">×${b.m.toFixed(2)}</td><td>${b.under}/${b.n}</td>` : `<td class="gas">–</td><td class="gas">–</td>`).join("");
+    document.getElementById("worst").innerHTML = `<h3 style="margin:24px 0 6px;font-size:15px">Worst families</h3>` +
+      tiers.map(t => `<p class="note" style="margin:0 0 4px"><b>${t.label}</b>: ${t.ks.filter(k => k < 1).length} of ${t.ks.length} rows behind the best other client, ` +
+        `${t.ks.filter(k => k < 0.5).length} under ×0.5, ${t.ks.filter(k => k < 0.33).length} under ×0.33, median ×${upperMedian(t.ks).toFixed(2)}. ` +
+        `erigon ${esc(buildName(t.run.versions.erigon))} ${short(t.run.date)}${staleBadge(t.run.date)}, others ${t.peers.join(", ")}.</p>`).join("") +
+      `<div class="wrap"><table><thead><tr><th>family</th>${tiers.map(t => `<th>${t.label} / best</th><th>${t.label} under ×0.5</th>`).join("")}</tr></thead><tbody>` +
+      listed.map(x => `<tr><td class="f" title="${esc(x.f)}">${esc(x.f.replace(/^test_/, "")).replace(/_/g, "_<wbr>")}${x.by.some(b => b?.cache) ? "*" : ""}</td>${cols(x.by)}</tr>`).join("") + "</tbody></table></div>" +
+      `<p class="note" style="margin:6px 0 0">The ${listed.length} of ${fams.length} families with a median under ×0.5 in a tier, worst first. Each row is erigon divided by the best other client on that test; the family value is the median of its rows; under ×0.5 counts its rows as n/total. All tests count, also precompile tests where the best is a result cache (*).</p>`;
+  }
+}
 
 if (data.branch) document.querySelector(".lede").innerHTML = `Branch build <span class="tag">${esc(data.branch)}</span>: erigon is main plus open PRs, the other clients are the same runs as on the <a href="./">main page</a>. ` +
   `Use it to find the next bottlenecks; the main page and its Progress trend stay main only.`;
