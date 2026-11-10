@@ -106,11 +106,21 @@ tr.more td{padding:10px 0;text-align:left}
 tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(--rule);color:var(--ink);padding:6px 14px;cursor:pointer}
 #tip{position:fixed;left:12px;right:12px;bottom:12px;z-index:9;background:var(--ink);color:var(--paper);padding:10px 12px;font-size:14px;white-space:pre-line}
 #tip[hidden]{display:none}
+/* top lines: one per tier, now against 7 and 30 days ago */
+#tiers{margin:20px 0 22px}
+.tier{display:grid;grid-template-columns:8.5em repeat(6,minmax(0,1fr));gap:4px 12px;padding:10px 0;border-top:1px solid var(--rule);align-items:baseline}
+.tier .tn{font-weight:600}
+.tier small{display:block;color:var(--ink-2);font-size:12px;font-weight:400}
+.tier b{font-size:18px;font-weight:600}
+.tier .win{color:var(--win)}.tier .loss{color:var(--loss)}.tier .even,.tier .ne,.tier .ne b{color:var(--ink-2)}
+.tier .d{display:block;font-size:13px}
+.chart .reg{fill:var(--loss)}
 @media (max-width:600px){
   body{padding:24px 14px 64px}
   h1{font-size:26px}
   h2{margin-top:44px}
   .bars{grid-template-columns:5.5em 1fr 4.5em 3.5em;gap:6px 8px}
+  .tier{grid-template-columns:repeat(3,minmax(0,1fr))}.tier .tn{grid-column:1/-1}
   .chart .tick,.chart .end{font-size:14px}
   td.f{max-width:12em}
 }
@@ -128,6 +138,7 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <nav id="toc" aria-label="Sections"></nav>
 <h1>vm-bench <a href="https://github.com/erigontech/vm-bench" style="font-size:15px;font-weight:500;color:var(--ink-2);margin-left:10px;vertical-align:middle">github.com/erigontech/vm-bench</a></h1>
 <p class="lede">Where <span class="tag">erigon</span> is slower than reth, Nethermind, geth, evmone and revm, and whether the dbg build (main + open PRs) regressed. Measured every night: the Progress trend shows main, the tables show the latest dbg build unless a section says main.</p>
+<div id="tiers"></div>
 <div class="note" id="status"></div>
 
 <h2 id="prog-title" hidden>Progress</h2>
@@ -205,7 +216,10 @@ const short = d => d.slice(5, 10);
 const LAZY = 50, lazyRows = [];
 const body = rows => rows.length <= LAZY ? rows.join("") :
   rows.slice(0, LAZY).join("") + `<tr class="more" data-n="${rows.length}"><td colspan="99"><button data-rest="${lazyRows.push(rows.slice(LAZY).join("")) - 1}">show all ${rows.length} rows</button></td></tr>`;
+const reveal = id => { for (let d = document.getElementById(id); d; d = d.parentElement?.closest("details")) d.open = true; };
 document.addEventListener("click", e => {
+  const j = e.target.closest('a[href^="#j-"]');
+  if (j) reveal(j.getAttribute("href").slice(1));
   const b = e.target.closest("tr.more button");
   if (b) { b.closest("tr").outerHTML = lazyRows[b.dataset.rest]; return; }
   const t = e.target.closest("[title]"), tip = document.getElementById("tip");
@@ -226,9 +240,55 @@ if (prog.length) {
   shown.push(["Progress", `main ${sha(pl.new)}${dbgPt ? `, dbg ${sha(dbgPt.new)}` : ""}`, pl.date]);
   document.getElementById("prog-note").textContent = `Erigon on each measured main; the other clients keep their published numbers. ` +
     `EVM: geometric mean over the instruction and scenario blocks, noise ±${pl.evm.noise}%. Node: geometric mean over all tests, noise ±${prog.filter(r => r.node).pop().node.noise}%. ` +
-    `Erigon / best client: erigon's geometric mean divided by the best other client's on the same cells. The journal's Better and Worse list only cells that moved past their noise.`;
+    `Erigon / best client: erigon's geometric mean divided by the best other client's on the same cells. The journal's Better and Worse list only cells that moved past their noise. ` +
+    `≠ on a chart: the point does not compare with the one before it, so the line breaks. ▼ on a Mgas/s chart: a fall past the noise, linked to the journal entry that names it.`;
+  const cardId = r => `j-${r.date}-${r.new.slice(0, 7)}`;
+  // Past this factor a step is not a night-to-night move: quiet steps in the history reach 1.06, known breaks start at 1.09.
+  const BREAK = 1.08, moved = x => x > BREAK || x < 1 / BREAK;
+  // A tier's ratio and Mgas/s give the other clients' step: both = false breaks only the ratio chart, both = true breaks both charts.
+  const breakOf = (p, c, date) => {
+    const tag = f => f.replace(/^.*@/, ""), m = c.mgas / p.mgas, peers = m / (c.ratio / p.ratio), x = `×${peers.toFixed(2)}`;
+    if (p.fixtures !== c.fixtures) return { date, both: true, why: `fixtures ${tag(p.fixtures)} → ${tag(c.fixtures)}` };
+    if (!moved(peers)) return null;
+    if (p.valid && p.valid !== c.valid) return { date, both: true, why: `tests compared ${p.valid} → ${c.valid}` };
+    if (p.best !== c.best) return { date, both: false, why: `best client ${name(p.best)} → ${name(c.best)}` };
+    return moved(m) ? { date, both: true, why: `harness or box change, all clients ${x}` } : { date, both: false, why: `other clients moved ${x}` };
+  };
+  const tierWord = { evm: /\bEVM\b/, node: /\bnode\b/, nodebal: /\bBAL-on\b/ };
+  const TIERS = [["evm", "EVM"], ["node", "Node BAL-off"], ["nodebal", "Node BAL-on"]].map(([k, t]) => {
+    const rs = prog.filter(r => r[k]), br = rs.map((r, i) => i ? breakOf(rs[i - 1][k], r[k], r.date) : null);
+    const reg = rs.map((r, i) => {
+      if (!i || br[i]?.both) return null;
+      const d = r[k].mgas / rs[i - 1][k].mgas, noise = Math.max(r[k].noise, rs[i - 1][k].noise) / 100;
+      return d < 1 - noise && tierWord[k].test([...(r.worse || []), r.note || ""].join(" ")) ? { pct: (d - 1) * 100, id: cardId(r) } : null;
+    });
+    return { k, t, rs, br, reg };
+  });
+  const tierLine = ({ k, t, rs, br }) => {
+    const l = rs[rs.length - 1];
+    const then = (m, f, days) => {
+      const cut = new Date(Date.parse(l.date) - days * 864e5).toISOString().slice(0, 10), i = rs.findLastIndex(r => r.date <= cut), head = `${days} d ago`;
+      if (i < 0) return `<div class="ne"><small>${head}</small><span class="d">less than ${days} days of history, first point ${short(rs[0].date)}</span></div>`;
+      const p = rs[i][k], pct = 100 * (l[k][m] / p[m] - 1), noise = Math.max(l[k].noise, p.noise);
+      const nb = br.slice(i + 1).filter(b => b && (m === "ratio" || b.both)), last = nb[nb.length - 1];
+      const d = last ? `<span class="d">≠ ${short(last.date)} ${esc(last.why)}</span>` :
+        `<span class="d ${Math.abs(pct) <= noise ? "even" : pct > 0 ? "win" : "loss"}">${Math.abs(pct) <= noise ? "= within noise" : `${pct > 0 ? "▲ +" : "▼ "}${pct.toFixed(1)}%`}</span>`;
+      return `<div${last ? ` class="ne" title="${esc(nb.map(b => `${short(b.date)} ${b.why}`).join("\n"))}"` : ""}><small>${head}, ${short(rs[i].date)}</small><b>${f(p[m])}</b>${d}</div>`;
+    };
+    const mg = v => v.toFixed(0), ra = v => "×" + v.toFixed(2);
+    return `<div class="tier"><div class="tn">${t}<small>main ${short(l.date)}${staleBadge(l.date)}</small></div>` +
+      `<div><small>Mgas/s now</small><b>${mg(l[k].mgas)}</b></div>${then("mgas", mg, 7)}${then("mgas", mg, 30)}` +
+      `<div><small>/ best now (${name(l[k].best)})</small><b>${ra(l[k].ratio)}</b></div>${then("ratio", ra, 7)}${then("ratio", ra, 30)}</div>`;
+  };
+  document.getElementById("tiers").innerHTML = TIERS.filter(x => x.rs.length).map(tierLine).join("") +
+    `<p class="note" style="margin:10px 0 0">▲ ▼ = now against that day, past the noise of the tier. ≠ = a fixture, harness or other-client change lies between the two points, so the numbers do not compare. / best = erigon divided by the best other client.</p>`;
+  const marksNote = (ms, rs) => {
+    const items = [...ms.br.flatMap((w, i) => w ? [`≠ ${short(rs[i].date)} ${esc(w)}`] : []),
+      ...(ms.reg || []).flatMap((g, i) => g ? [`<a href="#${g.id}">▼ ${short(rs[i].date)} ${g.pct.toFixed(1)}%</a>`] : []).slice(-5)];
+    return items.length ? `<p class="note" style="margin:4px 0 0;font-size:13px">${items.join(" · ")}</p>` : "";
+  };
   // one series per fixture tag: a fixture change starts a new line, the old points stay, a dashed rule marks the break
-  const spark = (vals, f, fx, rows = prog, dv) => {
+  const spark = (vals, f, fx, rows = prog, dv, marks) => {
     // the y range spans at least 10% of the value, so a move inside the noise stays a flat line
     const all = dv ? [...vals, dv.v] : vals, w = 420, h = 110, p = 40, lo = Math.min(...all), hi = Math.max(...all), sp = Math.max(hi - lo, hi * 0.1) || 1, mid = (hi + lo) / 2;
     // the dbg point keeps a fixed gap after the last main point, so its dashed segment stays visible
@@ -237,23 +297,25 @@ if (prog.length) {
     // A dbg point sits one step right of the last main point: only the caption above the chart names both values.
     const step = Math.ceil(n / 7), last = dv ? n - 1 - step : n - 1, lab = i => i === 0 || (!dv && i === n - 1) || (i % step === 0 && last - i >= step / 2);
     const segs = [];
-    vals.forEach((v, i) => (i && fx[i] === fx[i - 1] ? segs[segs.length - 1] : segs[segs.push([]) - 1]).push(i));
+    vals.forEach((v, i) => (i && fx[i] === fx[i - 1] && !marks?.br[i] ? segs[segs.length - 1] : segs[segs.push([]) - 1]).push(i));
     return `<svg viewBox="0 0 ${w} ${h}" role="img">` + segs.map(s => `<polyline class="ln erigon" points="${s.map(i => x(i) + "," + y(vals[i])).join(" ")}"/>`).join("") +
-      segs.slice(1).map((s, j) => { const bx = (x(s[0] - 1) + x(s[0])) / 2; return `<line class="ax" x1="${bx}" x2="${bx}" y1="8" y2="${h - 18}" stroke-dasharray="3 3"/><text class="tick" x="${bx + 4}" y="${h - 18 - 11 * (j % 2)}">${String(fx[s[0]]).replace(/^.*@/, "")}</text>`; }).join("") +
+      segs.slice(1).map((s, j) => { const bx = (x(s[0] - 1) + x(s[0])) / 2; return `<line class="ax" x1="${bx}" x2="${bx}" y1="8" y2="${h - 18}" stroke-dasharray="3 3"/><text class="tick" x="${bx + 4}" y="${h - 18 - 11 * (j % 2)}">${fx[s[0]] === fx[s[0] - 1] ? "≠" : String(fx[s[0]]).replace(/^.*@/, "")}${marks?.br[s[0]] ? `<title>${esc(marks.br[s[0]])}</title>` : ""}</text>`; }).join("") +
       vals.map((v, i) => `<circle class="dot erigon" cx="${x(i)}" cy="${y(v)}"><title>${rows[i].date.slice(5)}: ${f(v)}</title></circle>` +
         (lab(i) ? `<text class="end erigon" x="${x(i)}" y="${y(v) - 8}" text-anchor="middle">${f(v)}</text>` : "")).join("") +
+      (marks?.reg || []).map((g, i) => g ? `<a href="#${g.id}"><title>${rows[i].date.slice(5)}: ${g.pct.toFixed(1)}%, see the journal</title><circle cx="${x(i)}" cy="${y(vals[i]) + 6}" r="11" fill="transparent"/><path class="reg" d="M${x(i) - 4} ${y(vals[i]) + 5}h8l-4 7z"/></a>` : "").join("") +
       rows.map((r, i) => lab(i) ? `<text class="tick" x="${x(i)}" y="${h - 4}" text-anchor="middle">${r.date.slice(5)}</text>` : "").join("") +
       (dv ? `<line class="ln dbg" x1="${x(n - 1)}" y1="${y(vals[n - 1])}" x2="${x(n)}" y2="${y(dv.v)}"/><circle class="dot dbg" cx="${x(n)}" cy="${y(dv.v)}"/>` +
         `<text class="tick dbg" x="${x(n)}" y="${h - 4}" text-anchor="end">dbg</text>` : "") + "</svg>";
   };
   document.getElementById("prog-trend").innerHTML = (dbgPt ? `<div class="build" style="grid-column:1/-1"><b>○ dbg (main + open PRs) ${sha(dbgPt.new)}</b>, ${dbgPt.date}: today's build, drawn after the main points; the next main point replaces it.</div>` : "") +
-    [["evm", "EVM"], ["node", "Node BAL-off"], ["nodebal", "Node BAL-on"]].map(([k, t]) => {
-    const rs = prog.filter(r => r[k]), l = rs[rs.length - 1], dk = dbgPt?.[k], dv = m => dk && { v: dk[m], sha: dbgPt.new };
+    TIERS.map(({ k, t, rs, br, reg }) => {
+    const l = rs[rs.length - 1], dk = dbgPt?.[k], dv = m => dk && { v: dk[m], sha: dbgPt.new };
+    const mm = { br: br.map(b => b?.both ? b.why : null), reg }, mr = { br: br.map(b => b?.why || null) };
     const cap = (m, f) => `<p class="note" style="margin:0 0 2px">main ${l.date.slice(5)}: <b>${f(l[k][m])}</b>` +
       (dk ? ` · <b style="color:#c2410c">dbg ${sha(dbgPt.new)}: ${f(dk[m])}</b> (×${(dk[m] / l[k][m]).toFixed(2)} of main)` : "") + `</p>`;
     return !l ? "" :
-    `<div class="chart"><h3>${t}: erigon Mgas/s, ${l[k].fixtures}</h3>${cap("mgas", v => v.toFixed(0))}${spark(rs.map(r => r[k].mgas), v => v.toFixed(0), rs.map(r => r[k].fixtures), rs, dv("mgas"))}</div>` +
-    `<div class="chart"><h3>${t}: erigon / best client (${l[k].best})</h3>${cap("ratio", v => "×" + v.toFixed(2))}${spark(rs.map(r => r[k].ratio), v => "×" + v.toFixed(2), rs.map(r => r[k].fixtures), rs, dv("ratio"))}</div>`; }).join("") + scenarioCharts();
+    `<div class="chart"><h3>${t}: erigon Mgas/s, ${l[k].fixtures}</h3>${cap("mgas", v => v.toFixed(0))}${spark(rs.map(r => r[k].mgas), v => v.toFixed(0), rs.map(r => r[k].fixtures), rs, dv("mgas"), mm)}${marksNote(mm, rs)}</div>` +
+    `<div class="chart"><h3>${t}: erigon / best client (${l[k].best})</h3>${cap("ratio", v => "×" + v.toFixed(2))}${spark(rs.map(r => r[k].ratio), v => "×" + v.toFixed(2), rs.map(r => r[k].fixtures), rs, dv("ratio"), mr)}${marksNote(mr, rs)}</div>`; }).join("") + scenarioCharts();
   // EEST scenario blocks per measured main, latest point per day; the hollow point is the latest dbg build when it is newer.
   function scenarioCharts() {
     const sc = data.scenario || [], byDay = {};
@@ -269,7 +331,7 @@ if (prog.length) {
   }
   const sec = (h, xs) => xs?.length ? `<h4>${h}</h4><ul>${xs.map(x => `<li>${link(x)}</li>`).join("")}</ul>` : "";
   const JOURNAL = 7, cards = [...prog, ...(dbgPt ? [dbgPt] : [])].reverse().map((r, i) =>
-    `<details class="card"${i ? "" : " open"}><summary><b>${r.date}</b>${r.dbg ? ` · <b class="tag" style="color:#c2410c">dbg (main + open PRs) ${sha(r.new)}</b>` : ""} · ` +
+    `<details class="card" id="${cardId(r)}"${i ? "" : " open"}><summary><b>${r.date}</b>${r.dbg ? ` · <b class="tag" style="color:#c2410c">dbg (main + open PRs) ${sha(r.new)}</b>` : ""} · ` +
     (r.old ? `<a href="https://github.com/erigontech/erigon/compare/${r.old}...${r.new}">${sha(r.old)}..${sha(r.new)}</a>` : `main ${sha(r.new)}, first point`) +
     ` · EVM ${r.evm.mgas.toFixed(1)}${r.node ? `, node ${r.node.mgas.toFixed(1)}` : ""} Mgas/s` +
     (prog.indexOf(r) > 0 && r.evm.fixtures !== prog[prog.indexOf(r) - 1].evm.fixtures ? ` · EVM fixtures now ${r.evm.fixtures}, not comparable with earlier points` : "") + (r.note ? ` · ${r.note}` : "") + `</summary>` +
@@ -538,5 +600,5 @@ addEventListener("scroll", markToc, { passive: true });
 markToc();
 // Slugs of renamed headings, so links shared before the rename still land.
 const oldSlugs = { "evm-eest-benchmark-blocks": "eest-benchmark-scenario", "node-newpayload-mgas-s": "newpayload-bal-off", "node-bal-off-newpayload-mgas-s": "newpayload-bal-off", "node-bal-on-newpayload-mgas-s": "newpayload-bal-on" };
-if (globalThis.location?.hash) { const h = location.hash.slice(1); document.getElementById(oldSlugs[h] ?? h)?.scrollIntoView(); }
+if (globalThis.location?.hash) { const h = location.hash.slice(1); if (h.startsWith("j-")) reveal(h); document.getElementById(oldSlugs[h] ?? h)?.scrollIntoView(); }
 </script>
