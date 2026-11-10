@@ -1861,5 +1861,86 @@
       "noise": 0.3,
       "fixtures": "glamsterdam-devnet@v8.1.4"
     }
+  },
+  {
+    "date": "2026-11-08",
+    "old": "365d22b07fa3e1dc7dbc771016c987eefa3c122e",
+    "new": "e0baadbb4b394ca5e39fecad2fb681809b24a8d9",
+    "evm": {
+      "mgas": 1151.2,
+      "ratio": 0.818,
+      "best": "nethermind",
+      "valid": 51,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10139.0,
+      "ratio": 1.173,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 9653.2,
+      "ratio": 0.806,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-08 e0baadbb4b, measured 11-09 morning; (*EVM).run at offset 32 (0 on the other nights), so layout-sensitive EVM files move; no failed rows. Node erigon/best x1.92 to x1.17 is not erigon: the 11-09 weekly re-measured nethermind x1.67, reth x1.34, geth x1.30 over 11-03",
+    "shipped": [
+      "#25907 CALLDATALOAD inlined, in the cold switch; #25920 one senders path per block, cached on the tx; #25886 BAL batch prefetch on by default; #25934 skip interning read-only BAL accounts at seeding",
+      "#25908 branch cache tail 125k entries; #25913 tracers see tx writes at tx end on NoMaterialize; #25862 BAL-seeded cells no longer trip the Done->Estimate assert; #25512 root leaf path after a propagate fold"
+    ],
+    "better": [
+      "EVM x1.01, node x1.01, BAL-on x1.00. EVM push x1.14 wins back the 11-07 x0.89; node jumpi_fallthrough x1.20 (1), iszero x1.28 (1, back after 11-07); BAL-on contract_calling_many_addresses x1.10 (8), swapn x1.08 (3): all held on 11-09"
+    ],
+    "worse": [
+      "cheap precompiles against 11-07, held on 11-09: EVM identity_uncachable x0.91, blake2f_benchmark x0.92, blake2f_uncachable x0.92, sha256_fixed_size x0.94; node blake2f_benchmark x0.88 (4), blake2f_uncachable x0.93 (4), identity_uncachable x0.94 (3); BAL-on blake2f_benchmark x0.90 (4): likely #25907 (the only interpreter change, it rebuilds the dispatch loop), not bisected",
+      "bls12_381 node x0.91 (7), then x0.84 on 11-09; EVM x0.94, then x0.91: two nights, not bisected. BAL-on tstore x0.85 (4), deploy_then_interact x0.91 (5), jumps x0.92 (1): one night, unconfirmed"
+    ]
+  },
+  {
+    "date": "2026-11-09",
+    "old": "e0baadbb4b394ca5e39fecad2fb681809b24a8d9",
+    "new": "5d26726c59bb6b6b37b19eca3f433b194d8792df",
+    "evm": {
+      "mgas": 1128.7,
+      "ratio": 0.797,
+      "best": "nethermind",
+      "valid": 51,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10032.4,
+      "ratio": 1.158,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 9575.6,
+      "ratio": 0.801,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-09 5d26726c59; (*EVM).run back at offset 0; no failed rows",
+    "shipped": [
+      "#25945 no per-transaction allocations in the publish loop; #25936 cached eth_gasPrice without a temporal tx; #25981 remove the unused ForkValidator; #25839 first log txNum from the range's first block; #25885 txpool skips the startup reload wait"
+    ],
+    "better": [
+      "EVM files outside the layout list x1.02 (node x0.99, BAL-on x0.99): arithmetic x1.10, scenario ether_transfers x1.11, iszero x1.07 win back 11-08; node calldataload x1.13 (8), tstore x1.16 (4), ripemd160_uncachable x1.19 (3): one night, unconfirmed"
+    ],
+    "worse": [
+      "EVM x0.98, erigon/neth x0.82 to x0.80: codesize x0.84, shifts x0.84, blobhash x0.88, jumpdests x0.88 are the layout-sensitive files going back from offset 32 to 0, no code change; node codesize x0.76 (1), jumpdests x0.80 (1), returndatasize_nonzero x0.87 (12) and BAL-on x0.84 (12) follow the same files: unconfirmed",
+      "cheap precompiles stay down (EVM identity_uncachable x0.91, blake2f_benchmark x0.92 of 11-07), see 11-08; BAL-on point_evaluation x0.45 (1), ripemd160_uncachable x0.61 (4): one night, unconfirmed"
+    ]
   }
 ]
