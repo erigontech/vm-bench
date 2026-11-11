@@ -1942,5 +1942,45 @@
       "EVM x0.98, erigon/neth x0.82 to x0.80: codesize x0.84, shifts x0.84, blobhash x0.88, jumpdests x0.88 are the layout-sensitive files going back from offset 32 to 0, no code change; node codesize x0.76 (1), jumpdests x0.80 (1), returndatasize_nonzero x0.87 (12) and BAL-on x0.84 (12) follow the same files: unconfirmed",
       "cheap precompiles stay down (EVM identity_uncachable x0.91, blake2f_benchmark x0.92 of 11-07), see 11-08; BAL-on point_evaluation x0.45 (1), ripemd160_uncachable x0.61 (4): one night, unconfirmed"
     ]
+  },
+  {
+    "date": "2026-11-10",
+    "old": "5d26726c59bb6b6b37b19eca3f433b194d8792df",
+    "new": "f0ab4a2cd2fceab1cd68dde9b0299f5854fe8306",
+    "evm": {
+      "mgas": 1176.3,
+      "ratio": 0.82,
+      "best": "nethermind",
+      "valid": 52,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10119.4,
+      "ratio": 1.167,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 9889.8,
+      "ratio": 0.825,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-10 f0ab4a2cd2; (*EVM).run at offset 32 again (0 on 11-09), so layout-sensitive EVM files move; no failed rows",
+    "shipped": [
+      "#26049 faster uint256 Mod; #26039 Empty on an absent account only records the read; #26064 one BAL storage read entry per slot; #25979 validated and sealed writes without the entry lock; #25954 less per-tx work in the BAL builder; #26018 balance of accounts created from an absent base"
+    ],
+    "better": [
+      "EVM x1.04 (erigon/neth x0.80 to x0.82), node x1.01, BAL-on x1.03. mod x1.72 to x1.75 in all three tiers: #26049. EVM precompile *_uncachable x1.79 to x1.89 (sha256, ripemd160, identity, blake2f, alt_bn128), the 11-05 #25491 loss is back: likely #26039, not bisected",
+      "BAL-on contract_calling_many_addresses x1.20 (8), deploy_then_interact x1.19 (5), ether_transfers x1.15 (60), storage_access_cold x1.12 (14): likely #26039/#26064/#25979, one night, unconfirmed. Layout files codesize x1.17, shifts x1.15, jumpdests x1.13 go back to 11-08"
+    ],
+    "worse": [
+      "EVM push x0.86 (x0.85 vs 11-08 at the same offset), iszero x0.87, arithmetic x0.91; node iszero x0.75 (1), not_op x0.77 (1), bn128_pairings_amortized x0.83 (1), calldataload x0.88 (8, its 11-09 win given back): these files swing every night, unconfirmed; the 11-09 drops (codesize, jumpdests, BAL-on point_evaluation, ripemd160_uncachable) did not hold"
+    ]
   }
 ]
