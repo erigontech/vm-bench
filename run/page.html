@@ -539,6 +539,8 @@ if (callRuns.length) {
   const hasNeth = r => Object.values(r.calls).some(v => pick(v, "nethermind")[0]), nr = callRuns.filter(hasNeth).pop();
   const [nn0] = nr ? pick(Object.values(nr.calls).find(v => pick(v, "nethermind")[0]), "nethermind") : [];
   const chHead = isDbg(cr) ? "dbg/main" : "vs prev main";
+  // exec time comes from a CPU profile of erigon main only; a dbg run has none, so take the newest run that has it.
+  const execRun = callRuns.filter(r => Object.values(r.calls).some(v => pick(v, "erigon")[1]?.exec)).pop();
   document.getElementById("calls-note").innerHTML = buildTag(ec, cr.date, "eth_call per transaction") + "<p>" + esc(`Against reth ${(rc || "").replace(/^reth-/, "")} in the same run. ` +
     (nr ? `neth = ${(nn0 || "").replace(/^nethermind-/, "Nethermind ")}, measured ${short(nr.date)}, in the erigon main run of that night; it keeps only the latest state, so its rows run at latest; e/n compares gas per second, erigon main against neth. ` : "") +
     `One mainnet transaction per row, replayed as eth_call at its own block, 16 connections; "at latest" = the block is older than the state the node keeps; a row without numbers is a call that fails on this node; ` +
@@ -548,8 +550,6 @@ if (callRuns.length) {
     ((data.paused || []).includes("eth_call") ? `<p><b>Paused</b> while its bench box is lent: these are the last measured values.</p>` : "") +
     (pc ? `<p>${chHead} = erigon rps against ${esc(buildName(pc))}, measured ${short(prev.date)}.</p>` : "") +
     "";
-  // exec time comes from a CPU profile of erigon main only; a dbg run has none, so take the newest run that has it.
-  const execRun = callRuns.filter(r => Object.values(r.calls).some(v => pick(v, "erigon")[1]?.exec)).pop();
   const rows = Object.keys(cr.calls).map(f => {
     const [, e] = pick(cr.calls[f], "erigon"), [, r] = pick(cr.calls[f], "reth"), [, p] = pick(prev?.calls[f], "erigon");
     const [, nn] = pick(nr?.calls[f], "nethermind"), [, ne] = pick(nr?.calls[f], "erigon");
@@ -580,6 +580,14 @@ if (callRuns.length) {
 // Every table: a header row stays in view while its table scrolls, and a click on a column header sorts the rows by that
 // column (numbers by value, "%", "×", "ms" stripped; empty and "–" cells last). Group rows keep their place and sort
 // their own rows; a geometric-mean row stays at the end of its group.
+const sortKey = text => { const s = text.trim().replace(/−/g, "-").replace(/^×/, ""); if (!s || s === "–") return null;
+  const n = parseFloat(s.replace(/[%×,]|\bms\b|^\+/g, "")); return isNaN(n) || !/^[+-]?[\d.]/.test(s) ? s : n; };
+// Numbers sort before text so that a column mixing both still has one total order.
+const sortCmp = (x, y, dir) => { if (x === null || y === null) return (x === null) - (y === null);
+  const nx = typeof x === "number", ny = typeof y === "number";
+  return dir * (nx && ny ? x - y : nx !== ny ? ny - nx : x.localeCompare(y, "en", { numeric: true })); };
+{ const got = ["×0.5", "x", "", "×0.35", "−1.2", "+3%", "10 ms"].map(sortKey).sort((x, y) => sortCmp(x, y, 1));
+  console.assert(JSON.stringify(got) === JSON.stringify([-1.2, 0.35, 0.5, 3, 10, "x", null]), "table sort self-check", got); }
 for (const t of document.querySelectorAll("table")) {
   const hr = t.tHead?.rows;
   if (!hr?.length) continue;
@@ -593,10 +601,8 @@ for (const t of document.querySelectorAll("table")) {
       for (const o of hr[hr.length - 1].cells) o.removeAttribute("aria-sort");
       th.setAttribute("aria-sort", dir > 0 ? "ascending" : "descending");
       const cellAt = r => { let c = 0; for (const td of r.cells) { if (c === col || (c < col && c + td.colSpan > col)) return td.colSpan > 1 ? null : td; c += td.colSpan; } return null; };
-      const key = r => { const s = cellAt(r)?.textContent.trim() ?? ""; if (!s || s === "–") return null;
-        const n = parseFloat(s.replace(/[%×,]|\bms\b|^\+/g, "")); return isNaN(n) || !/^[+-]?[\d.]/.test(s) ? s : n; };
-      const cmp = (a, b) => { const x = key(a), y = key(b); if (x === null || y === null) return (x === null) - (y === null);
-        return dir * (typeof x === "number" && typeof y === "number" ? x - y : String(x).localeCompare(String(y), "en", { numeric: true })); };
+      const key = r => sortKey(cellAt(r)?.textContent ?? "");
+      const cmp = (a, b) => sortCmp(key(a), key(b), dir);
       for (const tb of t.tBodies) {
         const segs = [[]];
         for (const r of tb.rows) r.classList.contains("group") ? segs.push([r], []) : segs[segs.length - 1].push(r);
