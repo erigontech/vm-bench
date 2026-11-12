@@ -2011,7 +2011,7 @@
       "noise": 0.3,
       "fixtures": "glamsterdam-devnet@v8.1.4"
     },
-    "note": "main 2026-11-11 57ca3827fc; EVM x0.99 only because tstore and extcodecopy_warm went grey (52 to 50 valid), x1.03 on the same 50 files; best EVM client is now revm; no failed rows",
+    "note": "main 2026-11-11 57ca3827fc; EVM x0.99 only because tstore and extcodecopy_warm went grey (52 to 50 valid), x1.03 on the same 50 files; best EVM client is now revm; no failed rows. 2026-11-12: lab.sh adds GODEBUG=gctrace=1 to every lab arm (gc= column); lab numbers before/after 2026-11-12 are a harness change",
     "shipped": [
       "#26062 warm Empty and repeat absent reads use the read set; #26041 a slot's prev value from its write record; #26060 copy the writes of a charged tx once; #26082 match the BAL sidecar without sorting the builder; #26081 bounded window for blocks without a BAL; #26029 trie prefetch gate samples storage tries; #26095 EIP-8246 create and destroy"
     ],
