@@ -1982,5 +1982,46 @@
     "worse": [
       "EVM push x0.86 (x0.85 vs 11-08 at the same offset), iszero x0.87, arithmetic x0.91; node iszero x0.75 (1), not_op x0.77 (1), bn128_pairings_amortized x0.83 (1), calldataload x0.88 (8, its 11-09 win given back): these files swing every night, unconfirmed; the 11-09 drops (codesize, jumpdests, BAL-on point_evaluation, ripemd160_uncachable) did not hold"
     ]
+  },
+  {
+    "date": "2026-11-11",
+    "old": "f0ab4a2cd2fceab1cd68dde9b0299f5854fe8306",
+    "new": "57ca3827fcaab8ff6c83238ed85779826bb6d2a2",
+    "evm": {
+      "mgas": 1162.4,
+      "ratio": 0.82,
+      "best": "revme",
+      "valid": 50,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10425.0,
+      "ratio": 1.198,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 10031.2,
+      "ratio": 0.838,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-11 57ca3827fc; EVM x0.99 only because tstore and extcodecopy_warm went grey (52 to 50 valid), x1.03 on the same 50 files; best EVM client is now revm; no failed rows",
+    "shipped": [
+      "#26062 warm Empty and repeat absent reads use the read set; #26041 a slot's prev value from its write record; #26060 copy the writes of a charged tx once; #26082 match the BAL sidecar without sorting the builder; #26081 bounded window for blocks without a BAL; #26029 trie prefetch gate samples storage tries; #26095 EIP-8246 create and destroy"
+    ],
+    "better": [
+      "node x1.03, broad: codesize x1.26 (1), contract_creation x1.20 (6), shifts x1.17 (2), call_frame_context_ops x1.16 (4), returndatasize_nonzero x1.13 (12), calldatasize x1.13 (8), swap x1.09 (16), dup x1.07 (16): likely #26062/#26041/#26060, one night, unconfirmed. EVM push x1.19, alt_bn128 x1.11, blake2f x1.09 win back 11-10",
+      "BAL-on x1.01: jumpdests x1.19 (1), state_root_computation x1.13 (6), returndatasize_nonzero x1.12 (12), swap x1.11 (16), storage_access_cold x1.09 (14): unconfirmed; the 11-10 BAL-on wins (ether_transfers, contract_calling_many_addresses, deploy_then_interact) held"
+    ],
+    "worse": [
+      "block_full_data down two nights: node x0.89 then x0.96 (x0.86 vs 11-09, 2 tests), EVM x0.97 then x0.94: confirmed, cause in the 11-10 or 11-11 PRs, not bisected; node not_op x0.77 then x0.88 (x0.68 vs 11-09, 1 test)",
+      "BAL-on clz_same x0.81 (1), ripemd160 x0.84 (1), identity x0.84 (1), iszero x0.86 (1), extcodecopy_warm x0.91 (5): one night, unconfirmed, the single-test ones gave back their 11-10 wins"
+    ]
   }
 ]
