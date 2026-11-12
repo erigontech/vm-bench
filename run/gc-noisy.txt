@@ -1,0 +1,5 @@
+# Node-tier families whose newPayload is mostly payload decode: a GC cycle that lands in it moves the test 10-20%, and one
+# nightly sample swings ±15-30% (n5 bfd3.sh, isolated A/B of 5d26726c59, f0ab4a2cd2, 57ca3827fc flat, 2026-11-12).
+# The journal lists a drop of such a test under Worse only when it falls more than 30% (its nightly swing) on 3 consecutive
+# nights or, once the nightly records GC cycles per measured newPayload (gc=), more than the tier noise on gc=0 rounds.
+test_block_full_data

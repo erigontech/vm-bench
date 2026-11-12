@@ -2020,7 +2020,7 @@
       "BAL-on x1.01: jumpdests x1.19 (1), state_root_computation x1.13 (6), returndatasize_nonzero x1.12 (12), swap x1.11 (16), storage_access_cold x1.09 (14): unconfirmed; the 11-10 BAL-on wins (ether_transfers, contract_calling_many_addresses, deploy_then_interact) held"
     ],
     "worse": [
-      "block_full_data down two nights: node x0.89 then x0.96 (x0.86 vs 11-09, 2 tests), EVM x0.97 then x0.94: confirmed, cause in the 11-10 or 11-11 PRs, not bisected; node not_op x0.77 then x0.88 (x0.68 vs 11-09, 1 test)",
+      "block_full_data down two nights: node x0.89 then x0.96 (x0.86 vs 11-09, 2 tests), EVM x0.97 then x0.94: GC noise, not a code change (isolated A/B of the three commits flat, 2026-11-12); block_full_data is now tagged GC-noisy (run/gc-noisy.txt) and goes to Worse only past 30% on 3 consecutive nights or on gc=0 rounds; node not_op x0.77 then x0.88 (x0.68 vs 11-09, 1 test)",
       "BAL-on clz_same x0.81 (1), ripemd160 x0.84 (1), identity x0.84 (1), iszero x0.86 (1), extcodecopy_warm x0.91 (5): one night, unconfirmed, the single-test ones gave back their 11-10 wins"
     ]
   }

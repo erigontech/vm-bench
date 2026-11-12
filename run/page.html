@@ -352,6 +352,7 @@ function ratioCell(k) {
 // EEST benchmark blocks: latest snapshot that has them.
 const btRun = [...data.runs].reverse().find(r => Object.keys(r.bt).length);
 const layoutTag = f => (data.layoutSensitive || []).includes(f) ? ' <span class="tag" title="moves with (*EVM).run offset mod 64">layout</span>' : "";
+const gcTag = f => (data.gcNoisy || []).includes(f) ? ' <span class="tag" title="GC-noisy: one nightly sample swings ±15-30% (run/gc-noisy.txt)">GC</span>' : "";
 // px: the section's id prefix; groups: the EEST file groups it shows.
 function btSection(px, groups, what) {
   for (const id of ["title", "bt-note", "bt-race", "bt", "bt-files"]) document.getElementById(px + id).hidden = false;
@@ -458,13 +459,13 @@ function nodeSection(id, key, passKey, note) {
   const ho = hc.filter(c => c !== "erigon"), fams = [...new Set(hero.map(fam))].sort();
   const fm = (f, c) => geomean(hero.filter(t => fam(t) === f).map(t => res[t][c]));
   document.getElementById(id + "-fam").innerHTML = `<table><thead><tr><th>family</th><th>tests</th>${hc.map(c => `<th>${name(c)}</th>`).join("")}${ho.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
-    body(fams.map(f => `<tr><td class="f" title="${f}">${f.replace(/^test_/, "")}</td><td class="gas">${hero.filter(t => fam(t) === f).length}</td>` +
+    body(fams.map(f => `<tr><td class="f" title="${f}">${f.replace(/^test_/, "")}${gcTag(f)}</td><td class="gas">${hero.filter(t => fam(t) === f).length}</td>` +
       hc.map(c => `<td>${fmt(fm(f, c))}</td>`).join("") + ho.map(c => ratioCell(fm(f, "erigon") / fm(f, c))).join("") + "</tr>")) + "</tbody></table>";
   // Nethermind serves precompile calls that repeat one input from PrecompileCachedCodeInfoRepository; *_uncachable tests vary the input.
   const cached = (t, c) => c === "nethermind" && cat(t) === "precompile" && !t.includes("uncachable");
   const label = t => t.split("::")[1].replace(/fork_\w+-blockchain_test_engine_x-/, "").replace(/-?benchmark-gas-value_\d+M/, "").replace("[]", "");
   document.getElementById(id).innerHTML = `<table><thead><tr><th>test</th>${nc.map(c => `<th>${name(c)}</th>`).join("")}${no.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
-    body([...new Set(tests.map(cat))].flatMap(g => [`<tr class="group"><td colspan="${1 + nc.length + no.length}">${g}</td></tr>`, ...tests.filter(t => cat(t) === g).map(t => `<tr><td class="f" title="${t}">${label(t)}</td>` +
+    body([...new Set(tests.map(cat))].flatMap(g => [`<tr class="group"><td colspan="${1 + nc.length + no.length}">${g}</td></tr>`, ...tests.filter(t => cat(t) === g).map(t => `<tr><td class="f" title="${t}">${label(t)}${gcTag(fam(t))}</td>` +
       nc.map(c => cached(t, c) ? `<td class="gas" title="${NETH_CACHE}">${fmt(res[t][c] ?? NaN)}*</td>` : `<td>${fmt(res[t][c] ?? NaN)}</td>`).join("") +
       no.map(c => cached(t, c) ? `<td class="gas" title="${NETH_CACHE}">cache</td>` : ratioCell(res[t].erigon / res[t][c])).join("") + "</tr>")])) + "</tbody></table>";
 }
