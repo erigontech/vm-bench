@@ -42,6 +42,19 @@ done
 
 summary() { sed "s/\x1b\[[0-9;]*m//g" "$1" | grep -o "failed=[0-9]* .*passed=[0-9]* .*total=[0-9]*" | tail -1 | sed "s/instance=[^ ]* //;s/run_id=[^ ]* //"; }
 passed1() { case "$(summary "$D/run-$1.log")" in *failed=0*passed=1\ * | *failed=0*passed=1) return 0 ;; esac; return 1; }
+# smoke <client> <filter> [timeout]: one test. With SMOKE_REPORT=<file>, a failure is recorded there at once and a pass clears the
+# client's earlier record; the self-check reads that file.
+smoke() {
+	local ok=
+	arm "$1" "smoke-$1" "$2" "${3:-}"
+	passed1 "smoke-$1" && ok=1
+	if [ -n "${SMOKE_REPORT:-}" ]; then
+		sed -i "/ SMOKE_FAIL $TIER $1 /d" "$SMOKE_REPORT" 2> /dev/null
+		[ -n "$ok" ] || echo "$(date -u +%FT%H:%MZ) SMOKE_FAIL $TIER $1 $D/run-smoke-$1.log" >> "$SMOKE_REPORT"
+		python3 run/selfcheck.py > /dev/null
+	fi
+	[ -n "$ok" ] || { echo "NOT_RUN $1"; return 1; }
+}
 # Other sessions may run benchmarkoor without the lock: wait for them, then reap their orphan containers.
 idle() {
 	while pgrep -f "benchmarkoor run" > /dev/null; do sleep 15; done

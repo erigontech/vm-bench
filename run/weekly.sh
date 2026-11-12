@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Weekly: upgrade every other client to its latest release, record the versions, then measure the other clients in the tiers
 # the nightly runs for erigon only (node BAL-off, node BAL-on, sub-tests). The nightly EVM blocks tier runs every client and
-# picks up the upgraded tools. A client that fails to upgrade or run is listed in ~/vm-bench-weekly.txt, which A1 reads.
+# picks up the upgraded tools. A client that fails to upgrade or run is listed in ~/vm-bench-weekly.txt, which A1 reads; a node-tier
+# smoke failure lands there (and in the self-check) as soon as it happens.
 # crontab (Sunday 16:00 UTC): 0 16 * * 0 BENCH_LOCK=/tmp/bench.lock flock -n /tmp/vmbench-weekly.lock ~/vm-bench/run/weekly.sh >> ~/vm-bench/weekly.log 2>&1
 set -uo pipefail
 cd "$(dirname "$0")/.."
@@ -9,8 +10,9 @@ export PATH=$HOME/go/bin:$HOME/.cargo/bin:$HOME/.dotnet:$PATH DOTNET_ROOT=${DOTN
 export EVMONE=${EVMONE:-$HOME/evmone/bin/evmone} NETHTEST=${NETHTEST:-$HOME/nethtest/nethtest}
 export LD_LIBRARY_PATH=$HOME/evmone/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export BENCHMARKOOR=${BENCHMARKOOR:-$HOME/vm-bench-tools/benchmarkoor}
-report=$HOME/vm-bench-weekly.txt fails=()
-echo "weekly $(date -u +%FT%TZ)"
+export SMOKE_REPORT=$HOME/vm-bench-weekly.txt
+report=$SMOKE_REPORT fails=()
+echo "weekly $(date -u +%FT%TZ)" | tee "$report"
 git pull -q --ff-only || fails+=("git pull")
 latest() { curl -sfL "https://api.github.com/repos/$1/releases/latest" | jq -re .tag_name; }
 # Progress goes to stderr: a step can redirect the stdout of its command into a results file.
@@ -71,5 +73,6 @@ if git -c user.name=vm-bench -c user.email=vm-bench@erigon.tech commit -q -m "we
 	done
 	[ -n "$pushed" ] || fails+=("push")
 fi
+while read -r _ _ tier c _; do fails+=("smoke $tier $c"); done < <(grep " SMOKE_FAIL " "$report")
 verdict=$([ ${#fails[@]} = 0 ] && echo OK || printf 'FAILED %s; ' "${fails[@]}")
-echo "$(date -u +%FT%H:%MZ) $verdict" | tee "$report"
+echo "$(date -u +%FT%H:%MZ) $verdict" | tee -a "$report"

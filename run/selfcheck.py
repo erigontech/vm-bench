@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Fails (exit 1) when an erigon section's newest history snapshot is older than 36 h, or another client's weekly
-"(measured <date>)" label on the page is older than 8 days; writes the verdict to the marker file. A section listed in
+"(measured <date>)" label on the page is older than 8 days, or a client failed a node-tier smoke test (SMOKE_FAIL in
+$SMOKE_REPORT, default ~/vm-bench-weekly.txt); writes the verdict to the marker file. A section listed in
 run/paused-sections.txt is reported as PAUSED instead of being checked."""
 import datetime
 import os
@@ -32,6 +33,11 @@ for d in sorted(set(re.findall(r"\(measured (\d{4}-\d\d-\d\d)\)", page.read_text
     days = (now.date() - datetime.date.fromisoformat(d)).days
     if days > 8:
         stale.append(f"other clients measured {d} ({days} days)")
+smoke = pathlib.Path(os.environ.get("SMOKE_REPORT", pathlib.Path.home() / "vm-bench-weekly.txt"))
+for line in smoke.read_text().splitlines() if smoke.exists() else []:
+    if " SMOKE_FAIL " in line:
+        at, _, tier, client = line.split()[:4]
+        stale.append(f"{client} failed the {tier} smoke test at {at}")
 verdict = ("STALE " + "; ".join(stale)) if stale else "OK"
 if paused:
     verdict += " PAUSED " + ", ".join(paused)

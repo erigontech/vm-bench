@@ -55,9 +55,7 @@ YML
 }
 ok=""
 for c in $ORDER; do
-	arm $c smoke-$c "$SMOKE" 20m
-	if passed1 smoke-$c; then ok="$ok $c"; else
-		echo "NOT_RUN $c"
+	if smoke $c "$SMOKE" 20m; then ok="$ok $c"; else
 		sed "s/\x1b\[[0-9;]*m//g" "$D/run-smoke-$c.log" | grep -iE "error|fail|invalid|mismatch" | tail -8
 		ls "$D"/res-smoke-$c/runs/*/container.log 2> /dev/null | head -1 | xargs -r tail -15
 	fi

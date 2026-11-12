@@ -23,8 +23,7 @@ echo "filter=$FILTER smoke=$SMOKE fixtures=$FIX"
 
 bad="" ok=""
 for c in $ORDER; do
-	arm $c smoke-$c "$SMOKE"
-	if passed1 smoke-$c; then ok="$ok $c"; else bad="$bad $c"; echo "NOT_RUN $c"; fi
+	if smoke $c "$SMOKE"; then ok="$ok $c"; else bad="$bad $c"; fi
 done
 [ -n "$ok" ] || fail "SMOKE_FAIL$bad" "$D/run-smoke-${bad##* }.log"
 ORDER=${ok# }
