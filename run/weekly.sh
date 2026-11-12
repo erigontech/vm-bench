@@ -56,7 +56,7 @@ step "BAL-on node tier (reth nethermind geth besu ethrex nimbus)" env ERIGON_SRC
 # Sub-tests of the other clients; the nightly erigon run keeps their columns for 8 days.
 if step "sub-tests (geth revme nethermind)" run/subtests.sh geth revme nethermind > results/st-weekly.csv 2> results/st-weekly.err; then
 	step "sub-tests publish" run/subtests-publish.py results/st-weekly.csv "geth=geth $(evm --version | awk '{print $NF}')" \
-		"revme=revm $(cargo install --list | grep -o 'revm#[0-9a-f]*' | head -1)" "nethermind=nethermind $("$NETHTEST" --version)" > /dev/null
+		"revme=revm $(cargo install --list | sed -n 's/^revme .*tag=\([^#]*\).*/\1/p')" "nethermind=nethermind $("$NETHTEST" --version)" > /dev/null
 fi
 # Commit the snapshot alone, rebase it onto main, rebuild the page on the merged tree, push; a rejected push drops only the
 # page commit and tries again. The snapshot commit is never dropped.
