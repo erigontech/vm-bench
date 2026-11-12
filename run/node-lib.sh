@@ -36,8 +36,9 @@ fi
 for c in $ORDER; do
 	[ "$c" = erigon ] && continue
 	docker pull -q "${IMG[$c]}" > /dev/null || fail "PULL_FAIL $c"
-	echo "$c $(docker image inspect --format '{{index .RepoDigests 0}}' "${IMG[$c]}")"
-	REF[$c]=${IMG[$c]} IMG[$c]=$(docker image inspect --format '{{.Id}}' "${IMG[$c]}")
+	d=$(docker image inspect --format '{{index .RepoDigests 0}}' "${IMG[$c]}")
+	echo "$c $d"
+	REF[$c]=${IMG[$c]%@*}@${d#*@} IMG[$c]=$(docker image inspect --format '{{.Id}}' "${IMG[$c]}")
 done
 
 summary() { sed "s/\x1b\[[0-9;]*m//g" "$1" | grep -o "failed=[0-9]* .*passed=[0-9]* .*total=[0-9]*" | tail -1 | sed "s/instance=[^ ]* //;s/run_id=[^ ]* //"; }
