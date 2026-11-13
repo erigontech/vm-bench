@@ -16,7 +16,7 @@ EVM sub-test  one 150M block per EEST sub-test, erigon builds    erigon builds, 
               against each other (one exec worker)                                                     -> subtests.csv, subtest-arms.csv
 node          benchmarkoor newPayload Mgas/s, EEST genesis per   erigon, reth, nethermind, geth       run/node.sh -> node.csv, pass.csv
               test (small state)
-node BAL-on   same on Amsterdam blocks with a BAL                + besu, ethrex, nimbus               run/balfix.sh, run/nodebal.sh -> nodebal.csv
+node BAL-on   same on Amsterdam blocks with a BAL                + besu, nimbus                       run/balfix.sh, run/nodebal.sh -> nodebal.csv
 RPC           eth_call per fixture                               erigon (+ reth)                      run/calls.sh -> calls.csv
 ```
 

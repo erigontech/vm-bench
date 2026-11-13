@@ -47,11 +47,11 @@ done
 src=${ERIGON_MAIN:-$HOME/erigon-vmb-main}
 step "node tier (reth nethermind geth)" env ERIGON_SRC="$src" ORDER="reth nethermind geth" run/node.sh
 unset IMG_reth IMG_nethermind IMG_geth
-for c in reth nethermind geth besu ethrex nimbus; do
+for c in reth nethermind geth besu nimbus; do
 	ref=$(sed -n "s/^\t\[$c\]=\([^@]*\)@.*/\1/p" run/nodebal.sh)
 	[ -n "$ref" ] && export "IMG_$c=$ref"
 done
-step "BAL-on node tier (reth nethermind geth besu ethrex nimbus)" env ERIGON_SRC="$src" BALFIX="${BALFIX:-$HOME/bench/balfix}" ORDER="reth nethermind geth besu ethrex nimbus" run/nodebal.sh
+step "BAL-on node tier (reth nethermind geth besu nimbus)" env ERIGON_SRC="$src" BALFIX="${BALFIX:-$HOME/bench/balfix}" ORDER="reth nethermind geth besu nimbus" run/nodebal.sh
 
 # Sub-tests of the other clients; the nightly erigon run keeps their columns for 8 days.
 if step "sub-tests (geth revme nethermind)" run/subtests.sh geth revme nethermind > results/st-weekly.csv 2> results/st-weekly.err; then

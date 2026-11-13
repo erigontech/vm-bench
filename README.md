@@ -12,7 +12,7 @@ EVM blocks          EEST tests-benchmark@v0.0.9 150M blocks through each  erigon
 EVM per sub-test    one 150M block per EEST sub-test, erigon builds       erigon builds, nethermind        run/subtests.sh, see "Per sub-test"
                     against each other
 Node                benchmarkoor engine_newPayload Mgas/s, small state    erigon reth nethermind geth      run/node.sh, see "Node tier"
-Node, BAL on        same on Amsterdam blocks with a block access list     + besu ethrex nimbus             run/nodebal.sh, see "BAL-on node tier"
+Node, BAL on        same on Amsterdam blocks with a block access list     + besu nimbus                    run/nodebal.sh, see "BAL-on node tier"
 State tests         mainnet transactions as EEST state tests              erigon (geth revm evmone neth)   make bench, run/<client>.sh
 ```
 
@@ -159,7 +159,7 @@ BENCHMARKOOR=<benchmarkoor>/bin/benchmarkoor ERIGON_SRC=<erigon checkout> CPUSET
 ```
 
 - Clients: erigon as above, with `--exec.no-merge=true --exec.no-prune=true --exec.no-background-maintenance
-  --experimental.parallel-commitment`; reth, nethermind, geth, besu, ethrex and nimbus are the ethpandaops
+  --experimental.parallel-commitment`; reth, nethermind, geth, besu and nimbus are the ethpandaops
   glamsterdam-devnet-8 images with the BAL-mode flags of
   [benchmarkoor-tests](https://github.com/ethpandaops/benchmarkoor-tests) `clients.yaml`, pinned by digest in
   `run/nodebal.sh`. `ORDER` picks the clients.

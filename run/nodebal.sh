@@ -5,7 +5,7 @@
 # NOT_RUN and left out. Then <filter> in ORDER and reversed, then run/nodebal-csv.py into
 # history/<UTC time>/{nodebal,passbal,versions}.csv. SMOKE_ONLY=1 stops after the smoke. Env: see run/node-lib.sh.
 FILTER=${1:-value_150M} SMOKE=${2:-opcode_PUSH0-benchmark-gas-value_150M}
-TIER=bal ORDER=${ORDER:-"erigon reth nethermind geth besu ethrex nimbus"} PASS_TIMEOUT=2h
+TIER=bal ORDER=${ORDER:-"erigon reth nethermind geth besu nimbus"} PASS_TIMEOUT=2h
 declare -A IMG=(
 	[reth]=ethpandaops/reth:glamsterdam-devnet-8@sha256:b0ecb38ab4786d67b5a06fe81eec0e7a77f05be7a8e3ab54498f4ad0819879dc
 	[nethermind]=ethpandaops/nethermind:master@sha256:99cd7b2404e8eb84f75d38c36056754e09679b0b67a69bc6c86c3ae9809d0224
