@@ -2023,5 +2023,46 @@
       "block_full_data down two nights: node x0.89 then x0.96 (x0.86 vs 11-09, 2 tests), EVM x0.97 then x0.94: GC noise, not a code change (isolated A/B of the three commits flat, 2026-11-12); block_full_data is now tagged GC-noisy (run/gc-noisy.txt) and goes to Worse only past 30% on 3 consecutive nights or on gc=0 rounds; node not_op x0.77 then x0.88 (x0.68 vs 11-09, 1 test)",
       "BAL-on clz_same x0.81 (1), ripemd160 x0.84 (1), identity x0.84 (1), iszero x0.86 (1), extcodecopy_warm x0.91 (5): one night, unconfirmed, the single-test ones gave back their 11-10 wins"
     ]
+  },
+  {
+    "date": "2026-11-12",
+    "old": "57ca3827fcaab8ff6c83238ed85779826bb6d2a2",
+    "new": "d615f2a61029d119de7127673138ce2d05c07e66",
+    "evm": {
+      "mgas": 1185.1,
+      "ratio": 0.838,
+      "best": "nethermind",
+      "valid": 51,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10253.8,
+      "ratio": 1.182,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 9985.4,
+      "ratio": 0.787,
+      "best": "nethermind",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-12 d615f2a610; (*EVM).run at offset 32 as on 11-11; EVM 51 valid files (50 on 11-11); BAL-on best client is now nethermind after its 11-12 re-run (erigon/nethermind x1.48 to x0.79; erigon/reth x0.84 to x0.83), an other-client change; no failed rows",
+    "shipped": [
+      "#25933 run ValidateChain on the given block, chunk the payload decode; the rest is CL, RPC, tracers and tests (#25739, #25994, #26066, #26074)"
+    ],
+    "better": [
+      "EVM x1.02, no file past 3%. create x1.07 (20) in node and x1.06 in BAL-on, the second night up in both (x1.11/x1.13 vs 11-10): likely #26062 (warm Empty and absent reads from the read set). node not_op x1.47 (1), jumps x1.18 (1), unchunkified_bytecode x1.09 (7), extcodecopy_warm x1.08 (5); block_full_data x1.12 (2, GC-noisy), maybe #25933: one night, unconfirmed",
+      "BAL-on clz_same x1.20 (1), tstore x1.17 (4), ripemd160 x1.13 (1), creates_collisions x1.13 (2), contract_creation x1.10 (6), ether_transfers_to_precompile x1.07 (36), ether_transfers x1.06 (60): one night, unconfirmed; the single-test ones win back their 11-11 losses"
+    ],
+    "worse": [
+      "node x0.98: the 11-11 wins given back (codesize x0.81, shifts x0.87, calldatasize x0.88, call_frame_context_ops x0.89, returndatasize_nonzero x0.90, dup x0.91, swap x0.93), about flat vs 11-10. node tload x0.79 (4, x0.87 vs 11-10), alt_bn128_benchmark x0.89 (5, num_pairs_6 halved), bls12_g1_msm x0.89 (4): one night, unconfirmed",
+      "BAL-on x1.00: the same 11-11 wins given back (calldatasize x0.87, call_frame_context_ops x0.88, returndatasize_nonzero x0.90, dup x0.90, swap x0.91); shifts_beyond_word_size x0.97 after x0.94 (8), x0.94 vs its 11-06..11-10 range, second night down: 11-11 PRs, not bisected. jumpdests x0.82 (1), clz_diff x0.83 (1), blobhash x0.86 (2): unconfirmed; block_full_data x0.81 (2) GC-noisy, under the 30% rule"
+    ]
   }
 ]
