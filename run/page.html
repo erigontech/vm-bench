@@ -140,6 +140,7 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <nav id="toc" aria-label="Sections"></nav>
 <h1>vm-bench <a href="https://github.com/erigontech/vm-bench" style="font-size:15px;font-weight:500;color:var(--ink-2);margin-left:10px;vertical-align:middle">github.com/erigontech/vm-bench</a></h1>
 <p class="lede">Where <span class="tag">erigon</span> is slower than reth, Nethermind, geth, evmone and revm, and whether the dbg build (main + open PRs) regressed. Measured every night: the Progress trend shows main, the tables show the latest dbg build unless a section says main.</p>
+<div id="goal"></div>
 <div id="tiers"></div>
 <div id="worst"></div>
 <div class="note" id="status"></div>
@@ -468,6 +469,7 @@ function nodeSection(id, key, passKey, note) {
     body([...new Set(tests.map(cat))].flatMap(g => [`<tr class="group"><td colspan="${1 + nc.length + no.length}">${g}</td></tr>`, ...tests.filter(t => cat(t) === g).map(t => `<tr><td class="f" title="${t}">${label(t)}${gcTag(fam(t))}</td>` +
       nc.map(c => cached(t, c) ? `<td class="gas" title="${NETH_CACHE}">${fmt(res[t][c] ?? NaN)}*</td>` : `<td>${fmt(res[t][c] ?? NaN)}</td>`).join("") +
       no.map(c => cached(t, c) ? `<td class="gas" title="${NETH_CACHE}">cache</td>` : ratioCell(res[t].erigon / res[t][c])).join("") + "</tr>")])) + "</tbody></table>";
+  return { run, ho, fm };
 }
 nodeSection("node", "node", "nodePass", ({ tests, hero, nv, pp, rows }) => clientNote(
   `Node tier: engine_newPayload Mgas/s on Osaka blocks, BAL off (Osaka blocks carry no block access list). ` +
@@ -478,7 +480,7 @@ nodeSection("node", "node", "nodePass", ({ tests, hero, nv, pp, rows }) => clien
   [`Fixtures ${esc(nv.fixtures)}, Osaka, 150M-gas blocks.`, `${tests.length} tests.`, `Pass-to-pass within ${pp}%.`,
    `The hero leaves out the ${tests.length - hero.length} precompile tests: geth and nethermind run with their default precompile result caches, so that group compares caches.`,
    `neth * = ${NETH_CACHE}: a precompile test that repeats one input; no e/neth ratio, and no geometric mean uses it.`]));
-nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp, rows, extra }) => clientNote(
+const nodebalFam = nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp, rows, extra }) => clientNote(
   `Node tier: engine_newPayload Mgas/s on Amsterdam blocks (glamsterdam-devnet-8 fixtures), BAL on: the same EEST compute tests ` +
   `filled for Amsterdam, so every block carries its block access list and every client runs in its BAL mode with the instance flags of ethpandaops/benchmarkoor-tests. ` +
   `Genesis state per test (small state), newPayload Mgas/s, driven by benchmarkoor. ` +
@@ -489,6 +491,38 @@ nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp,
    (nc.length > hc.length ? `; ${nc.filter(c => !hc.includes(c)).join(", ")} passed fewer than half of the tests and shows in the per-test table only.` : "."),
    `neth * = ${NETH_CACHE}: a precompile test that repeats one input; no e/neth ratio, and no geometric mean uses it.`,
    ...extra.map(esc), ...(nv["not run"] ? [`Not run: ${esc(nv["not run"])}.`] : [])]));
+
+// Goal: Lab mainnet win rate (Bronze = 3rd place), the BAL-on goal families against the best client, this week's merged wins.
+{
+  const lab = data.runs.filter(r => r.winrate), wr = {};
+  for (const r of lab) for (const [d, c, w] of r.winrate) (wr[d] ??= {})[c] = +w;
+  const days = Object.keys(wr).sort().slice(-14).reverse();
+  const share = (d, x) => x ? `${name(x[0])} ${(100 * x[1] / Object.values(wr[d]).reduce((a, b) => a + b, 0)).toFixed(1)}% (${x[1]})` : "–";
+  const labRow = d => {
+    const cs = Object.entries(wr[d]).sort((a, b) => b[1] - a[1]), e = cs.find(([c]) => c.toLowerCase() === "erigon");
+    const rank = e && `${cs.filter(x => x[1] === e[1]).length > 1 ? "=" : ""}${1 + cs.filter(x => x[1] > e[1]).length} of ${cs.length}`;
+    return `<tr><td>${d}</td><td>${rank || "no row"}</td><td>${e ? share(d, e).replace(/^\S+ /, "") : "–"}</td><td>${share(d, cs[0])}</td><td>${share(d, cs[2])}</td></tr>`;
+  };
+  const GOAL = ["selfdestruct_created", "selfdestruct_initcode", "storage_access_cold_benchmark", "contract_calling_many_addresses", "ext_account_query_cold", "creates_reverting_initcode"];
+  const famRow = f => {
+    if (!nodebalFam) return "";
+    const { ho, fm, run } = nodebalFam, e = fm("test_" + f, "erigon"), [b, v] = ho.map(c => [c, fm("test_" + f, c)]).filter(x => x[1] > 0).sort((x, y) => y[1] - x[1])[0] || ["–", NaN];
+    return `<tr><td class="f">${f}</td><td>${fmt(e)}</td><td>${name(b)}${clientStale(run.versions[b])}</td><td>${fmt(v)}</td>${ratioCell(e / v)}</tr>`;
+  };
+  const wins = [...data.runs].reverse().find(r => r.wins), pr = n => `<a href="https://github.com/erigontech/erigon/pull/${n}">#${n}</a>`;
+  document.getElementById("goal").innerHTML = `<h3 style="margin:24px 0 6px;font-size:15px">Goal</h3>` +
+    (days.length ? `<p class="note" style="margin:0 0 4px"><b>Lab mainnet</b>: newPayload wins per day of the eip7870-block-builder reference nodes, ` +
+      `share of the day's wins (count). Bronze goal: 3rd place. Fetched ${short(lab[lab.length - 1].date)}${staleBadge(lab[lab.length - 1].date)}.</p>` +
+      `<div class="wrap"><table><thead><tr><th>day</th><th>erigon rank</th><th>erigon</th><th>leader</th><th>3rd place</th></tr></thead><tbody>${days.map(labRow).join("")}</tbody></table></div>` : "") +
+    (nodebalFam ? `<p class="note" style="margin:14px 0 4px"><b>BAL-on goal families</b>: geometric mean Mgas/s over the family's tests in the newPayload BAL-on family table, against the best other client there.</p>` +
+      buildTag(nodebalFam.run.versions.erigon, nodebalFam.run.date) +
+      `<div class="wrap"><table><thead><tr><th>family</th><th>erigon</th><th>best client</th><th>best</th><th>e/best</th></tr></thead><tbody>${GOAL.map(famRow).join("")}</tbody></table></div>` : "") +
+    (wins ? `<p class="note" style="margin:14px 0 4px"><b>Merged wins this week</b>: erigon PRs by AskAlexSharov merged in the 7 days before ${short(wins.date)}${staleBadge(wins.date)} ` +
+      `whose body has a perf table; the row is the first line with a signed % in the body's first code block, as written.</p>` +
+      (wins.wins.length ? `<div class="wrap"><table><thead><tr><th>PR</th><th>merged</th><th>title</th><th>headline row</th></tr></thead><tbody>` +
+        wins.wins.map(([n, at, t, row]) => `<tr><td>${pr(n)}</td><td>${short(at)}</td><td class="f s" title="${esc(t)}">${esc(t)}</td><td class="s" style="font-family:ui-monospace,monospace;font-size:12px;white-space:normal">${esc(row)}</td></tr>`).join("") +
+        "</tbody></table></div>" : `<p class="note">None.</p>`) : "");
+}
 
 // Worst families: each row's erigon against the best other client on the page, so a family cannot hide in a tier's mean.
 {

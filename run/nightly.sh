@@ -57,6 +57,9 @@ if [ -n "${CALLS_FROM:-}" ]; then
 	ls -1d "$HOME"/vm-bench-prof/*/ 2>/dev/null | sort | head -n -14 | xargs -r rm -rf || true # no profiles yet must not end the run
 	run/history.py
 fi
+# Goal section: Lab mainnet win rate (missing days only) and this week's merged wins; a failed fetch keeps the old data, selfcheck flags it.
+run/winrate.py || echo "Lab win rate: fetch failed"
+run/wins.py || echo "merged wins: fetch failed"
 # Loud staleness check: the verdict goes to nightly.log, ~/vm-bench-selfcheck.txt and the system journal; the page is
 # still published, then the run exits 1.
 sc=0

@@ -12,7 +12,8 @@ import sys
 root = pathlib.Path(__file__).resolve().parent.parent
 marker = pathlib.Path(os.environ.get("SELFCHECK_MARKER", pathlib.Path.home() / "vm-bench-selfcheck.txt"))
 sections = {"EEST blocks": "blocktest.csv", "EEST sub-tests": "subtests.csv", "newPayload BAL-off": "node.csv",
-            "newPayload BAL-on": "nodebal.csv", "eth_call": "calls.csv"}
+            "newPayload BAL-on": "nodebal.csv", "eth_call": "calls.csv",
+            "Goal: Lab win rate": "winrate.csv", "Goal: merged wins": "wins.csv"}
 paused_file = root / "run" / "paused-sections.txt"
 paused = paused_file.read_text().split("\n") if paused_file.exists() else []
 paused = [name for name in paused if name in sections]

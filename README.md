@@ -20,6 +20,10 @@ Each run writes one snapshot `history/<UTC time>/*.csv` (+ `versions.csv`); `run
 `docs/index.html`, the published page. Measure on a quiet Linux box, never a laptop, one run at a time under one lock
 (`BENCH_LOCK`).
 
+The Goal section at the top of the page is fetched, not measured: `run/winrate.py` (Lab mainnet newPayload wins per day,
+missing days only) and `run/wins.py` (merged erigon PRs with a perf table, last 7 days) write `winrate.csv` and `wins.csv`;
+the nightly runs both.
+
 ## State tests
 
 Real mainnet transactions as [EEST state tests](https://github.com/ethereum/execution-spec-tests), to compare EVM implementations on the same work.

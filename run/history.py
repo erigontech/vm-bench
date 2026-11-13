@@ -41,6 +41,9 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
             run["nodePass" if f.name == "pass.csv" else "nodebalPass"] = {client: float(r) for client, r in csv.reader(open(f)) if client not in hidden}
             continue
             continue
+        if f.name in ("winrate.csv", "wins.csv"):
+            run[f.stem] = list(csv.reader(open(f)))
+            continue
         if f.name == "callsneth.csv":
             for r in csv.reader(open(f)):
                 run[f.stem].setdefault(r[0], {})[r[1]] = dict(zip(("rps", "p50", "p99", "err", "gas"), map(float, r[2:])))
