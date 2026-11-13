@@ -1,0 +1,22 @@
+26104,2026-11-13T14:35:59Z,execution/exec: block warmup no longer re-reads keys the state cache holds,"ext_account_query_cold, absent accounts       -5.1%    ~9%"
+26098,2026-11-13T02:23:17Z,execution/types: decode the block access list into a presized list,"ext_account_query_cold, absent accounts   -10.0% (noise ~3-6%)"
+26088,2026-11-13T01:46:35Z,execution: a call that cannot pay its precompile does not wait on it,amount_1 rows (18)      -52.3%
+26080,2026-11-13T01:32:12Z,execution/stagedsync: a write the BAL holds leaves readers clean,creates_reverting 1KiB revert CREATE -16.8% (arms do not overlap)
+26232,2026-11-12T23:44:29Z,db/state: publish the exec-read latest view once per block,0-30 Mgas             -0.7% (noise ~0.6%)
+26182,2026-11-12T03:17:27Z,execution/state: size the BAL builder from the block access list,ext_account_query_cold absent_accounts_False   -14.3% (noise ~8%)
+26008,2026-11-12T02:17:17Z,execution/stagedsync: test resumed BAL blocks that have no sidecar,account_access BALANCE 24576 300M       -7.8% (noise ~8%; BAL check 70 ms -> 26 ms)
+26082,2026-11-11T10:03:03Z,execution/state: match the BAL sidecar without sorting the builder,SLOAD              -17.9% (noise ~8%)
+26041,2026-11-11T10:03:03Z,execution/state: take a slot's prev value from its write record,"sstore_dirty_transitions, mass_clear   -20.6% (95% interval -14% to -25%)"
+26060,2026-11-11T02:58:59Z,execution/stagedsync: copy the writes of a charged tx once,mean over 6 rows              -13.2% (rows -6.6%..-19.1%)
+26062,2026-11-11T00:21:19Z,execution/state: warm Empty and repeat absent reads use the read set,"ext_account_query_warm, absent target       -26.8% (noise ~13%)"
+26029,2026-11-10T19:36:31Z,execution/exec: the trie prefetch gate samples storage tries,"sstore_bloated 10GB, existing slots   -36.9% (noise ~3%)"
+26049,2026-11-10T18:12:25Z,go.mod: bump holiman/uint256 for faster Mod,"Mod, 64-256 bit divisor    -55% .. -63%"
+26039,2026-11-10T14:42:24Z,execution/state: Empty on an absent account only records the read,"ext_account_query_warm, EXTCODEHASH   -58.2% (noise ~8%)"
+26064,2026-11-10T14:39:02Z,execution/state: keep one BAL storage read entry per slot,SLOAD          -16.7%
+25877,2026-11-10T11:32:31Z,execution/state: no EIP-161 view for created-then-destructed accounts,selfdestruct_initcode    -3.9%  (noise ~1%)
+25982,2026-11-10T09:49:44Z,execution/state: NotifyAccumulator notifies each account once,distinct accounts   2.03 ms → 1.71 ms -16%  40.1k → 32.1k -20%    5.2 MB → 4.9 MB -6%
+25949,2026-11-09T22:54:54Z,db/state: slow-block log no longer times every file read,onchain_receivers 24 KB   -32.3%  (noise ~1%)
+25821,2026-11-09T21:38:13Z,execution/state: no tx dependency on a created-empty account removal,sha256_uncachable       -43.7%
+25886,2026-11-08T08:42:45Z,"common/dbg, cmd/utils: BAL batch prefetch on by default",onchain_receivers    -24.8% / -20.4%
+25864,2026-11-07T06:38:40Z,execution/state: keep ReadResult in registers on version-map reads,cc33e185-chi-mint           -8.8%  (noise ~3%)
+25801,2026-11-07T04:30:16Z,execution: fold only keys touched since the last step edge,ether_transfers              -19.6%  (noise ~1%)
