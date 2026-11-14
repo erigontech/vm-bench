@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Fails (exit 1) when an erigon section's newest history snapshot is older than 36 h, or another client's weekly
+"""Fails (exit 1) when an erigon section's newest history snapshot is older than 36 h, when the newest eth_call run has a
+row where erigon's gasUsed differs from reth's (the two nodes replayed different work), or another client's weekly
 "(measured <date>)" label on the page is older than 8 days, or a client failed a node-tier smoke test (SMOKE_FAIL in
 $SMOKE_REPORT, default ~/vm-bench-weekly.txt); writes the verdict to the marker file. A section listed in
 run/paused-sections.txt is reported as PAUSED instead of being checked."""
+import csv
 import datetime
 import os
 import pathlib
@@ -29,6 +31,17 @@ for name, f in sections.items():
     t = datetime.datetime.strptime(dirs[-1][:15], "%Y-%m-%dT%H%M").replace(tzinfo=datetime.timezone.utc)
     if now - t > datetime.timedelta(hours=36):
         stale.append(f"{name}: {dirs[-1]} ({(now - t).total_seconds() / 3600:.0f} h)")
+calls = sorted(d for d in (root / "history").iterdir() if (d / "calls.csv").exists())
+if calls and "eth_call" not in paused:
+    gas = {}
+    for r in csv.reader(open(calls[-1] / "calls.csv")):
+        if len(r) > 7 and r[7]:
+            gas.setdefault(r[0], {})["erigon" if r[1].startswith("erigon") else r[1].split("-")[0]] = int(r[7])
+    both = [(f, g["erigon"], g["reth"]) for f, g in gas.items() if "erigon" in g and "reth" in g]
+    bad = [b for b in both if b[1] != b[2]]
+    if bad:
+        stale.append(f"eth_call: erigon gas differs from reth in {len(bad)} of {len(both)} rows of {calls[-1].name} "
+                     f"(e.g. {bad[0][0].split('/')[-1]}: {bad[0][1]} vs {bad[0][2]})")
 page = root / "docs" / "index.html"
 for d in sorted(set(re.findall(r"\(measured (\d{4}-\d\d-\d\d)\)", page.read_text() if page.exists() else ""))):
     days = (now.date() - datetime.date.fromisoformat(d)).days
