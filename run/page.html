@@ -567,37 +567,42 @@ if (callRuns.length) {
   // tables = dbg: the latest dbg run unless a later day has a main run; the change column compares with main
   const last = callRuns[callRuns.length - 1], lastDbg = callRuns.filter(isDbg).pop();
   const cr = lastDbg && lastDbg.date.slice(0, 10) >= last.date.slice(0, 10) ? lastDbg : last;
-  const prev = callRuns.filter(r => r !== cr && !isDbg(r) && (isDbg(cr) || r.date < cr.date)).pop();
-  const [ec] = pick(Object.values(cr.calls)[0], "erigon"), [rc] = pick(Object.values(cr.calls)[0], "reth"), pc = prev && erigonOf(prev);
+  const [ec] = pick(Object.values(cr.calls)[0], "erigon"), [rc] = pick(Object.values(cr.calls)[0], "reth");
   // Nethermind runs with erigon main only; its columns come from the newest main run that has it.
   const hasNeth = r => Object.values(r.calls).some(v => pick(v, "nethermind")[0]), nr = callRuns.filter(hasNeth).pop();
   const [nn0] = nr ? pick(Object.values(nr.calls).find(v => pick(v, "nethermind")[0]), "nethermind") : [];
-  const chHead = isDbg(cr) ? "dbg/main" : "vs prev main";
   // exec time comes from a CPU profile of erigon main only; a dbg run has none, so take the newest run that has it.
   const execRun = callRuns.filter(r => Object.values(r.calls).some(v => pick(v, "erigon")[1]?.exec)).pop();
   document.getElementById("calls-note").innerHTML = buildTag(ec, cr.date, "eth_call per transaction") + "<p>" + esc(`Against reth ${(rc || "").replace(/^reth-/, "")} in the same run. ` +
-    (nr ? `neth = ${(nn0 || "").replace(/^nethermind-/, "Nethermind ")}, measured ${short(nr.date)}, in the erigon main run of that night; it keeps only the latest state, so its rows run at latest; e/n compares gas per second, erigon main against neth. ` : "") +
-    `One mainnet transaction per row, replayed as eth_call at its own block, 16 connections; "at latest" = the block is older than the state the node keeps; a row without numbers is a call that fails on this node; ` +
+    (nr ? `neth = ${(nn0 || "").replace(/^nethermind-/, "Nethermind ")}, measured ${short(nr.date)}, in the erigon main run of that night; it keeps only the latest state, so its rows run at latest; e/n = erigon rps / neth rps of that run. ` : "") +
+    `e/r and e/n divide only runs that executed the same gas; "–" = the clients ran different work (at latest their states can differ). One mainnet transaction per row, replayed as eth_call at its own block, 16 connections; "at latest" = the block is older than the state the node keeps; a row without numbers is a call that fails on this node; ` +
     `erigon and reth Mgas/s = the call's gas x rps, the gas served per second at 16 connections; ` +
     `exec Mgas/s = gas / exec time and overhead = CPU per call outside exec, from a 15 s CPU profile of erigon main while it serves the row at 16 connections: exec = CPU under protocol.ApplyMessage (EVM and state), overhead = every other CPU (RPC decoding and encoding, HTTP, header and state setup, state reset, GC), both divided by the calls served in the profile; goals: exec 1 Ggas/s, overhead 20 µs, red cells miss them; µs over goal = exec time above 1 Ggas/s plus overhead above 20 µs.`) + "</p>" +
     (execRun && execRun !== cr ? `<p>exec Mgas/s, overhead and µs over goal: ${esc(buildName(erigonOf(execRun)))}, measured ${short(execRun.date)}; the run above has no CPU profile.</p>` : "") +
     ((data.paused || []).includes("eth_call") ? `<p><b>Paused</b> while its bench box is lent: these are the last measured values.</p>` : "") +
-    (pc ? `<p>${chHead} = erigon rps against ${esc(buildName(pc))}, measured ${short(prev.date)}.</p>` : "") +
     "";
+  // e/r and e/n divide erigon by the other client only when both executed the same gas; at latest the two nodes can
+  // hold different states, and the same call then does different work.
+  const sameWork = (a, b, g) => a?.rps && b?.rps && (a.gas ?? g) === (b.gas ?? g) ? a.rps / b.rps : NaN;
+  console.assert(isNaN(sameWork({ rps: 1, gas: 21528 }, { rps: 1, gas: 21057725 })) && sameWork({ rps: 4, gas: 5 }, { rps: 2, gas: 5 }) === 2, "eth_call ratio self-check");
   const rows = Object.keys(cr.calls).map(f => {
-    const [, e] = pick(cr.calls[f], "erigon"), [, r] = pick(cr.calls[f], "reth"), [, p] = pick(prev?.calls[f], "erigon");
+    const [, e] = pick(cr.calls[f], "erigon"), [, r] = pick(cr.calls[f], "reth");
     const [, nn] = pick(nr?.calls[f], "nethermind"), [, ne] = pick(nr?.calls[f], "erigon");
     const x = e?.exec ? e : pick(execRun?.calls[f], "erigon")[1], g = e?.gas ?? data.callGas[f];
-    return { f, latest: e?.at === "latest", e: e?.rps, em: e?.rps && g ? e.rps * g / 1e6 : NaN, rm: r?.rps && g ? r.rps * (r.gas ?? g) / 1e6 : NaN, xm: x?.exec && x.gas ? x.gas / x.exec : NaN, ov: x?.over ?? NaN, og: x?.exec && x.gas ? Math.max(0, x.exec - x.gas / 1000) + Math.max(0, x.over - 20) : NaN, r: r?.rps, n: nn?.rps, en: ne && nn && ne.gas && nn.gas ? (ne.rps * ne.gas) / (nn.rps * nn.gas) : NaN, ch: e && p ? e.rps / p.rps : NaN };
+    return { f, latest: e?.at === "latest", e: e?.rps, em: e?.rps && g ? e.rps * g / 1e6 : NaN, rm: r?.rps && g ? r.rps * (r.gas ?? g) / 1e6 : NaN, xm: x?.exec && x.gas ? x.gas / x.exec : NaN, ov: x?.over ?? NaN, og: x?.exec && x.gas ? Math.max(0, x.exec - x.gas / 1000) + Math.max(0, x.over - 20) : NaN, r: r?.rps, n: nn?.rps, er: sameWork(e, r, g), en: sameWork(ne, nn, g) };
   });
-  const chCell = k => { if (isNaN(k)) return `<td class="gas">–</td>`; const s = (100 * (k - 1)).toFixed(1).replace(/^-0\.0$/, "0.0"); return `<td class="${k > 1.03 ? "up" : k < 0.97 ? "down" : ""}">${s.startsWith("-") ? s : "+" + s}%</td>`; };
-  const tot = { e: geomean(rows.map(x => x.e)), em: geomean(rows.map(x => x.em)), rm: geomean(rows.map(x => x.rm)), xm: geomean(rows.map(x => x.xm)), ov: geomean(rows.map(x => x.ov)), n: geomean(rows.map(x => x.n)), en: geomean(rows.map(x => x.en)), r: geomean(rows.map(x => x.r)), ch: geomean(rows.map(x => x.ch)) };
+  // An erigon row that executed under half the transaction's gas did not replay it (for example a state where the call
+  // does nothing), so its rps is not comparable; flag the run when that holds for most rows.
+  const short_ = rows.filter(x => { const e = pick(cr.calls[x.f], "erigon")[1], g = data.callGas[x.f]; return e?.gas && g && e.gas < g / 2; });
+  if (short_.length * 2 > rows.length) document.getElementById("calls-note").innerHTML += `<p><b class="old">Not valid: in ${short_.length} of ${rows.length} rows erigon executed under half the transaction's gas (e.g. ${esc(short_[0].f.split("/").pop())}: ${pick(cr.calls[short_[0].f], "erigon")[1].gas} of ${data.callGas[short_[0].f]}), so its node did not replay these transactions; its rps and Mgas/s are not comparable.</b></p>`;
+  const unit = (v, d, u) => isNaN(v) ? "–" : `${fmt(v, d)} ${u}`, dash = `<td class="gas" title="different work: the clients executed different gas">–</td>`;
+  const tot = { e: geomean(rows.map(x => x.e)), em: geomean(rows.map(x => x.em)), rm: geomean(rows.map(x => x.rm)), xm: geomean(rows.map(x => x.xm)), ov: geomean(rows.map(x => x.ov)), n: geomean(rows.map(x => x.n)), er: geomean(rows.map(x => x.er)), en: geomean(rows.map(x => x.en)), r: geomean(rows.map(x => x.r)) };
   const byF = Object.fromEntries(rows.map(x => [x.f, x])), oldest = Math.min(...rows.map(x => data.callFixtures[x.f]));
-  document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>erigon Mgas/s</th><th>exec Mgas/s</th><th>overhead µs</th><th>µs over goal</th><th>reth rps</th><th>reth Mgas/s</th><th>e/r</th>${nr ? "<th>neth rps</th><th>e/n</th>" : ""}<th>${chHead}</th></tr></thead><tbody>` +
+  document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>erigon Mgas/s</th><th>exec (Mgas/s)</th><th>overhead (µs)</th><th>over goal (µs)</th><th>reth rps</th><th>reth Mgas/s</th><th>e/r</th>${nr ? "<th>neth rps</th><th>e/n</th>" : ""}</tr></thead><tbody>` +
     Object.keys({ ...data.callFixtures, ...cr.calls }).sort((a, b) => a.localeCompare(b, "en", { numeric: true })).map(f => { const x = byF[f];
-      return x ? `<tr><td class="f" title="${x.f}">${x.f}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.em, 0)}</td><td class="${x.xm < 1000 ? "down" : ""}">${fmt(x.xm, 0)}</td><td class="${x.ov > 20 ? "down" : ""}">${fmt(x.ov, 0)}</td><td>${fmt(x.og, 0)}</td><td>${fmt(x.r, 0)}</td><td>${fmt(x.rm, 0)}</td>${ratioCell(x.e / x.r)}${nr ? `<td>${fmt(x.n, 0)}</td>${isNaN(x.en) ? `<td class="gas">–</td>` : ratioCell(x.en)}` : ""}${chCell(x.ch)}</tr>`
-        : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="${nr ? 11 : 9}">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
-    `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.em, 0)}</b></td><td><b>${fmt(tot.xm, 0)}</b></td><td><b>${fmt(tot.ov, 0)}</b></td><td></td><td><b>${fmt(tot.r, 0)}</b></td><td><b>${fmt(tot.rm, 0)}</b></td>${ratioCell(tot.e / tot.r)}${nr ? `<td><b>${fmt(tot.n, 0)}</b></td>${isNaN(tot.en) ? "<td></td>" : ratioCell(tot.en)}` : ""}${chCell(tot.ch)}</tr></tbody></table></div>`;
+      return x ? `<tr><td class="f" title="${x.f}">${x.f}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.em, 0)}</td><td class="${x.xm < 1000 ? "down" : ""}">${unit(x.xm, 0, "Mgas/s")}</td><td class="${x.ov > 20 ? "down" : ""}">${unit(x.ov, 0, "µs")}</td><td>${unit(x.og, 0, "µs")}</td><td>${fmt(x.r, 0)}</td><td>${fmt(x.rm, 0)}</td>${isNaN(x.er) ? (x.r ? dash : `<td class="gas">–</td>`) : ratioCell(x.er)}${nr ? `<td>${fmt(x.n, 0)}</td>${isNaN(x.en) ? (x.n ? dash : `<td class="gas">–</td>`) : ratioCell(x.en)}` : ""}</tr>`
+        : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="${nr ? 10 : 8}">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
+    `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.em, 0)}</b></td><td><b>${unit(tot.xm, 0, "Mgas/s")}</b></td><td><b>${unit(tot.ov, 0, "µs")}</b></td><td></td><td><b>${fmt(tot.r, 0)}</b></td><td><b>${fmt(tot.rm, 0)}</b></td>${isNaN(tot.er) ? "<td></td>" : ratioCell(tot.er)}${nr ? `<td><b>${fmt(tot.n, 0)}</b></td>${isNaN(tot.en) ? "<td></td>" : ratioCell(tot.en)}` : ""}</tr></tbody></table></div>`;
 }
 
 // Status: the build and date each section shows, in page order, and what failed in the run behind the EVM blocks tables.
