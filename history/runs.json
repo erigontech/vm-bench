@@ -2064,5 +2064,46 @@
       "node x0.98: the 11-11 wins given back (codesize x0.81, shifts x0.87, calldatasize x0.88, call_frame_context_ops x0.89, returndatasize_nonzero x0.90, dup x0.91, swap x0.93), about flat vs 11-10. node tload x0.79 (4, x0.87 vs 11-10), alt_bn128_benchmark x0.89 (5, num_pairs_6 halved), bls12_g1_msm x0.89 (4): one night, unconfirmed",
       "BAL-on x1.00: the same 11-11 wins given back (calldatasize x0.87, call_frame_context_ops x0.88, returndatasize_nonzero x0.90, dup x0.90, swap x0.91); shifts_beyond_word_size x0.97 after x0.94 (8), x0.94 vs its 11-06..11-10 range, second night down: 11-11 PRs, not bisected. jumpdests x0.82 (1), clz_diff x0.83 (1), blobhash x0.86 (2): unconfirmed; block_full_data x0.81 (2) GC-noisy, under the 30% rule"
     ]
+  },
+  {
+    "date": "2026-11-13",
+    "old": "d615f2a61029d119de7127673138ce2d05c07e66",
+    "new": "d5f161f4be0ca9481598f87c5dca79b69e489afd",
+    "evm": {
+      "mgas": 1163.7,
+      "ratio": 0.815,
+      "best": "nethermind",
+      "valid": 50,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10274.2,
+      "ratio": 1.189,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 10041.2,
+      "ratio": 0.795,
+      "best": "nethermind",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-13 d5f161f4be; (*EVM).run at offset 32 as on 11-12; EVM x0.98 only because tstore went grey (51 to 50 valid), x1.00 on the same 50 files; erigon/neth x0.84 to x0.82 with erigon flat; no failed rows",
+    "shipped": [
+      "#26088 a call that cannot pay its precompile does not wait on it; #26104 block warmup no longer re-reads keys the state cache holds; #26098 decode the BAL into a presized list; #26080 a write the BAL holds leaves readers clean; #26153 depend on an in-flight destruct on a committed read; #26242 flush buffered writes in write order; the rest is CL, txpool, tests and cleanups (#25925, #26067, #26109, #26107)"
+    ],
+    "better": [
+      "node x1.00: ether_transfers_to_precompile x1.34 (36): #26088. alt_bn128_benchmark x1.22 (5) and tload x1.10 (4) win back their 11-12 losses; EVM iszero x1.05 (1), no other EVM file past 3%",
+      "BAL-on x1.01: alt_bn128 x1.13 (22), contract_calling_many_addresses x1.11 (8), ext_account_query_cold x1.10 (2), storage_access_cold x1.07 (14): likely #26104/#26098/#26080, one night, unconfirmed; shifts_beyond_word_size x1.09 (8) ends its two-night drop; block_full_data x1.22 (2) GC-noisy"
+    ],
+    "worse": [
+      "node p256verify x0.91 (3), second night down past 5% (x0.94 on 11-12, x0.82 vs 11-10), still inside its 11-06..11-10 range: not bisected. node storage_access_cold_benchmark x0.89 (3), storage_access_warm_benchmark x0.91 (3), point_evaluation x0.89 (1), bls12_381 x0.91 (7), calldataload x0.92 (8): one night, unconfirmed; create x0.94 (20) and extcodecopy_warm x0.91 (5) give back 11-12",
+      "BAL-on alt_bn128_benchmark x0.86 (5), bls12_381 x0.90 (5), comparison x0.92 (5): one night, unconfirmed; create x0.93 (20) gives back its two-night gain"
+    ]
   }
 ]
