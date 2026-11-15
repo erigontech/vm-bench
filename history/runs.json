@@ -2105,5 +2105,46 @@
       "node p256verify x0.91 (3), second night down past 5% (x0.94 on 11-12, x0.82 vs 11-10), still inside its 11-06..11-10 range: not bisected. node storage_access_cold_benchmark x0.89 (3), storage_access_warm_benchmark x0.91 (3), point_evaluation x0.89 (1), bls12_381 x0.91 (7), calldataload x0.92 (8): one night, unconfirmed; create x0.94 (20) and extcodecopy_warm x0.91 (5) give back 11-12",
       "BAL-on alt_bn128_benchmark x0.86 (5), bls12_381 x0.90 (5), comparison x0.92 (5): one night, unconfirmed; create x0.93 (20) gives back its two-night gain"
     ]
+  },
+  {
+    "date": "2026-11-14",
+    "old": "d5f161f4be0ca9481598f87c5dca79b69e489afd",
+    "new": "d20da4d8e92cfa4e5ddffbce528d142c251a9123",
+    "evm": {
+      "mgas": 1124.9,
+      "ratio": 0.812,
+      "best": "nethermind",
+      "valid": 50,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10450.9,
+      "ratio": 1.209,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 10071.0,
+      "ratio": 0.797,
+      "best": "nethermind",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-14 d20da4d8e9; (*EVM).run back at offset 0 (32 on 11-10..11-13), so EVM x0.97 is code layout: the layout-sensitive files fall (codesize, shifts x0.82, call_frame_context_ops x0.85), the other 27 files x1.01; no failed rows",
+    "shipped": [
+      "#26239 remove the serial executor; #26154 skip validating quiet base reads of account paths; #26101 skip storage-read checks for BAL-unchanged accounts; #26248 one cheaper rlp header path; #26244 BAL decode allocates once per kind; #26217/#26269 BAL warmup skips code-hash seeds; #26009, #26019 state fixes; #25299 payload header check before sender recovery; the rest is CL, CI, RPC and cleanups (#25846, #26050, #26197, #26310)"
+    ],
+    "better": [
+      "node x1.02: ext_account_query_cold x1.40 (2), contract_calling_many_addresses x1.15 (8), selfdestruct_existing x1.14 (2), storage_access_cold x1.11 (14), modexp x1.06 (89): likely #26154/#26101, one night, unconfirmed. p256verify x1.15 (3), storage_access_cold_benchmark x1.17 (3), calldataload x1.10 (8), bls12_381 x1.08 (7) win back 11-13, so the p256verify drop was noise",
+      "BAL-on x1.00: alt_bn128_benchmark x1.22 (5), ext_account_query_cold x1.21 (2), creates_reverting_initcode x1.16 (6), deploy_then_interact x1.10 (5), storage_access_cold x1.09 (14), state_root_computation x1.08 (6): likely #26101/#26154, one night, unconfirmed; block_full_data x1.23 (2) GC-noisy"
+    ],
+    "worse": [
+      "BAL-on alt_bn128_uncachable x0.93 (3), second night down past 5% (x0.92 on 11-13, x0.85 vs 11-12), now below its 11-06..11-13 range: not bisected, no precompile change merged",
+      "BAL-on p256verify x0.77 (3), tstore x0.80 (4), pc_op x0.85 (1), callvalue_from_origin x0.87 (2), prefetch_cold_storage x0.87 (1): one night, unconfirmed; node modexp_uncachable x0.83 (3), identity x0.87 (1): one night, unconfirmed"
+    ]
   }
 ]
