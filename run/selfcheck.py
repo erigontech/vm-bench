@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Fails (exit 1) when an erigon section's newest history snapshot is older than 36 h, when the newest eth_call run has a
-row where erigon's gasUsed differs from reth's (the two nodes replayed different work), or another client's weekly
+row both clients ran at the fixture's block where erigon's gasUsed differs from reth's, or another client's weekly
 "(measured <date>)" label on the page is older than 8 days, or a client failed a node-tier smoke test (SMOKE_FAIL in
 $SMOKE_REPORT, default ~/vm-bench-weekly.txt); writes the verdict to the marker file. A section listed in
 run/paused-sections.txt is reported as PAUSED instead of being checked."""
@@ -35,7 +35,8 @@ calls = sorted(d for d in (root / "history").iterdir() if (d / "calls.csv").exis
 if calls and "eth_call" not in paused:
     gas = {}
     for r in csv.reader(open(calls[-1] / "calls.csv")):
-        if len(r) > 7 and r[7]:
+        # Only calls at the fixture's block run the same work; a "latest" call sees each node's own head.
+        if len(r) > 7 and r[7] and r[6] == "block":
             gas.setdefault(r[0], {})["erigon" if r[1].startswith("erigon") else r[1].split("-")[0]] = int(r[7])
     both = [(f, g["erigon"], g["reth"]) for f, g in gas.items() if "erigon" in g and "reth" in g]
     bad = [b for b in both if b[1] != b[2]]
