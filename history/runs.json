@@ -1,2150 +1,2174 @@
 [
-  {
-    "date": "2026-10-01",
-    "old": null,
-    "new": "6bfdad5404e129c5d757103d720152f2d8e33a3d",
-    "evm": {
-      "mgas": 784.9,
-      "ratio": 0.445,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1355.3,
-      "ratio": 0.338,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 2776.8,
-      "ratio": 0.52,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+ {
+  "date": "2026-10-01",
+  "old": null,
+  "new": "6bfdad5404e129c5d757103d720152f2d8e33a3d",
+  "evm": {
+   "mgas": 784.9,
+   "ratio": 0.445,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-02",
-    "old": "6bfdad5404e129c5d757103d720152f2d8e33a3d",
-    "new": "301ffbc21685c583f526335d0ac53666a2364624",
-    "evm": {
-      "mgas": 760.7,
-      "ratio": 0.431,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1370.0,
-      "ratio": 0.343,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 2770.0,
-      "ratio": 0.518,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; EVM x0.97 vs 6bfdad5404 (10-01)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "node": {
+   "mgas": 1355.3,
+   "ratio": 0.338,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-03",
-    "old": "301ffbc21685c583f526335d0ac53666a2364624",
-    "new": "e393829ca9748bda6196f1f36839888d4715b90c",
-    "evm": {
-      "mgas": 763.0,
-      "ratio": 0.432,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1360.5,
-      "ratio": 0.34,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 2786.0,
-      "ratio": 0.521,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "nodebal": {
+   "mgas": 2776.8,
+   "ratio": 0.52,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-10-04",
-    "old": "e393829ca9748bda6196f1f36839888d4715b90c",
-    "new": "5cb6c8674de8ff3967d36356cfdcd0f0b88e31ce",
-    "evm": {
-      "mgas": 746.1,
-      "ratio": 0.423,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1374.9,
-      "ratio": 0.344,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 2768.8,
-      "ratio": 0.517,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; EVM x0.98, BAL-on x0.99 vs e393829ca9 (10-03)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "note": "backfill",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-02",
+  "old": "6bfdad5404e129c5d757103d720152f2d8e33a3d",
+  "new": "301ffbc21685c583f526335d0ac53666a2364624",
+  "evm": {
+   "mgas": 760.7,
+   "ratio": 0.431,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-05",
-    "old": "5cb6c8674de8ff3967d36356cfdcd0f0b88e31ce",
-    "new": "96188a47395eb2a1f95e49d2c939f08fa15d66c7",
-    "evm": {
-      "mgas": 1033.0,
-      "ratio": 0.585,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1759.0,
-      "ratio": 0.452,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3473.4,
-      "ratio": 0.657,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; EVM x1.38, node x1.28, BAL-on x1.25 vs 5cb6c8674d (10-04)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "node": {
+   "mgas": 1370.0,
+   "ratio": 0.343,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-06",
-    "old": "96188a47395eb2a1f95e49d2c939f08fa15d66c7",
-    "new": "be875431395319db5d5e3260a876f5cd403c7976",
-    "evm": {
-      "mgas": 1014.4,
-      "ratio": 0.575,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1802.3,
-      "ratio": 0.466,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3567.6,
-      "ratio": 0.679,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; EVM x0.98, node x1.02, BAL-on x1.03 vs 96188a4739 (10-05)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "nodebal": {
+   "mgas": 2770.0,
+   "ratio": 0.518,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-10-07",
-    "old": "be875431395319db5d5e3260a876f5cd403c7976",
-    "new": "1b2ae29a8cafbbc82587c7d02ae996b917c4ab58",
-    "evm": {
-      "mgas": 1015.6,
-      "ratio": 0.575,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1788.2,
-      "ratio": 0.462,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3527.8,
-      "ratio": 0.671,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; BAL-on x0.99 vs be87543139 (10-06)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "note": "backfill; EVM x0.97 vs 6bfdad5404 (10-01)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-03",
+  "old": "301ffbc21685c583f526335d0ac53666a2364624",
+  "new": "e393829ca9748bda6196f1f36839888d4715b90c",
+  "evm": {
+   "mgas": 763.0,
+   "ratio": 0.432,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-08",
-    "old": "1b2ae29a8cafbbc82587c7d02ae996b917c4ab58",
-    "new": "5b3fc33321c6c0156840a0adb08930c3f8a71c0f",
-    "evm": {
-      "mgas": 1017.3,
-      "ratio": 0.576,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1798.2,
-      "ratio": 0.464,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3559.2,
-      "ratio": 0.678,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; BAL-on x1.01 vs 1b2ae29a8c (10-07)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "node": {
+   "mgas": 1360.5,
+   "ratio": 0.34,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-09",
-    "old": "5b3fc33321c6c0156840a0adb08930c3f8a71c0f",
-    "new": "97f059e62572a7076b688880576273111c4b6e08",
-    "evm": {
-      "mgas": 1055.5,
-      "ratio": 0.598,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1827.2,
-      "ratio": 0.474,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3627.0,
-      "ratio": 0.693,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; EVM x1.04, BAL-on x1.02 vs 5b3fc33321 (10-08)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "nodebal": {
+   "mgas": 2786.0,
+   "ratio": 0.521,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-10-10",
-    "old": "97f059e62572a7076b688880576273111c4b6e08",
-    "new": "e1c10eeda75220bb6f95b8761678f766eb887628",
-    "evm": {
-      "mgas": 1054.6,
-      "ratio": 0.597,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1822.7,
-      "ratio": 0.472,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3627.4,
-      "ratio": 0.694,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "note": "backfill",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-04",
+  "old": "e393829ca9748bda6196f1f36839888d4715b90c",
+  "new": "5cb6c8674de8ff3967d36356cfdcd0f0b88e31ce",
+  "evm": {
+   "mgas": 746.1,
+   "ratio": 0.423,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-11",
-    "old": "e1c10eeda75220bb6f95b8761678f766eb887628",
-    "new": "1d3ebbf217f6b4f99028cd590889a5c9f3aaa969",
-    "evm": {
-      "mgas": 1057.3,
-      "ratio": 0.599,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1837.0,
-      "ratio": 0.477,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3647.0,
-      "ratio": 0.697,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "node": {
+   "mgas": 1374.9,
+   "ratio": 0.344,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-12",
-    "old": "1d3ebbf217f6b4f99028cd590889a5c9f3aaa969",
-    "new": "010665de0a1b656cddef4f31655b568d58160814",
-    "evm": {
-      "mgas": 1063.3,
-      "ratio": 0.602,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1805.3,
-      "ratio": 0.467,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3589.8,
-      "ratio": 0.683,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; BAL-on x0.98 vs 1d3ebbf217 (10-11)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "nodebal": {
+   "mgas": 2768.8,
+   "ratio": 0.517,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-10-13",
-    "old": "010665de0a1b656cddef4f31655b568d58160814",
-    "new": "02be1a7893e87cf3ec748aeb45796345ba48457f",
-    "evm": {
-      "mgas": 986.8,
-      "ratio": 0.559,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1836.8,
-      "ratio": 0.478,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3670.2,
-      "ratio": 0.702,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; EVM x0.93, BAL-on x1.02 vs 010665de0a (10-12)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "note": "backfill; EVM x0.98, BAL-on x0.99 vs e393829ca9 (10-03)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-05",
+  "old": "5cb6c8674de8ff3967d36356cfdcd0f0b88e31ce",
+  "new": "96188a47395eb2a1f95e49d2c939f08fa15d66c7",
+  "evm": {
+   "mgas": 1033.0,
+   "ratio": 0.585,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-14",
-    "old": "02be1a7893e87cf3ec748aeb45796345ba48457f",
-    "new": "362e903341f1bd32f4bbbc5150e716808d93393e",
-    "evm": {
-      "mgas": 1006.7,
-      "ratio": 0.57,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1855.7,
-      "ratio": 0.483,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3711.2,
-      "ratio": 0.712,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; EVM x1.02, BAL-on x1.01 vs 02be1a7893 (10-13)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "node": {
+   "mgas": 1759.0,
+   "ratio": 0.452,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-15",
-    "old": "362e903341f1bd32f4bbbc5150e716808d93393e",
-    "new": "7af7e8747f8e1993298e7b5e1be27f4ce4a05980",
-    "evm": {
-      "mgas": 1050.2,
-      "ratio": 0.595,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1837.6,
-      "ratio": 0.478,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3688.5,
-      "ratio": 0.71,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; EVM x1.04, BAL-on x0.99 vs 362e903341 (10-14)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "nodebal": {
+   "mgas": 3473.4,
+   "ratio": 0.657,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-10-16",
-    "old": null,
-    "new": "670e20e109af4f66528c05661d6c446d4551aeee",
-    "evm": {
-      "mgas": 1082.2,
-      "ratio": 0.632,
-      "best": "nethermind",
-      "noise": 0.7,
-      "fixtures": "benchmark@v0.0.7"
-    },
-    "node": {
-      "mgas": 1844.6,
-      "ratio": 0.713,
-      "best": "reth",
-      "noise": 1.0,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "rpc": {
-      "main": "39cd621455a4b69c9e9f2474e2726f8e7b5b7a29",
-      "noise": 3,
-      "knee": {
-        "qa-mixed": 3000,
-        "qa-getlogs": 5000,
-        "call-mix-33": 1000,
-        "block-receipts": 1000,
-        "getlogs-1block": 3000,
-        "trace-block-33": 200,
-        "trace-tx-33": 200
-      }
-    },
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "note": "backfill; EVM x1.38, node x1.28, BAL-on x1.25 vs 5cb6c8674d (10-04)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-06",
+  "old": "96188a47395eb2a1f95e49d2c939f08fa15d66c7",
+  "new": "be875431395319db5d5e3260a876f5cd403c7976",
+  "evm": {
+   "mgas": 1014.4,
+   "ratio": 0.575,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-17",
-    "old": "670e20e109af4f66528c05661d6c446d4551aeee",
-    "new": "6540ff4718d3d7285a76fed017c092d581c19e98",
-    "evm": {
-      "mgas": 1086.6,
-      "ratio": 0.634,
-      "best": "nethermind",
-      "noise": 0.7,
-      "fixtures": "benchmark@v0.0.7"
-    },
-    "node": {
-      "mgas": 1803.9,
-      "ratio": 0.694,
-      "best": "reth",
-      "noise": 1.0,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "rpc": {
-      "main": "6540ff4718d3d7285a76fed017c092d581c19e98",
-      "noise": 3,
-      "knee": {
-        "qa-mixed": 3000,
-        "qa-getlogs": 5000,
-        "call-mix-33": 1000,
-        "block-receipts": 1000,
-        "getlogs-1block": 3000,
-        "trace-block-33": 50,
-        "trace-tx-33": 200
-      }
-    },
-    "better": [
-      "node return_revert 1 MiB RETURN 5198 -> 22019 Mgas/s (+324%)",
-      "node ether_transfers diff_acc_to_b, empty account 49 -> 148 Mgas/s (+203%)",
-      "RPC getlogs-1block p99 at 3000 rps 64 -> 46 ms (-28%)",
-      "EVM instruction/bitwise 1875 -> 1932 Mgas/s (+3.1%)",
-      "EVM instruction/storage_access_cold_benchmark 2721 -> 2784 Mgas/s (+2.3%)"
-    ],
-    "worse": [
-      "RPC trace-block-33 knee 200 -> 50 rps; p99 at 10 rps 87 -> 101 ms (+16%)",
-      "RPC qa-mixed p99 at 1000 rps 49 -> 61 ms (+24%)",
-      "node ether_transfers a_to_a, empty account 5385 -> 2846 Mgas/s (-47%)",
-      "node shifts 674 -> 542 Mgas/s (-20%), jumpdests 852 -> 744 (-13%), create 33828 -> 30006 (-11%)",
-      "node suite 1844.6 -> 1803.9 Mgas/s (-2.2%), in compute loops; the EVM tier on the same code is flat, code layout suspected",
-      "RPC block-receipts p99 at 300 rps 9.3 -> 9.8 ms (+4%)",
-      "EVM instruction/comparison 1729 -> 1697 Mgas/s (-1.8%)"
-    ],
-    "bottlenecks": [
-      "node tload, fresh keys: 359 vs reth 15757 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)",
-      "node ether_transfers diff_acc_to_b, empty account: 41 vs nethermind 1752 (x0.02), #24976; top frame runtime.cgocall 12.1% (secp256k1 recover), then the validation loop",
-      "node ether_transfers diff_acc_to_b, non-empty account: 72 vs reth 1543 (x0.05), #24976; same path",
-      "node ether_transfers diff_acc_to_b, delegated account: 114 vs reth 1402 (x0.08), #24976; same path",
-      "node EXP: 1124 vs nethermind 13230 (x0.08), no PR; top frame runtime.cgocall 6.1% (MDBX put), uint256.(*Int).Mul 4.6%"
-    ],
-    "shipped": [
-      "#24957 execution/state: setCreatedCode reads the created account's code writes once: tx time -5.7%",
-      "#24963 node: buffer gzip output before the response writer: qa-getlogs CPU per request -11.3% at 3000 rps",
-      "#24914 go.mod: otter main, with the in-place replacement of a live key: exec cold-account family -1.4%",
-      "#24920 rpc: the replay methods use eth_call's state path: debug_traceBlockByNumber 252 -> 221 rps",
-      "#24916 rpc: eth_estimateGas, eth_createAccessList and debug_traceCall run on the versioned state path: eth_estimateGas 964 -> 908 rps",
-      "#24915 execution: benchmarks run on the versioned noMaterialize state, as eth_call does",
-      "#24892 cl: close the persistent block collector when the stage loop exits",
-      "#24891 cl/beacon/handler: proposer_lookahead reads epoch data by slot"
-    ]
+  "node": {
+   "mgas": 1802.3,
+   "ratio": 0.466,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-17",
-    "old": "6540ff4718d3d7285a76fed017c092d581c19e98",
-    "new": "df6a0a67cdcb4f2bd509bdb4f1d5a8ff1849ad14",
-    "evm": {
-      "mgas": 1016.2,
-      "ratio": 0.528,
-      "best": "nethermind",
-      "noise": 0.7,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1848.8,
-      "ratio": 0.699,
-      "best": "reth",
-      "noise": 1.0,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "better": [],
-    "worse": [],
-    "bottlenecks": [
-      "node ether_transfers diff_acc_to_b, amount 1 (4 rows): 34-54 vs nethermind 1603-1854 (x0.02-0.03), #24976; top frame runtime.cgocall 12.1% (secp256k1 recover), then the validation loop",
-      "node tload, fresh keys: 360 vs reth 15237 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)",
-      "EVM instruction/storage_access_cold: 2389 vs revme 45916 (x0.05), no PR, not profiled yet",
-      "EVM instruction/calldatacopy_from_origin: 731 vs nethermind 9600 (x0.08), no PR, not profiled yet",
-      "EVM instruction/ext_account_query_cold: 2517 vs revme 32173 (x0.08), no PR, not profiled yet"
-    ],
-    "shipped": [
-      "#24960 rpc: calls with state overrides run on the versioned state path"
-    ]
+  "nodebal": {
+   "mgas": 3567.6,
+   "ratio": 0.679,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-10-18",
-    "old": "df6a0a67cdcb4f2bd509bdb4f1d5a8ff1849ad14",
-    "new": "3b184f9855ef0b088e11bee32fb66980eda55bdc",
-    "evm": {
-      "mgas": 1022.9,
-      "ratio": 0.58,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1801.6,
-      "ratio": 0.466,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3615.9,
-      "ratio": 0.692,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; node x0.97 vs df6a0a67cd (10-17)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "note": "backfill; EVM x0.98, node x1.02, BAL-on x1.03 vs 96188a4739 (10-05)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-07",
+  "old": "be875431395319db5d5e3260a876f5cd403c7976",
+  "new": "1b2ae29a8cafbbc82587c7d02ae996b917c4ab58",
+  "evm": {
+   "mgas": 1015.6,
+   "ratio": 0.575,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-19",
-    "old": "df6a0a67cdcb4f2bd509bdb4f1d5a8ff1849ad14",
-    "new": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82",
-    "evm": {
-      "mgas": 1046.3,
-      "ratio": 0.544,
-      "best": "nethermind",
-      "noise": 0.2,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1856.4,
-      "ratio": 0.703,
-      "best": "reth",
-      "noise": 1.1,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "rpc": {
-      "main": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82",
-      "noise": 3,
-      "knee": {
-        "qa-mixed": 3000,
-        "qa-getlogs": 5000,
-        "call-mix-33": 1000,
-        "block-receipts": 1000,
-        "getlogs-1block": 3000,
-        "trace-block-33": 50,
-        "trace-tx-33": 200
-      }
-    },
-    "better": [
-      "erigon here is main 6f95064a20 plus open PRs #25040 #25038 #25034 #25026 #24968; EVM tier +3.0% (noise 0.2%), node tier +1.3% (noise 1.1%), RPC knees unchanged",
-      "node EXP 1135 -> 61098, bls12 g1msm/g2msm x11-x29 (#25023, #25035)",
-      "node tload fresh keys 357 -> 8381 (#24968)",
-      "node ether_transfers diff_acc_to_b, amount 1: 18-66 -> 363-415 (#24976)",
-      "EVM call_frame_context_ops 176 -> 433 (#25034), tstore +32%",
-      "RPC block-receipts p99 -31% at every rate (#25026, #25025)"
-    ],
-    "worse": [
-      "node ether_transfers_to_precompile, amount 1 (17 rows): ~740 -> ~465 (-36%); amount 0 unchanged; suspect #25040",
-      "node 1MiB zero-data REVERT 22414 -> 5278 (cell noise 27%)",
-      "EVM dup/bitwise/swap/push -5..-8% (same code alignment in both builds)"
-    ],
-    "bottlenecks": [
-      "node 1MiB zero-data REVERT/RETURN: 5278/6896 vs reth 62927/65212 (x0.08-0.11)",
-      "node unchunkified_bytecode EXTCODECOPY/DELEGATECALL/CALL: 170-185 vs reth 1572-1976 (x0.09-0.11)",
-      "EVM instruction/storage_access_cold: 2401 vs revme 45916 (x0.05)",
-      "EVM instruction/ext_account_query_cold: 2547 vs revme 32173 (x0.08)",
-      "EVM instruction/calldatacopy_from_origin: 770 vs nethermind 9600 (x0.08)"
-    ],
-    "shipped": [
-      "#25023 vm: use word arithmetic for small EXP results",
-      "#25035 vm: reuse adjacent validated BLS points in MSM",
-      "#24976 execution/stagedsync: stop validation at the first result that cannot commit",
-      "#25025 types/ethutils: reuse the cached sender in receipt responses",
-      "#25024 types: reuse cached Keccak hashes for bloom construction",
-      "#25022 rpc/transactions: skip unused BAL recording during traces",
-      "#25009 vm: avoid redundant zeroing when copying log data"
-    ],
-    "dbg": true
+  "node": {
+   "mgas": 1788.2,
+   "ratio": 0.462,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-19",
-    "old": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82",
-    "new": "77d3569d13973ae5e4e8220f5541e670e04bd814",
-    "evm": {
-      "mgas": 1081.3,
-      "ratio": 0.562,
-      "best": "nethermind",
-      "noise": 0.1,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1867.5,
-      "ratio": 0.708,
-      "best": "reth",
-      "noise": 0.5,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "rpc": {
-      "main": "77d3569d13973ae5e4e8220f5541e670e04bd814",
-      "noise": 3,
-      "knee": {
-        "qa-mixed": 3000,
-        "qa-getlogs": 5000,
-        "call-mix-33": 1000,
-        "block-receipts": 1000,
-        "getlogs-1block": 3000,
-        "trace-block-33": 50,
-        "trace-tx-33": 200
-      }
-    },
-    "better": [
-      "EVM tier 1045.9 -> 1081.3 Mgas/s (+3.4%), mostly opcode loops: comparison 1427 -> 1693 (+19%), push 592 -> 680 (+15%), shifts 576 -> 663 (+15%); the two builds differ in EVM.run alignment, layout suspected",
-      "node 1 MiB LOG rows 26k-30k -> 74k-81k Mgas/s (x2.7-x3.1)",
-      "node dup 989 -> 1086 Mgas/s (+9.8%), memory_access 1320 -> 1404 (+6.4%)"
-    ],
-    "worse": [
-      "node tload, fresh keys 8258 -> 359 Mgas/s and tstore 4493 -> 3458 (-23%): the previous point carried open #24968, main does not",
-      "EVM instruction/tstore 2010 -> 1493 Mgas/s (-26%), same reason",
-      "node return_revert empty REVERT 427 -> 373 Mgas/s (-13%), identity 756 -> 666 (-12%)",
-      "EVM instruction/call_context.call_frame_context_ops 434 -> 407 Mgas/s (-6%)"
-    ],
-    "bottlenecks": [
-      "node tload, fresh keys: 359 vs reth 15237 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)",
-      "EVM instruction/storage_access_cold: 2415 vs revme 45916 (x0.05), no PR; top frame fastkeccak.keccakF1600BMI2 5.8%, then GC 4.3%, go-freelru ShardedLRU.Len 2.0%",
-      "EVM instruction/ext_account_query_cold: 2551 vs revme 32173 (x0.08), no PR; top frame runtime.tryDeferToSpanScan 5.8% (GC), mapaccess2_fast64 4.7%",
-      "EVM scenario/ether_transfers: 555 vs revme 6856 (x0.08), no PR; top frame secp256k1_gej_double 18.9%, sender recovery about 43%",
-      "EVM instruction/calldatacopy_from_origin: 788 vs nethermind 9600 (x0.08), no PR; top frame vm.(*EVM).run 59%, memoryCopierGas 6.5%"
-    ],
-    "shipped": [
-      "#25034 vm: reuse address words within a call frame: ADDRESS 852 -> 342 ms (2.49x)",
-      "#25040 execution/stagedsync: schedule transfers after recipient validation: ether_transfers empty cold 1088 -> 402 ms (2.71x)",
-      "#25038 vm: evaluate powers of minus one from exponent parity: EXP all-ones 41x",
-      "#25026 types/ethutils: batch timestamped receipt log allocations: 100-log receipt -64%"
-    ]
+  "nodebal": {
+   "mgas": 3527.8,
+   "ratio": 0.671,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-10-20",
-    "old": "77d3569d13973ae5e4e8220f5541e670e04bd814",
-    "new": "228c92c7c4c42aa4e660586b994fb26278dfdd51",
-    "evm": {
-      "mgas": 1083.7,
-      "ratio": 0.634,
-      "best": "revme",
-      "noise": 0.4,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1910.0,
-      "ratio": 0.492,
-      "best": "nethermind",
-      "noise": 0.5,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "rpc": {
-      "main": "228c92c7c4c42aa4e660586b994fb26278dfdd51",
-      "noise": 3,
-      "knee": {
-        "qa-mixed": 3000,
-        "qa-getlogs": 5000,
-        "call-mix-33": 1000,
-        "block-receipts": 1000,
-        "getlogs-1block": 3000,
-        "trace-block-33": 50,
-        "trace-tx-33": 200
-      }
-    },
-    "better": [
-      "node callvalue_from_call +93%, callvalue_from_origin +58%; EVM +85% / +65% (#25089)",
-      "node mcopy +58% over 48 tests (#25071)",
-      "node tload +102%, tstore +29%; EVM tstore +36% (#24968, in main again)",
-      "node calldataload +11% over 8 tests"
-    ],
-    "worse": [
-      "EVM ops off the fast path: blobhash -11%, returndatasize_zero -9%, push -8%, calldatasize -7%, shifts -7%, not -6%: the fast-op switch is still a binary search, not a jump table",
-      "node iszero -19%, return_revert -16% over 10 tests, jumpdests -13%"
-    ],
-    "bottlenecks": [
-      "node ether_transfers: 60 tests at x0.32 of reth; one-account case 36 ms vs 5.5 ms per block",
-      "node log and log_benchmark: 140 tests at x0.35-0.49 of reth; the 1 MiB LOG rows flip between ~25k and ~75k Mgas/s run to run",
-      "node vs nethermind: 2.2.0 is x2 faster than 2.1.0 here; erigon / nethermind 0.49 without precompiles"
-    ],
-    "shipped": [
-      "#25071 vm: run MCOPY on the fast path when memory need not grow",
-      "#25089 vm: run CALLVALUE on the fast path",
-      "#25017 #24991 #24966 #24961 (lupin012, RPC)"
-    ],
-    "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs",
-    "dbg": true
+  "note": "backfill; BAL-on x0.99 vs be87543139 (10-06)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-08",
+  "old": "1b2ae29a8cafbbc82587c7d02ae996b917c4ab58",
+  "new": "5b3fc33321c6c0156840a0adb08930c3f8a71c0f",
+  "evm": {
+   "mgas": 1017.3,
+   "ratio": 0.576,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-20",
-    "old": "228c92c7c4c42aa4e660586b994fb26278dfdd51",
-    "new": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
-    "evm": {
-      "mgas": 1091.3,
-      "ratio": 0.639,
-      "best": "revme",
-      "noise": 0.2,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 2012.1,
-      "ratio": 0.503,
-      "best": "nethermind",
-      "noise": 1.1,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "rpc": {
-      "main": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
-      "noise": 3,
-      "knee": {
-        "qa-mixed": 3000,
-        "qa-getlogs": 5000,
-        "call-mix-33": 1000,
-        "block-receipts": 1000,
-        "getlogs-1block": 3000,
-        "trace-block-33": 50,
-        "trace-tx-33": 200
-      }
-    },
-    "shipped": [
-      "#25109 execution/execmodule: answer a re-sent validated side-fork payload as VALID without an unwind",
-      "#25100 exec: evmone_precompiles v0.25.0",
-      "#25072 execution/cache: faster code-cache fill when loading cold contracts",
-      "#25091 execution/cache: no copy for a state-cache fill that is refused (merged)",
-      "#25103 execution/state: higher logArena limits",
-      "main up to e8222a2356 (#25094)"
-    ],
-    "better": [
-      "node suite +4.8% (noise 1.1%), EVM tier +0.8% (noise 0.2%); RPC knees the same on 7 of 7 workloads, p99 one rate below the knee within noise",
-      "node modexp x1.41 over 89 tests, 33 of them x2.8-x4.2; EVM precompile/modexp_uncachable 5306 -> 8637 Mgas/s (+63%) (#25100)",
-      "node ether_transfers to self (a_to_a), empty and non-empty account: 8 tests at x2.5-x3.3, now 13-16k Mgas/s",
-      "node bls12_pairing x1.32 over 5 tests, block_full_data +19%, unchunkified_bytecode +14%",
-      "EVM push +12%, blobhash +9%, returndatasize_zero +7%, calldatasize +6%; the two EVM builds differ in EVM.run alignment, so single-opcode rows can move by layout"
-    ],
-    "worse": [
-      "node auth_transaction (empty account) -30%, SWAP16 -16%, DUP9 -11%, calldatasize 1024 bytes -11%, COINBASE -11%, iszero -13%",
-      "EVM jumpdests 861 -> 739 Mgas/s (-14%), memory_access -9%, return_revert -5%"
-    ],
-    "bottlenecks": [
-      "node block_full_data[zero_byte_True]: dbg is ~10% slower than main here (1538 vs 1707 Mgas/s when only this family runs)",
-      "node block_full_data[zero_byte_True]: the full-suite number (~880) is about half of a family-only run; earlier tests in the same process slow it down, a harness effect",
-      "eth_call per transaction: erigon / reth 1.43 over 24 transactions, behind only on transferFrom x262 (0.86) and the modexp proof verify (0.92)"
-    ],
-    "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; gevm added to the EVM tier",
-    "dbg": true
+  "node": {
+   "mgas": 1798.2,
+   "ratio": 0.464,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-20",
-    "old": "77d3569d13973ae5e4e8220f5541e670e04bd814",
-    "new": "ec01a338c69d81330c0f81952ac693b0a7f819c7",
-    "evm": {
-      "mgas": 1074.5,
-      "ratio": 0.609,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 1963.1,
-      "ratio": 0.5,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3845.4,
-      "ratio": 0.73,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; node x1.05 vs 77d3569d13 (10-19)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "nodebal": {
+   "mgas": 3559.2,
+   "ratio": 0.678,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-10-21",
-    "old": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
-    "new": "b03dee1904f6a01c43d9acf95c19d284382a6ba8",
-    "evm": {
-      "mgas": 1169.0,
-      "ratio": 0.708,
-      "best": "revme",
-      "noise": 0.13,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 2012.1,
-      "ratio": 0.503,
-      "best": "nethermind",
-      "noise": 1.1,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "rpc": {
-      "main": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
-      "noise": 3,
-      "knee": {
-        "qa-mixed": 3000,
-        "qa-getlogs": 5000,
-        "call-mix-33": 1000,
-        "block-receipts": 1000,
-        "getlogs-1block": 3000,
-        "trace-block-33": 50,
-        "trace-tx-33": 200
-      }
-    },
-    "shipped": [
-      "#25164 execution/vm: run cheap context, bitwise, DUP9-16 and SWAP5-16 ops inline",
-      "#25155 execution/vm: reuse an output buffer for the identity precompile",
-      "#25160 execution/state: emit no writes for an account created and destroyed in one tx",
-      "#25153 execution/types: keep BAL storage reads as raw hashes",
-      "#25146 execution/vm: MULMOD with a cached reciprocal",
-      "#25118 execution/vm: push-free JUMPDEST analysis step",
-      "#25145 rpc/ethapi: fastjson accessList",
-      "#25116 execution: keep the executed state of a re-sent head payload",
-      "main merged"
-    ],
-    "better": [
-      "EVM tier +10.7% (noise 0.13%); node and RPC tiers not re-measured in this snapshot",
-      "EVM identity x4.7, identity_uncachable x2.0 (#25155)",
-      "EVM block_context_ops +48%, call_frame_context +48%, returndatasize +50..56%, calldatasize +44%, codesize +45%, not +53%, jumpdest_analysis +45% (#25164, #25118)"
-    ],
-    "worse": [
-      "EVM clz_same -20%, selfbalance -13%, clz_diff -6%: ops left on the generic path pay one more taken branch (#25164)"
-    ],
-    "bottlenecks": [],
-    "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; node and RPC numbers are from the 2026-10-20 snapshot",
-    "dbg": true
+  "note": "backfill; BAL-on x1.01 vs 1b2ae29a8c (10-07)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-09",
+  "old": "5b3fc33321c6c0156840a0adb08930c3f8a71c0f",
+  "new": "97f059e62572a7076b688880576273111c4b6e08",
+  "evm": {
+   "mgas": 1055.5,
+   "ratio": 0.598,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-21",
-    "old": "b03dee1904f6a01c43d9acf95c19d284382a6ba8",
-    "new": "0d9cecb17a501c44766d8dcf7c04a5f77e0fdbf5",
-    "evm": {
-      "mgas": 1161.2,
-      "ratio": 0.69,
-      "best": "revme",
-      "noise": 0.11,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 2232.6,
-      "ratio": 0.534,
-      "best": "nethermind",
-      "noise": 1.1,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "rpc": {
-      "main": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
-      "noise": 3,
-      "knee": {
-        "qa-mixed": 3000,
-        "qa-getlogs": 5000,
-        "call-mix-33": 1000,
-        "block-receipts": 1000,
-        "getlogs-1block": 3000,
-        "trace-block-33": 50,
-        "trace-tx-33": 200
-      }
-    },
-    "shipped": [
-      "#25181 Makefile: build C++ cgo deps without NDEBUG",
-      "#25185 execution/vm: write PREVRANDAO straight into its stack slot",
-      "#25186 execution/vm: copy cached address words onto the stack without a memmove call on amd64",
-      "#25072 execution/cache: faster code-cache fill when loading cold contracts (simpler version)",
-      "#25156 execution/vm: pin MCOPY fast-path bounds (tests only)"
-    ],
-    "better": [
-      "node BAL-off +10.9% (1075 tests, noise 1.1%), BAL-on +9.5% (1161 tests)",
-      "node modexp x5.6..8.2 on 30 tests (#25181), identity x8.2 BAL-off and x14.9 BAL-on (#25155)"
-    ],
-    "worse": [
-      "EVM tier -2.4% (noise 0.11%): shifts -24%, calldatasize -23%, codesize -19%, call_frame_context -16%, jumpdests -14%; code layout, not a code change: the binaries differ in EVM.run alignment, and at equal alignment the #25164 op table is 1.4% faster than the range check it replaced"
-    ],
-    "bottlenecks": [],
-    "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; EVM tier is dbg 8e711db2b3, node tier dbg 0d9cecb17a (projected: page numbers times the A/B ratio on the same box); RPC numbers are from the 2026-10-20 snapshot",
-    "dbg": true
+  "node": {
+   "mgas": 1827.2,
+   "ratio": 0.474,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-21",
-    "old": "77d3569d13973ae5e4e8220f5541e670e04bd814",
-    "new": "3324fd6b4819011a7bc7b392babbec3a28e3366b",
-    "evm": {
-      "mgas": 1091.2,
-      "ratio": 0.639,
-      "best": "revme",
-      "noise": 0.4,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 2037.8,
-      "ratio": 0.515,
-      "best": "nethermind",
-      "noise": 1.0,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "rpc": {
-      "main": "3324fd6b4819011a7bc7b392babbec3a28e3366b",
-      "noise": 3,
-      "knee": {
-        "qa-mixed": 3000,
-        "qa-getlogs": 5000,
-        "call-mix-33": 1000,
-        "block-receipts": 1000,
-        "getlogs-1block": 3000,
-        "trace-block-33": 50,
-        "trace-tx-33": 200
-      }
-    },
-    "better": [
-      "node identity 666 -> 6422 Mgas/s (x9.6, #25155), tload 12527 -> 27774 (x2.2, #24968), callvalue 925-1118 -> 1598-2066 (+73..85%, #25089)",
-      "node mcopy 1477 -> 2319 Mgas/s (+57%, 48 rows, #25071), modexp 1039 -> 1468 (+41%, 89 rows, #25100), bls12_pairing 645 -> 923 (+43%)",
-      "EVM callvalue_from_call 597 -> 1139 Mgas/s (x1.9), callvalue_from_origin 937 -> 1560 (+67%, #25089), return_revert 796 -> 1174 (+47%), tstore 1493 -> 1970 (+32%, #24968), call_context.call_frame_context_ops 407 -> 498 (+22%)",
-      "node suite 1867.5 -> 2037.8 Mgas/s (+9.1%), EVM suite 1081.3 -> 1091.2 (+0.9%)"
-    ],
-    "worse": [
-      "EVM blobhash 780 -> 687 Mgas/s (-12%), push 680 -> 605 (-11%), returndatasize_zero 615 -> 550 (-11%), shifts 663 -> 594 (-10%), msize -9%, pc_op -9%, gas_op -8%, not_op -7%, selfbalance -7%",
-      "node unchunkified_bytecode 269 -> 237 Mgas/s (-12%, 7 rows), codesize 595 -> 553 (-7%), msize -5%, pc_op -4%, dup -4%"
-    ],
-    "bottlenecks": [
-      "node unchunkified_bytecode CALL/CALLCODE/DELEGATECALL/STATICCALL/EXTCODECOPY: 150-194 vs reth 1540-1924 (x0.09-0.11), no PR; top frame runtime.memmove 27.0% (code copy), madvise 8.1%",
-      "EVM instruction/storage_access_cold: 2411 vs revme 45916 (x0.05), no PR; top frame fastkeccak.keccakF1600BMI2 5.9%, GC 4.1%, go-freelru ShardedLRU.Len 2.0%",
-      "EVM instruction/ext_account_query_cold: 2518 vs revme 32295 (x0.08), no PR; top frame runtime.tryDeferToSpanScan 5.5% (GC), mapaccess2_fast64 4.5%",
-      "EVM scenario/ether_transfers: 551 vs revme 6856 (x0.08), no PR; top frame secp256k1_gej_double 19.2% (sender recovery about 42%)",
-      "EVM scenario/contract_creation: 935 vs gevm 9449 (x0.10), no PR; top frame secp256k1_gej_double 14.5% (sender recovery)"
-    ],
-    "shipped": [
-      "#24968 exec: to not intern transient storage key: tload fresh keys x26",
-      "#25153 execution/types: keep BAL storage reads as raw hashes: storage_access_cold_benchmark SLOAD 2244 -> 2942 (+31%)",
-      "#25118 vm: 2.5x faster JUMPDEST analysis of code without PUSH opcodes",
-      "#25071 vm: run MCOPY on the fast path when memory need not grow: copy_size_0 2.26x",
-      "#25100 exec: bump evmone_precompiles to v0.25.0: modexp exp-heavy even modulus -43%",
-      "#25109 execution/execmodule: answer a re-sent validated side-fork payload: -40.9%",
-      "#25116 execution/engineapi: answer a re-sent validated payload before InsertBlocks: -58%",
-      "#25145 rpc/ethapi: _call json decode access list: eth_call with access lists p50 -14%",
-      "#25103 execution/state: increase logArena limits: 1 MiB log blocks +9%",
-      "#25155 execution/vm: reuse an output buffer for the identity precompile",
-      "#25089 vm: run CALLVALUE on the fast path",
-      "#25091 execution/cache: no copy for a state-cache fill that is refused"
-    ],
-    "nodebal": {
-      "mgas": 3941.6,
-      "ratio": 0.742,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    }
+  "nodebal": {
+   "mgas": 3627.0,
+   "ratio": 0.693,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-10-22",
-    "old": "3324fd6b4819011a7bc7b392babbec3a28e3366b",
-    "new": "36e65012a9f8348bdc17daddeb809a17014a3902",
-    "evm": {
-      "mgas": 1045.2,
-      "ratio": 0.592,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 4297.9,
-      "ratio": 1.115,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3977.5,
-      "ratio": 0.752,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "backfill; EVM x0.96, node x2.11, BAL-on x1.01 vs 3324fd6b48 (10-21)",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "note": "backfill; EVM x1.04, BAL-on x1.02 vs 5b3fc33321 (10-08)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-10",
+  "old": "97f059e62572a7076b688880576273111c4b6e08",
+  "new": "e1c10eeda75220bb6f95b8761678f766eb887628",
+  "evm": {
+   "mgas": 1054.6,
+   "ratio": 0.597,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-23",
-    "old": "3324fd6b4819011a7bc7b392babbec3a28e3366b",
-    "new": "2cedbabffc5e2e598e5c723d12bc5a0bad05ed01",
-    "evm": {
-      "mgas": 1029.6,
-      "ratio": 0.583,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 4314.5,
-      "ratio": 1.123,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "note": "EVM: from this point erigon runs with one exec worker, as the tier compares interpreters; with its default workers the same build runs the EVM blocks x2.08 faster (15 blocks valid in both)",
-    "better": [
-      "node suite 2046.3 -> 4314.5 Mgas/s (x2.11, #25204: txs of one sender run in parallel): sha256 941 -> 3923 (x4.2), blake2f 131 -> 508 (x3.9), unchunkified_bytecode 267 -> 929 (x3.5, 7 rows), mod_arithmetic 253 -> 789 (x3.1), mod 252 -> 749 (x3.0)",
-      "node erigon / nethermind on the instruction and scenario tests 0.515 -> 1.123",
-      "EVM with one exec worker vs the previous main: 1025.5 -> 1029.6 Mgas/s on 53 blocks (x1.004, flat)"
-    ],
-    "worse": [
-      "node keccak mem_update_False 1641-1836 -> 1205-1362 Mgas/s (-25..29%, 4 rows), mem_update_True offset_1024 1611 -> 1362 (-15%)",
-      "node ether_transfers a_to_a 18000-21054 -> 15390-16426 (-15..25%, 5 rows), auth_transaction 1064 -> 886 (-17%), blake2f_uncachable 12 rounds 1764 -> 1534 (-13%)",
-      "EVM bls12_381_uncachable 958 -> 940 Mgas/s (-1.9%), bls12_pairing_uncachable -0.9%"
-    ],
-    "bottlenecks": [
-      "node selfdestruct_existing value_bearing: 737 vs nethermind 4687 (x0.16), no PR",
-      "node storage_access_cold SLOAD: 2224 vs nethermind 13215 (x0.17); EVM storage_access_cold 2670 vs revme 45916 (x0.06), no PR; top frame fastkeccak.keccakF1600BMI2 5.7%, GC 4.2%, go-freelru ShardedLRU.Len 1.9%",
-      "EVM instruction/ext_account_query_cold: 2515 vs revme 32295 (x0.08), no PR; top frame runtime.tryDeferToSpanScan 5.7% (GC), mapaccess2_fast64 4.5%",
-      "EVM scenario/ether_transfers: 548 vs revme 6856 (x0.08), node ether_transfers 13798 vs nethermind 78153 (x0.18), no PR; top frame secp256k1_gej_double 19.7% (sender recovery about 41%)"
-    ],
-    "shipped": [
-      "#25204 execution: charge the sender at validation, allow same-sender txs run in parallel: node suite x2.11",
-      "#25072 execution/cache: faster code-cache fill when loading cold contracts",
-      "#24033 execution: recover senders while newPayload decodes the payload",
-      "#25160 execution/state: emit no writes for an account created and destroyed in one tx",
-      "#25219 execution/engineapi: look up a new payload's header by hash and number"
-    ],
-    "nodebal": {
-      "mgas": 3971.4,
-      "ratio": 0.75,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    }
+  "node": {
+   "mgas": 1822.7,
+   "ratio": 0.472,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-23",
-    "dbg": true,
-    "old": "e507491c0081a132083db1f1dd0b997f5ce93b12",
-    "new": "41174f6b355c6b494c213a0e6232cd8bafae4890",
-    "evm": {
-      "mgas": 1110.8,
-      "ratio": 0.629,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 4422.4,
-      "ratio": 1.172,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3898.6,
-      "ratio": 0.754,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "dbg: main e507491c00 + open PRs",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "nodebal": {
+   "mgas": 3627.4,
+   "ratio": 0.694,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-10-23",
-    "dbg": true,
-    "old": "2c25716b2f2b620cd386a418562cfe7548f20aff",
-    "new": "29e1236382a5e7a0d560c9abde864c218bfaa4f0",
-    "evm": {
-      "mgas": 1108.5,
-      "ratio": 0.628,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 4380.1,
-      "ratio": 1.164,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 3861.6,
-      "ratio": 0.745,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "dbg: main 2c25716b2f + open PRs",
-    "better": [],
-    "worse": [],
-    "bottlenecks": [],
-    "shipped": []
+  "note": "backfill",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-11",
+  "old": "e1c10eeda75220bb6f95b8761678f766eb887628",
+  "new": "1d3ebbf217f6b4f99028cd590889a5c9f3aaa969",
+  "evm": {
+   "mgas": 1057.3,
+   "ratio": 0.599,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-24",
-    "old": "2cedbabffc5e2e598e5c723d12bc5a0bad05ed01",
-    "new": "0a7733e2a8d4d5b4f4353e11fe09871a97577004",
-    "evm": {
-      "mgas": 1088.1,
-      "ratio": 0.616,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 4477.0,
-      "ratio": 1.176,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 4124.8,
-      "ratio": 0.789,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "better": [
-      "node suite x1.06, BAL-on x1.06 over the families (#25164 cheap ops inline, #25156 MCOPY fast path)"
-    ],
-    "worse": [
-      "BAL-on identity x0.67, selfbalance x0.81; node iszero x0.83, sha256 x0.86 (single tests)"
-    ],
-    "bottlenecks": [],
-    "shipped": [
-      "#25164 cheap context, bitwise, DUP9-16 and SWAP5-16 ops inline",
-      "#25156 MCOPY fast-path bounds",
-      "#24041 fee re-credit balance read"
-    ],
-    "note": "EVM x1.06, node x1.04, BAL-on x1.04 vs 2cedbabffc (10-23)"
+  "node": {
+   "mgas": 1837.0,
+   "ratio": 0.477,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-24",
-    "dbg": true,
-    "old": "29e1236382a5e7a0d560c9abde864c218bfaa4f0",
-    "new": "8be122f17bb9401c0eb2d98623b7b8744b09bbaa",
-    "evm": {
-      "mgas": 1113.4,
-      "ratio": 0.631,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 4598.9,
-      "ratio": 1.238,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 4064.5,
-      "ratio": 0.795,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "dbg: main 2026-10-24 + #25210, #25222, #25264 and other open PRs",
-    "better": [
-      "storage_access_warm SSTORE new value x1.83 node, x1.96 / x3.13 BAL-on",
-      "codecopy / calldatacopy / returndatacopy x1.21 / x1.38 / x1.27 node, x1.22 / x1.36 / x1.26 BAL-on (up to x2.0)",
-      "BAL-on selfdestruct_initcode x1.50, selfdestruct_created x1.24; node selfdestruct_created x1.09, initcode x0.98"
-    ],
-    "worse": [
-      "node identity x0.78, blobhash x0.80 (2 tests); BAL-on block_full_data x0.83, selfdestruct_existing x0.84"
-    ],
-    "bottlenecks": [],
-    "shipped": []
+  "nodebal": {
+   "mgas": 3647.0,
+   "ratio": 0.697,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-10-25",
-    "old": "0a7733e2a8d4d5b4f4353e11fe09871a97577004",
-    "new": "f9a0ca070d23febddf34333dd170e7b4587fe875",
-    "evm": {
-      "mgas": 1111.2,
-      "ratio": 0.63,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 4611.7,
-      "ratio": 1.222,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 4249.3,
-      "ratio": 0.819,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "better": [
-      "exp_bench_arithmetic x2.57 node, x2.59 BAL-on (36 tests, #25188)",
-      "push x1.34 node, x1.37 BAL-on (33 tests, #25210)",
-      "BAL-on calldataload x1.19"
-    ],
-    "worse": [
-      "node tload x0.77 (4 tests), shifts x0.78, storage_access_warm_benchmark x0.84, returndatasize_nonzero x0.84 (12 tests)",
-      "BAL-on blobhash x0.80, swapn x0.80, extcodecopy_warm x0.82, selfdestruct_created x0.83"
-    ],
-    "bottlenecks": [
-      "node contract_creation contract_size_0: 173-179 Mgas/s, x0.20 of nethermind; top frame runtime.cgocall (mdbx) 6-8% once the KZG context build is left out; that build (InitKZGCtx, about 0.5 s of CPU) runs on the first block after a start",
-      "node storage_access_cold_benchmark SLOAD: 202-206 Mgas/s, x0.19 of nethermind; top frame runtime.cgocall 4-5%, then memmove; no frame dominates"
-    ],
-    "shipped": [
-      "#25188 faster EXP for an odd base with a large exponent",
-      "#25210 PUSH3-32 immediates as one 32-byte window",
-      "#25227 revert logs by snapshot count",
-      "#25263 burnt contract self-destruct",
-      "#25308 pooled btree cursor key copy"
-    ],
-    "note": "EVM x1.02, node x1.03, BAL-on x1.03 vs 0a7733e2a8 (10-24)"
+  "note": "backfill",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-12",
+  "old": "1d3ebbf217f6b4f99028cd590889a5c9f3aaa969",
+  "new": "010665de0a1b656cddef4f31655b568d58160814",
+  "evm": {
+   "mgas": 1063.3,
+   "ratio": 0.602,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-26",
-    "old": "f9a0ca070d23febddf34333dd170e7b4587fe875",
-    "new": "71a7eb1de1cd5dc7f7d7f869691a3ab3a1368834",
-    "evm": {
-      "mgas": 1134.4,
-      "ratio": 0.643,
-      "best": "nethermind",
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 4641.1,
-      "ratio": 1.243,
-      "best": "nethermind",
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 4271.0,
-      "ratio": 0.838,
-      "best": "reth",
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "EVM x1.02 vs f9a0ca070d; Block-STM and #24844 merged: the per-tx families lose, the copy ops gain",
-    "better": [
-      "codecopy_benchmark x1.44, calldatacopy_from_call x1.47 node; returndatacopy x1.30, calldatacopy x1.44-1.46 BAL-on (#25222)",
-      "callvalue_from_call x2.43, callvalue_from_origin x1.71 node"
-    ],
-    "worse": [
-      "node ether_transfers x0.75 (60 tests), storage_access_cold x0.72 (14), contract_creation x0.70 (6), selfdestruct x0.69-0.73, ext_account_query_cold x0.63",
-      "BAL-on creates_collisions x0.59, block_full_data x0.68, storage_access_cold x0.73, ether_transfers x0.86",
-      "EVM ether_transfers x0.77, contract_creation x0.77, unchunkified_bytecode x0.62",
-      "RPC trcblk33 x0.26, callmany11 x0.49, est33 x0.73; E/R m33 x0.69, eth_getProof x0.36, trace_block x0.40"
-    ],
-    "bottlenecks": [
-      "node contract_creation contract_size_max: x0.09 of the best client; top frames fastkeccak.keccakF1600BMI2 and tidwall/btree search, about 8% each, once the KZG context build is left out",
-      "node selfdestruct_existing value_bearing: x0.12 of the best client; not profiled, because a fresh node answers SYNCING to the first newPayload, the same startup failure earlier dbg builds showed"
-    ],
-    "shipped": [
-      "Block-STM parallel execution",
-      "#24844 versionMap <=> noMaterialize",
-      "#25222 inline CODECOPY, CALLDATACOPY and RETURNDATACOPY",
-      "#25225 BAL bounded dispatch window",
-      "#25314 keep a released exec slot's roTx"
-    ]
+  "node": {
+   "mgas": 1805.3,
+   "ratio": 0.467,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-29",
-    "old": "71a7eb1de1cd5dc7f7d7f869691a3ab3a1368834",
-    "new": "3d61103b24cccc44f02c92e2cf46d36c35c74c6d",
-    "evm": {
-      "mgas": 1095.3,
-      "ratio": 0.621,
-      "best": "nethermind",
-      "valid": 55,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 6245.2,
-      "ratio": 1.242,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 5863.3,
-      "ratio": 0.845,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "main 2026-10-29 3d61103b24; EVM tier runs with EVM.run at a different code alignment than 5709c66569 (0 vs 32), so its -6% is layout",
-    "shipped": [
-      "#25037 cache successful expensive precompile calls",
-      "#25479 cache precompile calls below 2,000 gas",
-      "#25226 shift on DIV by a power of two",
-      "#25378 read state .bt files into memory",
-      "#25223 recover BAL-block senders in the exec workers",
-      "#25347 index readers by address, check the exact cell per write",
-      "#25439 publish each tx's origins once",
-      "#25345 origin code reads reuse the committed account memo",
-      "#25327 write view reuses the code hash in the version map"
-    ],
-    "better": [],
-    "worse": [],
-    "bottlenecks": [
-      "no per-family snapshot of this main; its changes show in the 10-31 card"
-    ]
+  "nodebal": {
+   "mgas": 3589.8,
+   "ratio": 0.683,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-10-29",
-    "dbg": true,
-    "old": "3d61103b24cccc44f02c92e2cf46d36c35c74c6d",
-    "new": "bff99c31b681c16f325fb02d6578faca28855f63",
-    "evm": {
-      "mgas": 1144.9,
-      "ratio": 0.649,
-      "best": "nethermind",
-      "valid": 55,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 6155.9,
-      "ratio": 1.225,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 5714.7,
-      "ratio": 0.822,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "dbg: main 2026-10-29 + #25480, #25494, #25463, #25465, #25493 and other open PRs"
+  "note": "backfill; BAL-on x0.98 vs 1d3ebbf217 (10-11)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-13",
+  "old": "010665de0a1b656cddef4f31655b568d58160814",
+  "new": "02be1a7893e87cf3ec748aeb45796345ba48457f",
+  "evm": {
+   "mgas": 986.8,
+   "ratio": 0.559,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-31",
-    "old": "3d61103b24cccc44f02c92e2cf46d36c35c74c6d",
-    "new": "198678df9c2250d7c6bada1611a7a8659d49db28",
-    "evm": {
-      "mgas": 992.2,
-      "ratio": 0.686,
-      "best": "nethermind",
-      "valid": 50,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 6114.0,
-      "ratio": 1.165,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 5783.0,
-      "ratio": 0.816,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "main 2026-10-31 198678df9c",
-    "shipped": [
-      "#25550 reuse finished task goroutines in the parallel executor",
-      "#25494 recover a block's EIP-7702 authorities in the pre-pass",
-      "#23844 .vi perfect hash replaced by two Elias-Fano sequences",
-      "#25304 inverted index values stored as txNum chunks",
-      "#25500 VersionMap origin storage in a typed concurrent map",
-      "#25505 publish each origin once",
-      "#25498 #25499 #25507 hold write-set values by value, reuse one VersionedWrite",
-      "#25497 keep the lent code buffer across a worker's tasks"
-    ],
-    "better": [
-      "precompiles vs 10-25 main (the 10-29 caches #25037, #25479): node alt_bn128_benchmark x58, bls12_pairing x26, p256verify x26, bls12_381 x12; BAL-on bls12_g1_msm x54, alt_bn128_benchmark x50; EVM ecrecover x37, point_evaluation x16"
-    ],
-    "worse": [
-      "node ether_transfers_to_precompile x0.78 (36), calldatasize x0.80 (8), returndatasize_nonzero x0.86 (12), extcodecopy_warm x0.88 (5)",
-      "BAL-on selfdestruct_initcode x0.83, tload x0.83, calldatasize x0.84, jumpdest_analysis x0.85",
-      "EVM shifts x0.76, calldatasize x0.79, blobhash x0.85, block_context_ops x0.85, msize x0.86"
-    ],
-    "bottlenecks": []
+  "node": {
+   "mgas": 1836.8,
+   "ratio": 0.478,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-10-31",
-    "dbg": true,
-    "old": "198678df9c2250d7c6bada1611a7a8659d49db28",
-    "new": "0953092438d64fddffbb6ff9ab4a6225e87725bc",
-    "evm": {
-      "mgas": 1044.7,
-      "ratio": 0.712,
-      "best": "nethermind",
-      "valid": 52,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 6278.7,
-      "ratio": 1.183,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 5826.5,
-      "ratio": 0.811,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "dbg: main 2026-10-31 + 17 open PRs and #25621 (dispatch window for blocks without a BAL)"
+  "nodebal": {
+   "mgas": 3670.2,
+   "ratio": 0.702,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-11-01",
-    "old": "198678df9c2250d7c6bada1611a7a8659d49db28",
-    "new": "333b26329283bd5a914e31920ee6baeb1f6bb17f",
-    "evm": {
-      "mgas": 1027.9,
-      "ratio": 0.736,
-      "best": "nethermind",
-      "valid": 49,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 6312.3,
-      "ratio": 1.205,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 5990.5,
-      "ratio": 0.844,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "main 2026-11-01 333b263292",
-    "shipped": [
-      "#25607 keccak cache hits only load the bucket",
-      "#25606 cache point additions",
-      "#25608 shorten lock holds on the exec read path",
-      "#25330 parallel-exec follow-up: version+valStatus validation",
-      "#25601 #25599 charge the sender of a value call or creation at validation"
-    ],
-    "better": [
-      "keccak x1.82 node, x1.78 BAL-on (18 tests, #25607)",
-      "bls12_381 x1.77 node, x2.50 BAL-on; alt_bn128 x1.17 BAL-on, x5.78 EVM (#25606)",
-      "calldatasize x1.22, returndatasize_nonzero x1.20 node; EVM shifts x1.32, calldatasize x1.29, msize x1.23 (back from the 10-31 drop)"
-    ],
-    "worse": [
-      "contract_creation x0.75 node (6), x0.63 EVM",
-      "calldataload x0.90 node; p256verify x0.74 BAL-on (3)"
-    ],
-    "bottlenecks": [
-      "EVM jumpi_fallthrough and clz_same: PUSH0 and CLZ are dispatched through two compare trees (CLZ then through the jump table); fixed in #25645"
-    ]
+  "note": "backfill; EVM x0.93, BAL-on x1.02 vs 010665de0a (10-12)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-14",
+  "old": "02be1a7893e87cf3ec748aeb45796345ba48457f",
+  "new": "362e903341f1bd32f4bbbc5150e716808d93393e",
+  "evm": {
+   "mgas": 1006.7,
+   "ratio": 0.57,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-11-01",
-    "dbg": true,
-    "old": "333b26329283bd5a914e31920ee6baeb1f6bb17f",
-    "new": "dcd6037b0f06220250fc05d0a7fa569ae3fd5caa",
-    "evm": {
-      "mgas": 1012.1,
-      "ratio": 0.7,
-      "best": "nethermind",
-      "valid": 50,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 6326.9,
-      "ratio": 1.202,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 5947.2,
-      "ratio": 0.841,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "dbg: main 2026-11-01 + 11 open PRs and #25621, #25631, #25638",
-    "shipped": [
-      "#25638 merge a block's state writes into the latest state once per block",
-      "#25631 mark committed writes Done under the entry's read lock",
-      "#25621 bounded dispatch window for blocks without a BAL",
-      "#25637 no-bump for fresh creates and at commit",
-      "#25633 notify balance and nonce writes from their keys",
-      "#25627 VersionMap lookups on xsync.Map",
-      "#25590 re-check only readers of the written paths",
-      "#25609 credit a code-less recipient at validation"
-    ],
-    "worse": [
-      "instruction tests x0.96 against main 333b263292 (780 tests, interleaved A/B): the accounts-only block-buffer prototype (x0.82 on the worst 36); the current #25638 is x1.16 faster on the same tests"
-    ]
+  "node": {
+   "mgas": 1855.7,
+   "ratio": 0.483,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-11-03",
-    "old": "333b26329283bd5a914e31920ee6baeb1f6bb17f",
-    "new": "0d5c830b7f4b04458254902896bbc2242fa6fb48",
-    "evm": {
-      "mgas": 1105.5,
-      "ratio": 0.824,
-      "best": "nethermind",
-      "valid": 49,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 6649.6,
-      "ratio": 1.285,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 6156.1,
-      "ratio": 0.866,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "main 2026-11-03 0d5c830b7f; gevm failed storage_access_cold, auth_transaction and unchunkified_bytecode in every run since",
-    "shipped": [
-      "#25560 pause-free exec worker pool; #25645 PUSH0 in the hot path, CLZ in the cold one",
-      "#25641 recover SetCode authorities once; #25648 reuse a MULMOD reciprocal; #25627 #25633 #25637 #25609 #25590 from the 11-01 dbg"
-    ],
-    "better": [
-      "contract_creation x2.14 node, x2.43 EVM; ether_transfers x1.48 node (60 tests) (#25560)",
-      "jumpi_fallthrough x1.36 node, x1.75 BAL-on; clz_same x1.31 node, x1.39 BAL-on; EVM push x1.64 (#25645); auth_transaction x1.20 node (#25641)"
-    ],
-    "worse": [
-      "BAL-on parallel_execution_serial_chain x0.76, deploy_then_interact x0.84 (5): likely #25560",
-      "node bls12_g1_msm x0.68 (4, back to x1.54 in the dbg run), comparison x0.88; EVM call_frame_context_ops x0.88"
-    ]
+  "nodebal": {
+   "mgas": 3711.2,
+   "ratio": 0.712,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-11-03",
-    "dbg": true,
-    "old": "0d5c830b7f4b04458254902896bbc2242fa6fb48",
-    "new": "a547bc7e0a87b04b31a20bb6eda31ede75bab5d0",
-    "evm": {
-      "mgas": 1110.7,
-      "ratio": 0.822,
-      "best": "nethermind",
-      "valid": 51,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 6603.4,
-      "ratio": 1.25,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 6096.8,
-      "ratio": 0.849,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "dbg: main 2026-11-03 + 12 open branches",
-    "shipped": [
-      "#25678 ExecuteBlockEphemerally on NoMaterialize; #25675 receipts on NoMaterialize; #25695 warmup reads storage slots without interning",
-      "BAL io_uring prefault (#25486), W-TinyLFU code cache, remote KV and snapshot error-path fixes"
-    ],
-    "better": [
-      "node bls12_g1_msm x1.54 (4), bls12_381 x1.14; BAL-on creates_reverting_initcode x1.14 (6)"
-    ],
-    "worse": [
-      "node x0.99, BAL-on x0.99 of main: storage_access_cold x0.87 node (14), x0.89 BAL-on; storage_access_warm_benchmark x0.83 node: likely #25695",
-      "BAL-on blake2f x0.68 (1), ext_account_query_cold x0.70 (2), create x0.87 (20); EVM shifts x0.83, codesize x0.87"
-    ]
+  "note": "backfill; EVM x1.02, BAL-on x1.01 vs 02be1a7893 (10-13)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-15",
+  "old": "362e903341f1bd32f4bbbc5150e716808d93393e",
+  "new": "7af7e8747f8e1993298e7b5e1be27f4ce4a05980",
+  "evm": {
+   "mgas": 1050.2,
+   "ratio": 0.595,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-11-04",
-    "old": "0d5c830b7f4b04458254902896bbc2242fa6fb48",
-    "new": "a80c005240ad4eeba7c2430a4190d60f17c2d36d",
-    "evm": {
-      "mgas": 1094.2,
-      "ratio": 0.802,
-      "best": "nethermind",
-      "valid": 50,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "note": "main 2026-11-04 a80c005240, EVM tier only (no node runs since 11-03); 95b0d8d303 from 11-04 morning measured the same (x1.00)",
-    "shipped": [
-      "#25678 #25675 #25717 ExecuteBlockEphemerally, receipts and block building on NoMaterialize; #25695 warmup without interning",
-      "#25631 #25734 mark writes Done under the read lock; #25699 commitment hashed keys on first read"
-    ],
-    "better": [
-      "EVM push x1.08, comparison x1.08, iszero x1.07, arithmetic x1.06"
-    ],
-    "worse": [
-      "EVM x0.99, erigon/neth x0.82 to x0.80: shifts x0.82, codesize x0.84, call_frame_context_ops x0.86, jumpdests x0.87, selfbalance x0.89",
-      "the 11-03 dbg lost the same files and 95b0d8d303 (before #25717) too: likely #25678 or #25675; single EVM files move up to 12% between runs of one commit"
-    ]
+  "node": {
+   "mgas": 1837.6,
+   "ratio": 0.478,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-11-05",
-    "old": "0d5c830b7f4b04458254902896bbc2242fa6fb48",
-    "new": "10c35bcd28c8112614a1b8e19c3cc2dd54d71b5b",
-    "evm": {
-      "mgas": 1100.8,
-      "ratio": 0.814,
-      "best": "nethermind",
-      "valid": 50,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "note": "main 2026-11-05 10c35bcd28; node tiers measured 11-06 morning; no failed rows, gevm passes all files again",
-    "shipped": [
-      "#25491 fold commitment from the version map; #25486 BAL cold pages in io_uring batches; #25559 skip arrival validation; #25751 BAL-marked accounts from origin",
-      "#25743 RPC replays share code by hash; #25748 seek in inverted index files; #25766 faster uint256 Div; #25243 EIP-8141 frames"
-    ],
-    "better": [
-      "node x1.50, BAL-on x1.53 against 11-03, held on 11-06: every family, EVM-bound ones too (push x1.92, dup x1.79), while the EVM tier stays x1.01, so a per-block newPayload cost went away; not bisected, candidates #25491, #25717, #25559",
-      "EVM x1.01, erigon/neth x0.80 to x0.81: selfbalance x1.15, jumpdests x1.12 (both layout-sensitive), dup x1.07, swap x1.07, callvalue x1.06"
-    ],
-    "worse": [
-      "precompile *_uncachable x0.53 to x0.56 (sha256, ripemd160, identity, blake2f, alt_bn128): #25491, bisected (parent 1487 ms, #25491 2359 ms on sha256_uncachable)",
-      "selfdestruct_initcode x0.89, selfdestruct_created x0.90 EVM, x0.83 BAL-on (unconfirmed), storage_access_cold_benchmark x0.91 EVM: likely #25491 too, not bisected; node alt_bn128_benchmark x0.69 (5), back to x1.20 on 11-06"
-    ],
-    "node": {
-      "mgas": 9973.9,
-      "ratio": 1.924,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 9402.3,
-      "ratio": 1.337,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    }
+  "nodebal": {
+   "mgas": 3688.5,
+   "ratio": 0.71,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   },
-  {
-    "date": "2026-11-06",
-    "old": "10c35bcd28c8112614a1b8e19c3cc2dd54d71b5b",
-    "new": "731cb6417cfd3994394f515b984889f3703b3082",
-    "evm": {
-      "mgas": 1090.5,
-      "ratio": 0.763,
-      "best": "nethermind",
-      "valid": 52,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 10050.1,
-      "ratio": 1.927,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 9595.9,
-      "ratio": 1.355,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "main 2026-11-06 731cb6417c; the sub-test run reported a failure but its table was published; no failed rows in the other tiers",
-    "shipped": [
-      "#25770 read a version-map account under one lock; #25828 stripe TemporalMemBatch latest maps over 32 shards; #24792 GenericCache on the lock-free layer; #25746 gate the BAL trie prefetch",
-      "#25824 skip Transfer on a zero-value call to a code account; #25655 share the inverted index's last DB txNum; #25814 sync an account cell's path on a propagate fold; #21729 fork-scoped REST + SSZ Engine API"
-    ],
-    "better": [
-      "node x1.01, BAL-on x1.02: node clz_same x1.25, tstore x1.21 (4), auth_transaction x1.13 (16); BAL-on ether_transfers_to_precompile x1.30 (36), bls12_381 x1.24 (unconfirmed)"
-    ],
-    "worse": [
-      "EVM x0.96, erigon/neth x0.81 to x0.76 (neth x1.05, geth x1.00 on the same box): jumpdests x0.79, mcopy x0.84, returndatacopy x0.84, codecopy x0.86; the only EVM change is #25824, jumpdests and codecopy are layout-sensitive: one night, unconfirmed",
-      "node ripemd160_uncachable x0.53 (3), calldataload x0.86 (8): the EVM tier has ripemd160_uncachable flat and BAL-on x1.10, likely noise; BAL-on blake2f x0.79 (1), block_full_data x0.82 (2): unconfirmed"
-    ]
+  "note": "backfill; EVM x1.04, BAL-on x0.99 vs 362e903341 (10-14)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-16",
+  "old": null,
+  "new": "670e20e109af4f66528c05661d6c446d4551aeee",
+  "evm": {
+   "mgas": 1082.2,
+   "ratio": 0.632,
+   "best": "nethermind",
+   "noise": 0.7,
+   "fixtures": "benchmark@v0.0.7"
   },
-  {
-    "date": "2026-11-07",
-    "old": "731cb6417cfd3994394f515b984889f3703b3082",
-    "new": "365d22b07fa3e1dc7dbc771016c987eefa3c122e",
-    "evm": {
-      "mgas": 1138.1,
-      "ratio": 0.825,
-      "best": "nethermind",
-      "valid": 52,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "note": "main 2026-11-07 365d22b07f; node tiers measured 11-08 morning; no failed rows. BAL-on erigon/best x1.36 to x0.80 is not erigon: the 11-08 weekly re-measured reth x1.73, geth x1.99 over 11-03",
-    "shipped": [
-      "#25864 ReadResult in registers on version-map reads; #25794 WasDestroyed under GetAccount's entry lock; #25830 storage btree under shard 0; #25801 fold only keys touched since the last step edge",
-      "#25798 validate every arrival again (undoes #25559, a candidate for the 11-05 node x1.50); #25859 MODEXP to evmone for big exponents; #25874 ETL spill files with RWF_DONTCACHE"
-    ],
-    "better": [
-      "EVM x1.04, erigon/neth x0.76 to x0.82: returndatacopy x1.21, mcopy x1.18, codecopy x1.16, jumpdests x1.13 win back the 11-06 losses; against 11-05 the tier is x0.99, so the 11-06 dip was noise",
-      "node x1.00, BAL-on x1.01: node modexp_uncachable x1.20 (3, likely #25859), p256verify x1.26 (3); ripemd160_uncachable x1.85 (3) and calldataload x1.14 (8) win back the 11-06 drop; BAL-on mcopy x1.06 (48), bitwise x1.08 (7): unconfirmed"
-    ],
-    "worse": [
-      "EVM push x0.89 against both 11-06 and 11-05; the only EVM-path change is #25859 (MODEXP), so likely code layout: one night, unconfirmed",
-      "node create x0.89 (20) and contract_creation x0.92 (6) against 11-05, below x0.95 on both nights, BAL-on flat: candidates #25770, #25798, not bisected; BAL-on ext_account_query_cold x0.88 (2), also two nights; node iszero x0.76 (1), BAL-on modexp_length_above_upper_bound x0.82 (3): one night, unconfirmed"
-    ],
-    "node": {
-      "mgas": 10022.6,
-      "ratio": 1.92,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 9652.8,
-      "ratio": 0.802,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    }
+  "node": {
+   "mgas": 1844.6,
+   "ratio": 0.713,
+   "best": "reth",
+   "noise": 1.0,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-11-08",
-    "old": "365d22b07fa3e1dc7dbc771016c987eefa3c122e",
-    "new": "e0baadbb4b394ca5e39fecad2fb681809b24a8d9",
-    "evm": {
-      "mgas": 1151.2,
-      "ratio": 0.818,
-      "best": "nethermind",
-      "valid": 51,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 10139.0,
-      "ratio": 1.173,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 9653.2,
-      "ratio": 0.806,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "main 2026-11-08 e0baadbb4b, measured 11-09 morning; (*EVM).run at offset 32 (0 on the other nights), so layout-sensitive EVM files move; no failed rows. Node erigon/best x1.92 to x1.17 is not erigon: the 11-09 weekly re-measured nethermind x1.67, reth x1.34, geth x1.30 over 11-03",
-    "shipped": [
-      "#25907 CALLDATALOAD inlined, in the cold switch; #25920 one senders path per block, cached on the tx; #25886 BAL batch prefetch on by default; #25934 skip interning read-only BAL accounts at seeding",
-      "#25908 branch cache tail 125k entries; #25913 tracers see tx writes at tx end on NoMaterialize; #25862 BAL-seeded cells no longer trip the Done->Estimate assert; #25512 root leaf path after a propagate fold"
-    ],
-    "better": [
-      "EVM x1.01, node x1.01, BAL-on x1.00. EVM push x1.14 wins back the 11-07 x0.89; node jumpi_fallthrough x1.20 (1), iszero x1.28 (1, back after 11-07); BAL-on contract_calling_many_addresses x1.10 (8), swapn x1.08 (3): all held on 11-09"
-    ],
-    "worse": [
-      "cheap precompiles against 11-07, held on 11-09: EVM identity_uncachable x0.91, blake2f_benchmark x0.92, blake2f_uncachable x0.92, sha256_fixed_size x0.94; node blake2f_benchmark x0.88 (4), blake2f_uncachable x0.93 (4), identity_uncachable x0.94 (3); BAL-on blake2f_benchmark x0.90 (4): likely #25907 (the only interpreter change, it rebuilds the dispatch loop), not bisected",
-      "bls12_381 node x0.91 (7), then x0.84 on 11-09; EVM x0.94, then x0.91: two nights, not bisected. BAL-on tstore x0.85 (4), deploy_then_interact x0.91 (5), jumps x0.92 (1): one night, unconfirmed"
-    ]
+  "rpc": {
+   "main": "39cd621455a4b69c9e9f2474e2726f8e7b5b7a29",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 200,
+    "trace-tx-33": 200
+   }
   },
-  {
-    "date": "2026-11-09",
-    "old": "e0baadbb4b394ca5e39fecad2fb681809b24a8d9",
-    "new": "5d26726c59bb6b6b37b19eca3f433b194d8792df",
-    "evm": {
-      "mgas": 1128.7,
-      "ratio": 0.797,
-      "best": "nethermind",
-      "valid": 51,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 10032.4,
-      "ratio": 1.158,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 9575.6,
-      "ratio": 0.801,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "main 2026-11-09 5d26726c59; (*EVM).run back at offset 0; no failed rows",
-    "shipped": [
-      "#25945 no per-transaction allocations in the publish loop; #25936 cached eth_gasPrice without a temporal tx; #25981 remove the unused ForkValidator; #25839 first log txNum from the range's first block; #25885 txpool skips the startup reload wait"
-    ],
-    "better": [
-      "EVM files outside the layout list x1.02 (node x0.99, BAL-on x0.99): arithmetic x1.10, scenario ether_transfers x1.11, iszero x1.07 win back 11-08; node calldataload x1.13 (8), tstore x1.16 (4), ripemd160_uncachable x1.19 (3): one night, unconfirmed"
-    ],
-    "worse": [
-      "EVM x0.98, erigon/neth x0.82 to x0.80: codesize x0.84, shifts x0.84, blobhash x0.88, jumpdests x0.88 are the layout-sensitive files going back from offset 32 to 0, no code change; node codesize x0.76 (1), jumpdests x0.80 (1), returndatasize_nonzero x0.87 (12) and BAL-on x0.84 (12) follow the same files: unconfirmed",
-      "cheap precompiles stay down (EVM identity_uncachable x0.91, blake2f_benchmark x0.92 of 11-07), see 11-08; BAL-on point_evaluation x0.45 (1), ripemd160_uncachable x0.61 (4): one night, unconfirmed"
-    ]
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-17",
+  "old": "670e20e109af4f66528c05661d6c446d4551aeee",
+  "new": "6540ff4718d3d7285a76fed017c092d581c19e98",
+  "evm": {
+   "mgas": 1086.6,
+   "ratio": 0.634,
+   "best": "nethermind",
+   "noise": 0.7,
+   "fixtures": "benchmark@v0.0.7"
   },
-  {
-    "date": "2026-11-10",
-    "old": "5d26726c59bb6b6b37b19eca3f433b194d8792df",
-    "new": "f0ab4a2cd2fceab1cd68dde9b0299f5854fe8306",
-    "evm": {
-      "mgas": 1176.3,
-      "ratio": 0.82,
-      "best": "nethermind",
-      "valid": 52,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 10119.4,
-      "ratio": 1.167,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 9889.8,
-      "ratio": 0.825,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "main 2026-11-10 f0ab4a2cd2; (*EVM).run at offset 32 again (0 on 11-09), so layout-sensitive EVM files move; no failed rows",
-    "shipped": [
-      "#26049 faster uint256 Mod; #26039 Empty on an absent account only records the read; #26064 one BAL storage read entry per slot; #25979 validated and sealed writes without the entry lock; #25954 less per-tx work in the BAL builder; #26018 balance of accounts created from an absent base"
-    ],
-    "better": [
-      "EVM x1.04 (erigon/neth x0.80 to x0.82), node x1.01, BAL-on x1.03. mod x1.72 to x1.75 in all three tiers: #26049. EVM precompile *_uncachable x1.79 to x1.89 (sha256, ripemd160, identity, blake2f, alt_bn128), the 11-05 #25491 loss is back: likely #26039, not bisected",
-      "BAL-on contract_calling_many_addresses x1.20 (8), deploy_then_interact x1.19 (5), ether_transfers x1.15 (60), storage_access_cold x1.12 (14): likely #26039/#26064/#25979, one night, unconfirmed. Layout files codesize x1.17, shifts x1.15, jumpdests x1.13 go back to 11-08"
-    ],
-    "worse": [
-      "EVM push x0.86 (x0.85 vs 11-08 at the same offset), iszero x0.87, arithmetic x0.91; node iszero x0.75 (1), not_op x0.77 (1), bn128_pairings_amortized x0.83 (1), calldataload x0.88 (8, its 11-09 win given back): these files swing every night, unconfirmed; the 11-09 drops (codesize, jumpdests, BAL-on point_evaluation, ripemd160_uncachable) did not hold"
-    ]
+  "node": {
+   "mgas": 1803.9,
+   "ratio": 0.694,
+   "best": "reth",
+   "noise": 1.0,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-11-11",
-    "old": "f0ab4a2cd2fceab1cd68dde9b0299f5854fe8306",
-    "new": "57ca3827fcaab8ff6c83238ed85779826bb6d2a2",
-    "evm": {
-      "mgas": 1162.4,
-      "ratio": 0.82,
-      "best": "revme",
-      "valid": 50,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 10425.0,
-      "ratio": 1.198,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 10031.2,
-      "ratio": 0.838,
-      "best": "reth",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "main 2026-11-11 57ca3827fc; EVM x0.99 only because tstore and extcodecopy_warm went grey (52 to 50 valid), x1.03 on the same 50 files; best EVM client is now revm; no failed rows. 2026-11-12: lab.sh adds GODEBUG=gctrace=1 to every lab arm (gc= column); lab numbers before/after 2026-11-12 are a harness change",
-    "shipped": [
-      "#26062 warm Empty and repeat absent reads use the read set; #26041 a slot's prev value from its write record; #26060 copy the writes of a charged tx once; #26082 match the BAL sidecar without sorting the builder; #26081 bounded window for blocks without a BAL; #26029 trie prefetch gate samples storage tries; #26095 EIP-8246 create and destroy"
-    ],
-    "better": [
-      "node x1.03, broad: codesize x1.26 (1), contract_creation x1.20 (6), shifts x1.17 (2), call_frame_context_ops x1.16 (4), returndatasize_nonzero x1.13 (12), calldatasize x1.13 (8), swap x1.09 (16), dup x1.07 (16): likely #26062/#26041/#26060, one night, unconfirmed. EVM push x1.19, alt_bn128 x1.11, blake2f x1.09 win back 11-10",
-      "BAL-on x1.01: jumpdests x1.19 (1), state_root_computation x1.13 (6), returndatasize_nonzero x1.12 (12), swap x1.11 (16), storage_access_cold x1.09 (14): unconfirmed; the 11-10 BAL-on wins (ether_transfers, contract_calling_many_addresses, deploy_then_interact) held"
-    ],
-    "worse": [
-      "block_full_data down two nights: node x0.89 then x0.96 (x0.86 vs 11-09, 2 tests), EVM x0.97 then x0.94: GC noise, not a code change (isolated A/B of the three commits flat, 2026-11-12); block_full_data is now tagged GC-noisy (run/gc-noisy.txt) and goes to Worse only past 30% on 3 consecutive nights or on gc=0 rounds; node not_op x0.77 then x0.88 (x0.68 vs 11-09, 1 test)",
-      "BAL-on clz_same x0.81 (1), ripemd160 x0.84 (1), identity x0.84 (1), iszero x0.86 (1), extcodecopy_warm x0.91 (5): one night, unconfirmed, the single-test ones gave back their 11-10 wins"
-    ]
+  "rpc": {
+   "main": "6540ff4718d3d7285a76fed017c092d581c19e98",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
   },
-  {
-    "date": "2026-11-12",
-    "old": "57ca3827fcaab8ff6c83238ed85779826bb6d2a2",
-    "new": "d615f2a61029d119de7127673138ce2d05c07e66",
-    "evm": {
-      "mgas": 1185.1,
-      "ratio": 0.838,
-      "best": "nethermind",
-      "valid": 51,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 10253.8,
-      "ratio": 1.182,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 9985.4,
-      "ratio": 0.787,
-      "best": "nethermind",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "main 2026-11-12 d615f2a610; (*EVM).run at offset 32 as on 11-11; EVM 51 valid files (50 on 11-11); BAL-on best client is now nethermind after its 11-12 re-run (erigon/nethermind x1.48 to x0.79; erigon/reth x0.84 to x0.83), an other-client change; no failed rows",
-    "shipped": [
-      "#25933 run ValidateChain on the given block, chunk the payload decode; the rest is CL, RPC, tracers and tests (#25739, #25994, #26066, #26074)"
-    ],
-    "better": [
-      "EVM x1.02, no file past 3%. create x1.07 (20) in node and x1.06 in BAL-on, the second night up in both (x1.11/x1.13 vs 11-10): likely #26062 (warm Empty and absent reads from the read set). node not_op x1.47 (1), jumps x1.18 (1), unchunkified_bytecode x1.09 (7), extcodecopy_warm x1.08 (5); block_full_data x1.12 (2, GC-noisy), maybe #25933: one night, unconfirmed",
-      "BAL-on clz_same x1.20 (1), tstore x1.17 (4), ripemd160 x1.13 (1), creates_collisions x1.13 (2), contract_creation x1.10 (6), ether_transfers_to_precompile x1.07 (36), ether_transfers x1.06 (60): one night, unconfirmed; the single-test ones win back their 11-11 losses"
-    ],
-    "worse": [
-      "node x0.98: the 11-11 wins given back (codesize x0.81, shifts x0.87, calldatasize x0.88, call_frame_context_ops x0.89, returndatasize_nonzero x0.90, dup x0.91, swap x0.93), about flat vs 11-10. node tload x0.79 (4, x0.87 vs 11-10), alt_bn128_benchmark x0.89 (5, num_pairs_6 halved), bls12_g1_msm x0.89 (4): one night, unconfirmed",
-      "BAL-on x1.00: the same 11-11 wins given back (calldatasize x0.87, call_frame_context_ops x0.88, returndatasize_nonzero x0.90, dup x0.90, swap x0.91); shifts_beyond_word_size x0.97 after x0.94 (8), x0.94 vs its 11-06..11-10 range, second night down: 11-11 PRs, not bisected. jumpdests x0.82 (1), clz_diff x0.83 (1), blobhash x0.86 (2): unconfirmed; block_full_data x0.81 (2) GC-noisy, under the 30% rule"
-    ]
+  "better": [
+   "node return_revert 1 MiB RETURN 5198 -> 22019 Mgas/s (+324%)",
+   "node ether_transfers diff_acc_to_b, empty account 49 -> 148 Mgas/s (+203%)",
+   "RPC getlogs-1block p99 at 3000 rps 64 -> 46 ms (-28%)",
+   "EVM instruction/bitwise 1875 -> 1932 Mgas/s (+3.1%)",
+   "EVM instruction/storage_access_cold_benchmark 2721 -> 2784 Mgas/s (+2.3%)"
+  ],
+  "worse": [
+   "RPC trace-block-33 knee 200 -> 50 rps; p99 at 10 rps 87 -> 101 ms (+16%)",
+   "RPC qa-mixed p99 at 1000 rps 49 -> 61 ms (+24%)",
+   "node ether_transfers a_to_a, empty account 5385 -> 2846 Mgas/s (-47%)",
+   "node shifts 674 -> 542 Mgas/s (-20%), jumpdests 852 -> 744 (-13%), create 33828 -> 30006 (-11%)",
+   "node suite 1844.6 -> 1803.9 Mgas/s (-2.2%), in compute loops; the EVM tier on the same code is flat, code layout suspected",
+   "RPC block-receipts p99 at 300 rps 9.3 -> 9.8 ms (+4%)",
+   "EVM instruction/comparison 1729 -> 1697 Mgas/s (-1.8%)"
+  ],
+  "bottlenecks": [
+   "node tload, fresh keys: 359 vs reth 15757 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)",
+   "node ether_transfers diff_acc_to_b, empty account: 41 vs nethermind 1752 (x0.02), #24976; top frame runtime.cgocall 12.1% (secp256k1 recover), then the validation loop",
+   "node ether_transfers diff_acc_to_b, non-empty account: 72 vs reth 1543 (x0.05), #24976; same path",
+   "node ether_transfers diff_acc_to_b, delegated account: 114 vs reth 1402 (x0.08), #24976; same path",
+   "node EXP: 1124 vs nethermind 13230 (x0.08), no PR; top frame runtime.cgocall 6.1% (MDBX put), uint256.(*Int).Mul 4.6%"
+  ],
+  "shipped": [
+   "#24957 execution/state: setCreatedCode reads the created account's code writes once: tx time -5.7%",
+   "#24963 node: buffer gzip output before the response writer: qa-getlogs CPU per request -11.3% at 3000 rps",
+   "#24914 go.mod: otter main, with the in-place replacement of a live key: exec cold-account family -1.4%",
+   "#24920 rpc: the replay methods use eth_call's state path: debug_traceBlockByNumber 252 -> 221 rps",
+   "#24916 rpc: eth_estimateGas, eth_createAccessList and debug_traceCall run on the versioned state path: eth_estimateGas 964 -> 908 rps",
+   "#24915 execution: benchmarks run on the versioned noMaterialize state, as eth_call does",
+   "#24892 cl: close the persistent block collector when the stage loop exits",
+   "#24891 cl/beacon/handler: proposer_lookahead reads epoch data by slot"
+  ]
+ },
+ {
+  "date": "2026-10-17",
+  "old": "6540ff4718d3d7285a76fed017c092d581c19e98",
+  "new": "df6a0a67cdcb4f2bd509bdb4f1d5a8ff1849ad14",
+  "evm": {
+   "mgas": 1016.2,
+   "ratio": 0.528,
+   "best": "nethermind",
+   "noise": 0.7,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-11-13",
-    "old": "d615f2a61029d119de7127673138ce2d05c07e66",
-    "new": "d5f161f4be0ca9481598f87c5dca79b69e489afd",
-    "evm": {
-      "mgas": 1163.7,
-      "ratio": 0.815,
-      "best": "nethermind",
-      "valid": 50,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 10274.2,
-      "ratio": 1.189,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 10041.2,
-      "ratio": 0.795,
-      "best": "nethermind",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "main 2026-11-13 d5f161f4be; (*EVM).run at offset 32 as on 11-12; EVM x0.98 only because tstore went grey (51 to 50 valid), x1.00 on the same 50 files; erigon/neth x0.84 to x0.82 with erigon flat; no failed rows",
-    "shipped": [
-      "#26088 a call that cannot pay its precompile does not wait on it; #26104 block warmup no longer re-reads keys the state cache holds; #26098 decode the BAL into a presized list; #26080 a write the BAL holds leaves readers clean; #26153 depend on an in-flight destruct on a committed read; #26242 flush buffered writes in write order; the rest is CL, txpool, tests and cleanups (#25925, #26067, #26109, #26107)"
-    ],
-    "better": [
-      "node x1.00: ether_transfers_to_precompile x1.34 (36): #26088. alt_bn128_benchmark x1.22 (5) and tload x1.10 (4) win back their 11-12 losses; EVM iszero x1.05 (1), no other EVM file past 3%",
-      "BAL-on x1.01: alt_bn128 x1.13 (22), contract_calling_many_addresses x1.11 (8), ext_account_query_cold x1.10 (2), storage_access_cold x1.07 (14): likely #26104/#26098/#26080, one night, unconfirmed; shifts_beyond_word_size x1.09 (8) ends its two-night drop; block_full_data x1.22 (2) GC-noisy"
-    ],
-    "worse": [
-      "node p256verify x0.91 (3), second night down past 5% (x0.94 on 11-12, x0.82 vs 11-10), still inside its 11-06..11-10 range: not bisected. node storage_access_cold_benchmark x0.89 (3), storage_access_warm_benchmark x0.91 (3), point_evaluation x0.89 (1), bls12_381 x0.91 (7), calldataload x0.92 (8): one night, unconfirmed; create x0.94 (20) and extcodecopy_warm x0.91 (5) give back 11-12",
-      "BAL-on alt_bn128_benchmark x0.86 (5), bls12_381 x0.90 (5), comparison x0.92 (5): one night, unconfirmed; create x0.93 (20) gives back its two-night gain"
-    ]
+  "node": {
+   "mgas": 1848.8,
+   "ratio": 0.699,
+   "best": "reth",
+   "noise": 1.0,
+   "fixtures": "tests-benchmark@v0.0.9"
   },
-  {
-    "date": "2026-11-14",
-    "old": "d5f161f4be0ca9481598f87c5dca79b69e489afd",
-    "new": "d20da4d8e92cfa4e5ddffbce528d142c251a9123",
-    "evm": {
-      "mgas": 1124.9,
-      "ratio": 0.812,
-      "best": "nethermind",
-      "valid": 50,
-      "noise": 0.8,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "node": {
-      "mgas": 10450.9,
-      "ratio": 1.209,
-      "best": "nethermind",
-      "valid": 1073,
-      "noise": 0.9,
-      "fixtures": "tests-benchmark@v0.0.9"
-    },
-    "nodebal": {
-      "mgas": 10071.0,
-      "ratio": 0.797,
-      "best": "nethermind",
-      "valid": 1161,
-      "noise": 0.3,
-      "fixtures": "glamsterdam-devnet@v8.1.4"
-    },
-    "note": "main 2026-11-14 d20da4d8e9; (*EVM).run back at offset 0 (32 on 11-10..11-13), so EVM x0.97 is code layout: the layout-sensitive files fall (codesize, shifts x0.82, call_frame_context_ops x0.85), the other 27 files x1.01; no failed rows",
-    "shipped": [
-      "#26239 remove the serial executor; #26154 skip validating quiet base reads of account paths; #26101 skip storage-read checks for BAL-unchanged accounts; #26248 one cheaper rlp header path; #26244 BAL decode allocates once per kind; #26217/#26269 BAL warmup skips code-hash seeds; #26009, #26019 state fixes; #25299 payload header check before sender recovery; the rest is CL, CI, RPC and cleanups (#25846, #26050, #26197, #26310)"
-    ],
-    "better": [
-      "node x1.02: ext_account_query_cold x1.40 (2), contract_calling_many_addresses x1.15 (8), selfdestruct_existing x1.14 (2), storage_access_cold x1.11 (14), modexp x1.06 (89): likely #26154/#26101, one night, unconfirmed. p256verify x1.15 (3), storage_access_cold_benchmark x1.17 (3), calldataload x1.10 (8), bls12_381 x1.08 (7) win back 11-13, so the p256verify drop was noise",
-      "BAL-on x1.00: alt_bn128_benchmark x1.22 (5), ext_account_query_cold x1.21 (2), creates_reverting_initcode x1.16 (6), deploy_then_interact x1.10 (5), storage_access_cold x1.09 (14), state_root_computation x1.08 (6): likely #26101/#26154, one night, unconfirmed; block_full_data x1.23 (2) GC-noisy"
-    ],
-    "worse": [
-      "BAL-on alt_bn128_uncachable x0.93 (3), second night down past 5% (x0.92 on 11-13, x0.85 vs 11-12), now below its 11-06..11-13 range: not bisected, no precompile change merged",
-      "BAL-on p256verify x0.77 (3), tstore x0.80 (4), pc_op x0.85 (1), callvalue_from_origin x0.87 (2), prefetch_cold_storage x0.87 (1): one night, unconfirmed; node modexp_uncachable x0.83 (3), identity x0.87 (1): one night, unconfirmed"
-    ]
+  "better": [],
+  "worse": [],
+  "bottlenecks": [
+   "node ether_transfers diff_acc_to_b, amount 1 (4 rows): 34-54 vs nethermind 1603-1854 (x0.02-0.03), #24976; top frame runtime.cgocall 12.1% (secp256k1 recover), then the validation loop",
+   "node tload, fresh keys: 360 vs reth 15237 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)",
+   "EVM instruction/storage_access_cold: 2389 vs revme 45916 (x0.05), no PR, not profiled yet",
+   "EVM instruction/calldatacopy_from_origin: 731 vs nethermind 9600 (x0.08), no PR, not profiled yet",
+   "EVM instruction/ext_account_query_cold: 2517 vs revme 32173 (x0.08), no PR, not profiled yet"
+  ],
+  "shipped": [
+   "#24960 rpc: calls with state overrides run on the versioned state path"
+  ]
+ },
+ {
+  "date": "2026-10-18",
+  "old": "df6a0a67cdcb4f2bd509bdb4f1d5a8ff1849ad14",
+  "new": "3b184f9855ef0b088e11bee32fb66980eda55bdc",
+  "evm": {
+   "mgas": 1022.9,
+   "ratio": 0.58,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 1801.6,
+   "ratio": 0.466,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 3615.9,
+   "ratio": 0.692,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "backfill; node x0.97 vs df6a0a67cd (10-17)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-19",
+  "old": "df6a0a67cdcb4f2bd509bdb4f1d5a8ff1849ad14",
+  "new": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82",
+  "evm": {
+   "mgas": 1046.3,
+   "ratio": 0.544,
+   "best": "nethermind",
+   "noise": 0.2,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 1856.4,
+   "ratio": 0.703,
+   "best": "reth",
+   "noise": 1.1,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "better": [
+   "erigon here is main 6f95064a20 plus open PRs #25040 #25038 #25034 #25026 #24968; EVM tier +3.0% (noise 0.2%), node tier +1.3% (noise 1.1%), RPC knees unchanged",
+   "node EXP 1135 -> 61098, bls12 g1msm/g2msm x11-x29 (#25023, #25035)",
+   "node tload fresh keys 357 -> 8381 (#24968)",
+   "node ether_transfers diff_acc_to_b, amount 1: 18-66 -> 363-415 (#24976)",
+   "EVM call_frame_context_ops 176 -> 433 (#25034), tstore +32%",
+   "RPC block-receipts p99 -31% at every rate (#25026, #25025)"
+  ],
+  "worse": [
+   "node ether_transfers_to_precompile, amount 1 (17 rows): ~740 -> ~465 (-36%); amount 0 unchanged; suspect #25040",
+   "node 1MiB zero-data REVERT 22414 -> 5278 (cell noise 27%)",
+   "EVM dup/bitwise/swap/push -5..-8% (same code alignment in both builds)"
+  ],
+  "bottlenecks": [
+   "node 1MiB zero-data REVERT/RETURN: 5278/6896 vs reth 62927/65212 (x0.08-0.11)",
+   "node unchunkified_bytecode EXTCODECOPY/DELEGATECALL/CALL: 170-185 vs reth 1572-1976 (x0.09-0.11)",
+   "EVM instruction/storage_access_cold: 2401 vs revme 45916 (x0.05)",
+   "EVM instruction/ext_account_query_cold: 2547 vs revme 32173 (x0.08)",
+   "EVM instruction/calldatacopy_from_origin: 770 vs nethermind 9600 (x0.08)"
+  ],
+  "shipped": [
+   "#25023 vm: use word arithmetic for small EXP results",
+   "#25035 vm: reuse adjacent validated BLS points in MSM",
+   "#24976 execution/stagedsync: stop validation at the first result that cannot commit",
+   "#25025 types/ethutils: reuse the cached sender in receipt responses",
+   "#25024 types: reuse cached Keccak hashes for bloom construction",
+   "#25022 rpc/transactions: skip unused BAL recording during traces",
+   "#25009 vm: avoid redundant zeroing when copying log data"
+  ],
+  "dbg": true
+ },
+ {
+  "date": "2026-10-19",
+  "old": "2d7d1bed5f37bc2aecc041b133599ec7adea7a82",
+  "new": "77d3569d13973ae5e4e8220f5541e670e04bd814",
+  "evm": {
+   "mgas": 1081.3,
+   "ratio": 0.562,
+   "best": "nethermind",
+   "noise": 0.1,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 1867.5,
+   "ratio": 0.708,
+   "best": "reth",
+   "noise": 0.5,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "77d3569d13973ae5e4e8220f5541e670e04bd814",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "better": [
+   "EVM tier 1045.9 -> 1081.3 Mgas/s (+3.4%), mostly opcode loops: comparison 1427 -> 1693 (+19%), push 592 -> 680 (+15%), shifts 576 -> 663 (+15%); the two builds differ in EVM.run alignment, layout suspected",
+   "node 1 MiB LOG rows 26k-30k -> 74k-81k Mgas/s (x2.7-x3.1)",
+   "node dup 989 -> 1086 Mgas/s (+9.8%), memory_access 1320 -> 1404 (+6.4%)"
+  ],
+  "worse": [
+   "node tload, fresh keys 8258 -> 359 Mgas/s and tstore 4493 -> 3458 (-23%): the previous point carried open #24968, main does not",
+   "EVM instruction/tstore 2010 -> 1493 Mgas/s (-26%), same reason",
+   "node return_revert empty REVERT 427 -> 373 Mgas/s (-13%), identity 756 -> 666 (-12%)",
+   "EVM instruction/call_context.call_frame_context_ops 434 -> 407 Mgas/s (-6%)"
+  ],
+  "bottlenecks": [
+   "node tload, fresh keys: 359 vs reth 15237 (x0.02), #24968; top frame runtime.(*mspan).specialFindSplicePoint 15.7% (unique.Make)",
+   "EVM instruction/storage_access_cold: 2415 vs revme 45916 (x0.05), no PR; top frame fastkeccak.keccakF1600BMI2 5.8%, then GC 4.3%, go-freelru ShardedLRU.Len 2.0%",
+   "EVM instruction/ext_account_query_cold: 2551 vs revme 32173 (x0.08), no PR; top frame runtime.tryDeferToSpanScan 5.8% (GC), mapaccess2_fast64 4.7%",
+   "EVM scenario/ether_transfers: 555 vs revme 6856 (x0.08), no PR; top frame secp256k1_gej_double 18.9%, sender recovery about 43%",
+   "EVM instruction/calldatacopy_from_origin: 788 vs nethermind 9600 (x0.08), no PR; top frame vm.(*EVM).run 59%, memoryCopierGas 6.5%"
+  ],
+  "shipped": [
+   "#25034 vm: reuse address words within a call frame: ADDRESS 852 -> 342 ms (2.49x)",
+   "#25040 execution/stagedsync: schedule transfers after recipient validation: ether_transfers empty cold 1088 -> 402 ms (2.71x)",
+   "#25038 vm: evaluate powers of minus one from exponent parity: EXP all-ones 41x",
+   "#25026 types/ethutils: batch timestamped receipt log allocations: 100-log receipt -64%"
+  ]
+ },
+ {
+  "date": "2026-10-20",
+  "old": "77d3569d13973ae5e4e8220f5541e670e04bd814",
+  "new": "228c92c7c4c42aa4e660586b994fb26278dfdd51",
+  "evm": {
+   "mgas": 1083.7,
+   "ratio": 0.634,
+   "best": "revme",
+   "noise": 0.4,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 1910.0,
+   "ratio": 0.492,
+   "best": "nethermind",
+   "noise": 0.5,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "228c92c7c4c42aa4e660586b994fb26278dfdd51",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "better": [
+   "node callvalue_from_call +93%, callvalue_from_origin +58%; EVM +85% / +65% (#25089)",
+   "node mcopy +58% over 48 tests (#25071)",
+   "node tload +102%, tstore +29%; EVM tstore +36% (#24968, in main again)",
+   "node calldataload +11% over 8 tests"
+  ],
+  "worse": [
+   "EVM ops off the fast path: blobhash -11%, returndatasize_zero -9%, push -8%, calldatasize -7%, shifts -7%, not -6%: the fast-op switch is still a binary search, not a jump table",
+   "node iszero -19%, return_revert -16% over 10 tests, jumpdests -13%"
+  ],
+  "bottlenecks": [
+   "node ether_transfers: 60 tests at x0.32 of reth; one-account case 36 ms vs 5.5 ms per block",
+   "node log and log_benchmark: 140 tests at x0.35-0.49 of reth; the 1 MiB LOG rows flip between ~25k and ~75k Mgas/s run to run",
+   "node vs nethermind: 2.2.0 is x2 faster than 2.1.0 here; erigon / nethermind 0.49 without precompiles"
+  ],
+  "shipped": [
+   "#25071 vm: run MCOPY on the fast path when memory need not grow",
+   "#25089 vm: run CALLVALUE on the fast path",
+   "#25017 #24991 #24966 #24961 (lupin012, RPC)"
+  ],
+  "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs",
+  "dbg": true
+ },
+ {
+  "date": "2026-10-20",
+  "old": "228c92c7c4c42aa4e660586b994fb26278dfdd51",
+  "new": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
+  "evm": {
+   "mgas": 1091.3,
+   "ratio": 0.639,
+   "best": "revme",
+   "noise": 0.2,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 2012.1,
+   "ratio": 0.503,
+   "best": "nethermind",
+   "noise": 1.1,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "shipped": [
+   "#25109 execution/execmodule: answer a re-sent validated side-fork payload as VALID without an unwind",
+   "#25100 exec: evmone_precompiles v0.25.0",
+   "#25072 execution/cache: faster code-cache fill when loading cold contracts",
+   "#25091 execution/cache: no copy for a state-cache fill that is refused (merged)",
+   "#25103 execution/state: higher logArena limits",
+   "main up to e8222a2356 (#25094)"
+  ],
+  "better": [
+   "node suite +4.8% (noise 1.1%), EVM tier +0.8% (noise 0.2%); RPC knees the same on 7 of 7 workloads, p99 one rate below the knee within noise",
+   "node modexp x1.41 over 89 tests, 33 of them x2.8-x4.2; EVM precompile/modexp_uncachable 5306 -> 8637 Mgas/s (+63%) (#25100)",
+   "node ether_transfers to self (a_to_a), empty and non-empty account: 8 tests at x2.5-x3.3, now 13-16k Mgas/s",
+   "node bls12_pairing x1.32 over 5 tests, block_full_data +19%, unchunkified_bytecode +14%",
+   "EVM push +12%, blobhash +9%, returndatasize_zero +7%, calldatasize +6%; the two EVM builds differ in EVM.run alignment, so single-opcode rows can move by layout"
+  ],
+  "worse": [
+   "node auth_transaction (empty account) -30%, SWAP16 -16%, DUP9 -11%, calldatasize 1024 bytes -11%, COINBASE -11%, iszero -13%",
+   "EVM jumpdests 861 -> 739 Mgas/s (-14%), memory_access -9%, return_revert -5%"
+  ],
+  "bottlenecks": [
+   "node block_full_data[zero_byte_True]: dbg is ~10% slower than main here (1538 vs 1707 Mgas/s when only this family runs)",
+   "node block_full_data[zero_byte_True]: the full-suite number (~880) is about half of a family-only run; earlier tests in the same process slow it down, a harness effect",
+   "eth_call per transaction: erigon / reth 1.43 over 24 transactions, behind only on transferFrom x262 (0.86) and the modexp proof verify (0.92)"
+  ],
+  "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; gevm added to the EVM tier",
+  "dbg": true
+ },
+ {
+  "date": "2026-10-20",
+  "old": "77d3569d13973ae5e4e8220f5541e670e04bd814",
+  "new": "ec01a338c69d81330c0f81952ac693b0a7f819c7",
+  "evm": {
+   "mgas": 1074.5,
+   "ratio": 0.609,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 1963.1,
+   "ratio": 0.5,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 3845.4,
+   "ratio": 0.73,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "backfill; node x1.05 vs 77d3569d13 (10-19)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-21",
+  "old": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
+  "new": "b03dee1904f6a01c43d9acf95c19d284382a6ba8",
+  "evm": {
+   "mgas": 1169.0,
+   "ratio": 0.708,
+   "best": "revme",
+   "noise": 0.13,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 2012.1,
+   "ratio": 0.503,
+   "best": "nethermind",
+   "noise": 1.1,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "shipped": [
+   "#25164 execution/vm: run cheap context, bitwise, DUP9-16 and SWAP5-16 ops inline",
+   "#25155 execution/vm: reuse an output buffer for the identity precompile",
+   "#25160 execution/state: emit no writes for an account created and destroyed in one tx",
+   "#25153 execution/types: keep BAL storage reads as raw hashes",
+   "#25146 execution/vm: MULMOD with a cached reciprocal",
+   "#25118 execution/vm: push-free JUMPDEST analysis step",
+   "#25145 rpc/ethapi: fastjson accessList",
+   "#25116 execution: keep the executed state of a re-sent head payload",
+   "main merged"
+  ],
+  "better": [
+   "EVM tier +10.7% (noise 0.13%); node and RPC tiers not re-measured in this snapshot",
+   "EVM identity x4.7, identity_uncachable x2.0 (#25155)",
+   "EVM block_context_ops +48%, call_frame_context +48%, returndatasize +50..56%, calldatasize +44%, codesize +45%, not +53%, jumpdest_analysis +45% (#25164, #25118)"
+  ],
+  "worse": [
+   "EVM clz_same -20%, selfbalance -13%, clz_diff -6%: ops left on the generic path pay one more taken branch (#25164)"
+  ],
+  "bottlenecks": [],
+  "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; node and RPC numbers are from the 2026-10-20 snapshot",
+  "dbg": true
+ },
+ {
+  "date": "2026-10-21",
+  "old": "b03dee1904f6a01c43d9acf95c19d284382a6ba8",
+  "new": "0d9cecb17a501c44766d8dcf7c04a5f77e0fdbf5",
+  "evm": {
+   "mgas": 1161.2,
+   "ratio": 0.69,
+   "best": "revme",
+   "noise": 0.11,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 2232.6,
+   "ratio": 0.534,
+   "best": "nethermind",
+   "noise": 1.1,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "ab8c3df4666e52771130c9e4d8d2d86adb50aa81",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "shipped": [
+   "#25181 Makefile: build C++ cgo deps without NDEBUG",
+   "#25185 execution/vm: write PREVRANDAO straight into its stack slot",
+   "#25186 execution/vm: copy cached address words onto the stack without a memmove call on amd64",
+   "#25072 execution/cache: faster code-cache fill when loading cold contracts (simpler version)",
+   "#25156 execution/vm: pin MCOPY fast-path bounds (tests only)"
+  ],
+  "better": [
+   "node BAL-off +10.9% (1075 tests, noise 1.1%), BAL-on +9.5% (1161 tests)",
+   "node modexp x5.6..8.2 on 30 tests (#25181), identity x8.2 BAL-off and x14.9 BAL-on (#25155)"
+  ],
+  "worse": [
+   "EVM tier -2.4% (noise 0.11%): shifts -24%, calldatasize -23%, codesize -19%, call_frame_context -16%, jumpdests -14%; code layout, not a code change: the binaries differ in EVM.run alignment, and at equal alignment the #25164 op table is 1.4% faster than the range check it replaced"
+  ],
+  "bottlenecks": [],
+  "note": "erigon is the vm_bench_39_dbg branch, not main: main plus open PRs; EVM tier is dbg 8e711db2b3, node tier dbg 0d9cecb17a (projected: page numbers times the A/B ratio on the same box); RPC numbers are from the 2026-10-20 snapshot",
+  "dbg": true
+ },
+ {
+  "date": "2026-10-21",
+  "old": "77d3569d13973ae5e4e8220f5541e670e04bd814",
+  "new": "3324fd6b4819011a7bc7b392babbec3a28e3366b",
+  "evm": {
+   "mgas": 1091.2,
+   "ratio": 0.639,
+   "best": "revme",
+   "noise": 0.4,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 2037.8,
+   "ratio": 0.515,
+   "best": "nethermind",
+   "noise": 1.0,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "rpc": {
+   "main": "3324fd6b4819011a7bc7b392babbec3a28e3366b",
+   "noise": 3,
+   "knee": {
+    "qa-mixed": 3000,
+    "qa-getlogs": 5000,
+    "call-mix-33": 1000,
+    "block-receipts": 1000,
+    "getlogs-1block": 3000,
+    "trace-block-33": 50,
+    "trace-tx-33": 200
+   }
+  },
+  "better": [
+   "node identity 666 -> 6422 Mgas/s (x9.6, #25155), tload 12527 -> 27774 (x2.2, #24968), callvalue 925-1118 -> 1598-2066 (+73..85%, #25089)",
+   "node mcopy 1477 -> 2319 Mgas/s (+57%, 48 rows, #25071), modexp 1039 -> 1468 (+41%, 89 rows, #25100), bls12_pairing 645 -> 923 (+43%)",
+   "EVM callvalue_from_call 597 -> 1139 Mgas/s (x1.9), callvalue_from_origin 937 -> 1560 (+67%, #25089), return_revert 796 -> 1174 (+47%), tstore 1493 -> 1970 (+32%, #24968), call_context.call_frame_context_ops 407 -> 498 (+22%)",
+   "node suite 1867.5 -> 2037.8 Mgas/s (+9.1%), EVM suite 1081.3 -> 1091.2 (+0.9%)"
+  ],
+  "worse": [
+   "EVM blobhash 780 -> 687 Mgas/s (-12%), push 680 -> 605 (-11%), returndatasize_zero 615 -> 550 (-11%), shifts 663 -> 594 (-10%), msize -9%, pc_op -9%, gas_op -8%, not_op -7%, selfbalance -7%",
+   "node unchunkified_bytecode 269 -> 237 Mgas/s (-12%, 7 rows), codesize 595 -> 553 (-7%), msize -5%, pc_op -4%, dup -4%"
+  ],
+  "bottlenecks": [
+   "node unchunkified_bytecode CALL/CALLCODE/DELEGATECALL/STATICCALL/EXTCODECOPY: 150-194 vs reth 1540-1924 (x0.09-0.11), no PR; top frame runtime.memmove 27.0% (code copy), madvise 8.1%",
+   "EVM instruction/storage_access_cold: 2411 vs revme 45916 (x0.05), no PR; top frame fastkeccak.keccakF1600BMI2 5.9%, GC 4.1%, go-freelru ShardedLRU.Len 2.0%",
+   "EVM instruction/ext_account_query_cold: 2518 vs revme 32295 (x0.08), no PR; top frame runtime.tryDeferToSpanScan 5.5% (GC), mapaccess2_fast64 4.5%",
+   "EVM scenario/ether_transfers: 551 vs revme 6856 (x0.08), no PR; top frame secp256k1_gej_double 19.2% (sender recovery about 42%)",
+   "EVM scenario/contract_creation: 935 vs gevm 9449 (x0.10), no PR; top frame secp256k1_gej_double 14.5% (sender recovery)"
+  ],
+  "shipped": [
+   "#24968 exec: to not intern transient storage key: tload fresh keys x26",
+   "#25153 execution/types: keep BAL storage reads as raw hashes: storage_access_cold_benchmark SLOAD 2244 -> 2942 (+31%)",
+   "#25118 vm: 2.5x faster JUMPDEST analysis of code without PUSH opcodes",
+   "#25071 vm: run MCOPY on the fast path when memory need not grow: copy_size_0 2.26x",
+   "#25100 exec: bump evmone_precompiles to v0.25.0: modexp exp-heavy even modulus -43%",
+   "#25109 execution/execmodule: answer a re-sent validated side-fork payload: -40.9%",
+   "#25116 execution/engineapi: answer a re-sent validated payload before InsertBlocks: -58%",
+   "#25145 rpc/ethapi: _call json decode access list: eth_call with access lists p50 -14%",
+   "#25103 execution/state: increase logArena limits: 1 MiB log blocks +9%",
+   "#25155 execution/vm: reuse an output buffer for the identity precompile",
+   "#25089 vm: run CALLVALUE on the fast path",
+   "#25091 execution/cache: no copy for a state-cache fill that is refused"
+  ],
+  "nodebal": {
+   "mgas": 3941.6,
+   "ratio": 0.742,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
   }
+ },
+ {
+  "date": "2026-10-22",
+  "old": "3324fd6b4819011a7bc7b392babbec3a28e3366b",
+  "new": "36e65012a9f8348bdc17daddeb809a17014a3902",
+  "evm": {
+   "mgas": 1045.2,
+   "ratio": 0.592,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 4297.9,
+   "ratio": 1.115,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 3977.5,
+   "ratio": 0.752,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "backfill; EVM x0.96, node x2.11, BAL-on x1.01 vs 3324fd6b48 (10-21)",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-23",
+  "old": "3324fd6b4819011a7bc7b392babbec3a28e3366b",
+  "new": "2cedbabffc5e2e598e5c723d12bc5a0bad05ed01",
+  "evm": {
+   "mgas": 1029.6,
+   "ratio": 0.583,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 4314.5,
+   "ratio": 1.123,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "note": "EVM: from this point erigon runs with one exec worker, as the tier compares interpreters; with its default workers the same build runs the EVM blocks x2.08 faster (15 blocks valid in both)",
+  "better": [
+   "node suite 2046.3 -> 4314.5 Mgas/s (x2.11, #25204: txs of one sender run in parallel): sha256 941 -> 3923 (x4.2), blake2f 131 -> 508 (x3.9), unchunkified_bytecode 267 -> 929 (x3.5, 7 rows), mod_arithmetic 253 -> 789 (x3.1), mod 252 -> 749 (x3.0)",
+   "node erigon / nethermind on the instruction and scenario tests 0.515 -> 1.123",
+   "EVM with one exec worker vs the previous main: 1025.5 -> 1029.6 Mgas/s on 53 blocks (x1.004, flat)"
+  ],
+  "worse": [
+   "node keccak mem_update_False 1641-1836 -> 1205-1362 Mgas/s (-25..29%, 4 rows), mem_update_True offset_1024 1611 -> 1362 (-15%)",
+   "node ether_transfers a_to_a 18000-21054 -> 15390-16426 (-15..25%, 5 rows), auth_transaction 1064 -> 886 (-17%), blake2f_uncachable 12 rounds 1764 -> 1534 (-13%)",
+   "EVM bls12_381_uncachable 958 -> 940 Mgas/s (-1.9%), bls12_pairing_uncachable -0.9%"
+  ],
+  "bottlenecks": [
+   "node selfdestruct_existing value_bearing: 737 vs nethermind 4687 (x0.16), no PR",
+   "node storage_access_cold SLOAD: 2224 vs nethermind 13215 (x0.17); EVM storage_access_cold 2670 vs revme 45916 (x0.06), no PR; top frame fastkeccak.keccakF1600BMI2 5.7%, GC 4.2%, go-freelru ShardedLRU.Len 1.9%",
+   "EVM instruction/ext_account_query_cold: 2515 vs revme 32295 (x0.08), no PR; top frame runtime.tryDeferToSpanScan 5.7% (GC), mapaccess2_fast64 4.5%",
+   "EVM scenario/ether_transfers: 548 vs revme 6856 (x0.08), node ether_transfers 13798 vs nethermind 78153 (x0.18), no PR; top frame secp256k1_gej_double 19.7% (sender recovery about 41%)"
+  ],
+  "shipped": [
+   "#25204 execution: charge the sender at validation, allow same-sender txs run in parallel: node suite x2.11",
+   "#25072 execution/cache: faster code-cache fill when loading cold contracts",
+   "#24033 execution: recover senders while newPayload decodes the payload",
+   "#25160 execution/state: emit no writes for an account created and destroyed in one tx",
+   "#25219 execution/engineapi: look up a new payload's header by hash and number"
+  ],
+  "nodebal": {
+   "mgas": 3971.4,
+   "ratio": 0.75,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  }
+ },
+ {
+  "date": "2026-10-23",
+  "dbg": true,
+  "old": "e507491c0081a132083db1f1dd0b997f5ce93b12",
+  "new": "41174f6b355c6b494c213a0e6232cd8bafae4890",
+  "evm": {
+   "mgas": 1110.8,
+   "ratio": 0.629,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 4422.4,
+   "ratio": 1.172,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 3898.6,
+   "ratio": 0.754,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "dbg: main e507491c00 + open PRs",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-23",
+  "dbg": true,
+  "old": "2c25716b2f2b620cd386a418562cfe7548f20aff",
+  "new": "29e1236382a5e7a0d560c9abde864c218bfaa4f0",
+  "evm": {
+   "mgas": 1108.5,
+   "ratio": 0.628,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 4380.1,
+   "ratio": 1.164,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 3861.6,
+   "ratio": 0.745,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "dbg: main 2c25716b2f + open PRs",
+  "better": [],
+  "worse": [],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-24",
+  "old": "2cedbabffc5e2e598e5c723d12bc5a0bad05ed01",
+  "new": "0a7733e2a8d4d5b4f4353e11fe09871a97577004",
+  "evm": {
+   "mgas": 1088.1,
+   "ratio": 0.616,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 4477.0,
+   "ratio": 1.176,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 4124.8,
+   "ratio": 0.789,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "better": [
+   "node suite x1.06, BAL-on x1.06 over the families (#25164 cheap ops inline, #25156 MCOPY fast path)"
+  ],
+  "worse": [
+   "BAL-on identity x0.67, selfbalance x0.81; node iszero x0.83, sha256 x0.86 (single tests)"
+  ],
+  "bottlenecks": [],
+  "shipped": [
+   "#25164 cheap context, bitwise, DUP9-16 and SWAP5-16 ops inline",
+   "#25156 MCOPY fast-path bounds",
+   "#24041 fee re-credit balance read"
+  ],
+  "note": "EVM x1.06, node x1.04, BAL-on x1.04 vs 2cedbabffc (10-23)"
+ },
+ {
+  "date": "2026-10-24",
+  "dbg": true,
+  "old": "29e1236382a5e7a0d560c9abde864c218bfaa4f0",
+  "new": "8be122f17bb9401c0eb2d98623b7b8744b09bbaa",
+  "evm": {
+   "mgas": 1113.4,
+   "ratio": 0.631,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 4598.9,
+   "ratio": 1.238,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 4064.5,
+   "ratio": 0.795,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "dbg: main 2026-10-24 + #25210, #25222, #25264 and other open PRs",
+  "better": [
+   "storage_access_warm SSTORE new value x1.83 node, x1.96 / x3.13 BAL-on",
+   "codecopy / calldatacopy / returndatacopy x1.21 / x1.38 / x1.27 node, x1.22 / x1.36 / x1.26 BAL-on (up to x2.0)",
+   "BAL-on selfdestruct_initcode x1.50, selfdestruct_created x1.24; node selfdestruct_created x1.09, initcode x0.98"
+  ],
+  "worse": [
+   "node identity x0.78, blobhash x0.80 (2 tests); BAL-on block_full_data x0.83, selfdestruct_existing x0.84"
+  ],
+  "bottlenecks": [],
+  "shipped": []
+ },
+ {
+  "date": "2026-10-25",
+  "old": "0a7733e2a8d4d5b4f4353e11fe09871a97577004",
+  "new": "f9a0ca070d23febddf34333dd170e7b4587fe875",
+  "evm": {
+   "mgas": 1111.2,
+   "ratio": 0.63,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 4611.7,
+   "ratio": 1.222,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 4249.3,
+   "ratio": 0.819,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "better": [
+   "exp_bench_arithmetic x2.57 node, x2.59 BAL-on (36 tests, #25188)",
+   "push x1.34 node, x1.37 BAL-on (33 tests, #25210)",
+   "BAL-on calldataload x1.19"
+  ],
+  "worse": [
+   "node tload x0.77 (4 tests), shifts x0.78, storage_access_warm_benchmark x0.84, returndatasize_nonzero x0.84 (12 tests)",
+   "BAL-on blobhash x0.80, swapn x0.80, extcodecopy_warm x0.82, selfdestruct_created x0.83"
+  ],
+  "bottlenecks": [
+   "node contract_creation contract_size_0: 173-179 Mgas/s, x0.20 of nethermind; top frame runtime.cgocall (mdbx) 6-8% once the KZG context build is left out; that build (InitKZGCtx, about 0.5 s of CPU) runs on the first block after a start",
+   "node storage_access_cold_benchmark SLOAD: 202-206 Mgas/s, x0.19 of nethermind; top frame runtime.cgocall 4-5%, then memmove; no frame dominates"
+  ],
+  "shipped": [
+   "#25188 faster EXP for an odd base with a large exponent",
+   "#25210 PUSH3-32 immediates as one 32-byte window",
+   "#25227 revert logs by snapshot count",
+   "#25263 burnt contract self-destruct",
+   "#25308 pooled btree cursor key copy"
+  ],
+  "note": "EVM x1.02, node x1.03, BAL-on x1.03 vs 0a7733e2a8 (10-24)"
+ },
+ {
+  "date": "2026-10-26",
+  "old": "f9a0ca070d23febddf34333dd170e7b4587fe875",
+  "new": "71a7eb1de1cd5dc7f7d7f869691a3ab3a1368834",
+  "evm": {
+   "mgas": 1134.4,
+   "ratio": 0.643,
+   "best": "nethermind",
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 4641.1,
+   "ratio": 1.243,
+   "best": "nethermind",
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 4271.0,
+   "ratio": 0.838,
+   "best": "reth",
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "EVM x1.02 vs f9a0ca070d; Block-STM and #24844 merged: the per-tx families lose, the copy ops gain",
+  "better": [
+   "codecopy_benchmark x1.44, calldatacopy_from_call x1.47 node; returndatacopy x1.30, calldatacopy x1.44-1.46 BAL-on (#25222)",
+   "callvalue_from_call x2.43, callvalue_from_origin x1.71 node"
+  ],
+  "worse": [
+   "node ether_transfers x0.75 (60 tests), storage_access_cold x0.72 (14), contract_creation x0.70 (6), selfdestruct x0.69-0.73, ext_account_query_cold x0.63",
+   "BAL-on creates_collisions x0.59, block_full_data x0.68, storage_access_cold x0.73, ether_transfers x0.86",
+   "EVM ether_transfers x0.77, contract_creation x0.77, unchunkified_bytecode x0.62",
+   "RPC trcblk33 x0.26, callmany11 x0.49, est33 x0.73; E/R m33 x0.69, eth_getProof x0.36, trace_block x0.40"
+  ],
+  "bottlenecks": [
+   "node contract_creation contract_size_max: x0.09 of the best client; top frames fastkeccak.keccakF1600BMI2 and tidwall/btree search, about 8% each, once the KZG context build is left out",
+   "node selfdestruct_existing value_bearing: x0.12 of the best client; not profiled, because a fresh node answers SYNCING to the first newPayload, the same startup failure earlier dbg builds showed"
+  ],
+  "shipped": [
+   "Block-STM parallel execution",
+   "#24844 versionMap <=> noMaterialize",
+   "#25222 inline CODECOPY, CALLDATACOPY and RETURNDATACOPY",
+   "#25225 BAL bounded dispatch window",
+   "#25314 keep a released exec slot's roTx"
+  ]
+ },
+ {
+  "date": "2026-10-29",
+  "old": "71a7eb1de1cd5dc7f7d7f869691a3ab3a1368834",
+  "new": "3d61103b24cccc44f02c92e2cf46d36c35c74c6d",
+  "evm": {
+   "mgas": 1095.3,
+   "ratio": 0.621,
+   "best": "nethermind",
+   "valid": 55,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 6245.2,
+   "ratio": 1.242,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 5863.3,
+   "ratio": 0.845,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "main 2026-10-29 3d61103b24; EVM tier runs with EVM.run at a different code alignment than 5709c66569 (0 vs 32), so its -6% is layout",
+  "shipped": [
+   "#25037 cache successful expensive precompile calls",
+   "#25479 cache precompile calls below 2,000 gas",
+   "#25226 shift on DIV by a power of two",
+   "#25378 read state .bt files into memory",
+   "#25223 recover BAL-block senders in the exec workers",
+   "#25347 index readers by address, check the exact cell per write",
+   "#25439 publish each tx's origins once",
+   "#25345 origin code reads reuse the committed account memo",
+   "#25327 write view reuses the code hash in the version map"
+  ],
+  "better": [],
+  "worse": [],
+  "bottlenecks": [
+   "no per-family snapshot of this main; its changes show in the 10-31 card"
+  ]
+ },
+ {
+  "date": "2026-10-29",
+  "dbg": true,
+  "old": "3d61103b24cccc44f02c92e2cf46d36c35c74c6d",
+  "new": "bff99c31b681c16f325fb02d6578faca28855f63",
+  "evm": {
+   "mgas": 1144.9,
+   "ratio": 0.649,
+   "best": "nethermind",
+   "valid": 55,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 6155.9,
+   "ratio": 1.225,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 5714.7,
+   "ratio": 0.822,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "dbg: main 2026-10-29 + #25480, #25494, #25463, #25465, #25493 and other open PRs"
+ },
+ {
+  "date": "2026-10-31",
+  "old": "3d61103b24cccc44f02c92e2cf46d36c35c74c6d",
+  "new": "198678df9c2250d7c6bada1611a7a8659d49db28",
+  "evm": {
+   "mgas": 992.2,
+   "ratio": 0.686,
+   "best": "nethermind",
+   "valid": 50,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 6114.0,
+   "ratio": 1.165,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 5783.0,
+   "ratio": 0.816,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "main 2026-10-31 198678df9c",
+  "shipped": [
+   "#25550 reuse finished task goroutines in the parallel executor",
+   "#25494 recover a block's EIP-7702 authorities in the pre-pass",
+   "#23844 .vi perfect hash replaced by two Elias-Fano sequences",
+   "#25304 inverted index values stored as txNum chunks",
+   "#25500 VersionMap origin storage in a typed concurrent map",
+   "#25505 publish each origin once",
+   "#25498 #25499 #25507 hold write-set values by value, reuse one VersionedWrite",
+   "#25497 keep the lent code buffer across a worker's tasks"
+  ],
+  "better": [
+   "precompiles vs 10-25 main (the 10-29 caches #25037, #25479): node alt_bn128_benchmark x58, bls12_pairing x26, p256verify x26, bls12_381 x12; BAL-on bls12_g1_msm x54, alt_bn128_benchmark x50; EVM ecrecover x37, point_evaluation x16"
+  ],
+  "worse": [
+   "node ether_transfers_to_precompile x0.78 (36), calldatasize x0.80 (8), returndatasize_nonzero x0.86 (12), extcodecopy_warm x0.88 (5)",
+   "BAL-on selfdestruct_initcode x0.83, tload x0.83, calldatasize x0.84, jumpdest_analysis x0.85",
+   "EVM shifts x0.76, calldatasize x0.79, blobhash x0.85, block_context_ops x0.85, msize x0.86"
+  ],
+  "bottlenecks": []
+ },
+ {
+  "date": "2026-10-31",
+  "dbg": true,
+  "old": "198678df9c2250d7c6bada1611a7a8659d49db28",
+  "new": "0953092438d64fddffbb6ff9ab4a6225e87725bc",
+  "evm": {
+   "mgas": 1044.7,
+   "ratio": 0.712,
+   "best": "nethermind",
+   "valid": 52,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 6278.7,
+   "ratio": 1.183,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 5826.5,
+   "ratio": 0.811,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "dbg: main 2026-10-31 + 17 open PRs and #25621 (dispatch window for blocks without a BAL)"
+ },
+ {
+  "date": "2026-11-01",
+  "old": "198678df9c2250d7c6bada1611a7a8659d49db28",
+  "new": "333b26329283bd5a914e31920ee6baeb1f6bb17f",
+  "evm": {
+   "mgas": 1027.9,
+   "ratio": 0.736,
+   "best": "nethermind",
+   "valid": 49,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 6312.3,
+   "ratio": 1.205,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 5990.5,
+   "ratio": 0.844,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "main 2026-11-01 333b263292",
+  "shipped": [
+   "#25607 keccak cache hits only load the bucket",
+   "#25606 cache point additions",
+   "#25608 shorten lock holds on the exec read path",
+   "#25330 parallel-exec follow-up: version+valStatus validation",
+   "#25601 #25599 charge the sender of a value call or creation at validation"
+  ],
+  "better": [
+   "keccak x1.82 node, x1.78 BAL-on (18 tests, #25607)",
+   "bls12_381 x1.77 node, x2.50 BAL-on; alt_bn128 x1.17 BAL-on, x5.78 EVM (#25606)",
+   "calldatasize x1.22, returndatasize_nonzero x1.20 node; EVM shifts x1.32, calldatasize x1.29, msize x1.23 (back from the 10-31 drop)"
+  ],
+  "worse": [
+   "contract_creation x0.75 node (6), x0.63 EVM",
+   "calldataload x0.90 node; p256verify x0.74 BAL-on (3)"
+  ],
+  "bottlenecks": [
+   "EVM jumpi_fallthrough and clz_same: PUSH0 and CLZ are dispatched through two compare trees (CLZ then through the jump table); fixed in #25645"
+  ]
+ },
+ {
+  "date": "2026-11-01",
+  "dbg": true,
+  "old": "333b26329283bd5a914e31920ee6baeb1f6bb17f",
+  "new": "dcd6037b0f06220250fc05d0a7fa569ae3fd5caa",
+  "evm": {
+   "mgas": 1012.1,
+   "ratio": 0.7,
+   "best": "nethermind",
+   "valid": 50,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 6326.9,
+   "ratio": 1.202,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 5947.2,
+   "ratio": 0.841,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "dbg: main 2026-11-01 + 11 open PRs and #25621, #25631, #25638",
+  "shipped": [
+   "#25638 merge a block's state writes into the latest state once per block",
+   "#25631 mark committed writes Done under the entry's read lock",
+   "#25621 bounded dispatch window for blocks without a BAL",
+   "#25637 no-bump for fresh creates and at commit",
+   "#25633 notify balance and nonce writes from their keys",
+   "#25627 VersionMap lookups on xsync.Map",
+   "#25590 re-check only readers of the written paths",
+   "#25609 credit a code-less recipient at validation"
+  ],
+  "worse": [
+   "instruction tests x0.96 against main 333b263292 (780 tests, interleaved A/B): the accounts-only block-buffer prototype (x0.82 on the worst 36); the current #25638 is x1.16 faster on the same tests"
+  ]
+ },
+ {
+  "date": "2026-11-03",
+  "old": "333b26329283bd5a914e31920ee6baeb1f6bb17f",
+  "new": "0d5c830b7f4b04458254902896bbc2242fa6fb48",
+  "evm": {
+   "mgas": 1105.5,
+   "ratio": 0.824,
+   "best": "nethermind",
+   "valid": 49,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 6649.6,
+   "ratio": 1.285,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 6156.1,
+   "ratio": 0.866,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "main 2026-11-03 0d5c830b7f; gevm failed storage_access_cold, auth_transaction and unchunkified_bytecode in every run since",
+  "shipped": [
+   "#25560 pause-free exec worker pool; #25645 PUSH0 in the hot path, CLZ in the cold one",
+   "#25641 recover SetCode authorities once; #25648 reuse a MULMOD reciprocal; #25627 #25633 #25637 #25609 #25590 from the 11-01 dbg"
+  ],
+  "better": [
+   "contract_creation x2.14 node, x2.43 EVM; ether_transfers x1.48 node (60 tests) (#25560)",
+   "jumpi_fallthrough x1.36 node, x1.75 BAL-on; clz_same x1.31 node, x1.39 BAL-on; EVM push x1.64 (#25645); auth_transaction x1.20 node (#25641)"
+  ],
+  "worse": [
+   "BAL-on parallel_execution_serial_chain x0.76, deploy_then_interact x0.84 (5): likely #25560",
+   "node bls12_g1_msm x0.68 (4, back to x1.54 in the dbg run), comparison x0.88; EVM call_frame_context_ops x0.88"
+  ]
+ },
+ {
+  "date": "2026-11-03",
+  "dbg": true,
+  "old": "0d5c830b7f4b04458254902896bbc2242fa6fb48",
+  "new": "a547bc7e0a87b04b31a20bb6eda31ede75bab5d0",
+  "evm": {
+   "mgas": 1110.7,
+   "ratio": 0.822,
+   "best": "nethermind",
+   "valid": 51,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 6603.4,
+   "ratio": 1.25,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 6096.8,
+   "ratio": 0.849,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "dbg: main 2026-11-03 + 12 open branches",
+  "shipped": [
+   "#25678 ExecuteBlockEphemerally on NoMaterialize; #25675 receipts on NoMaterialize; #25695 warmup reads storage slots without interning",
+   "BAL io_uring prefault (#25486), W-TinyLFU code cache, remote KV and snapshot error-path fixes"
+  ],
+  "better": [
+   "node bls12_g1_msm x1.54 (4), bls12_381 x1.14; BAL-on creates_reverting_initcode x1.14 (6)"
+  ],
+  "worse": [
+   "node x0.99, BAL-on x0.99 of main: storage_access_cold x0.87 node (14), x0.89 BAL-on; storage_access_warm_benchmark x0.83 node: likely #25695",
+   "BAL-on blake2f x0.68 (1), ext_account_query_cold x0.70 (2), create x0.87 (20); EVM shifts x0.83, codesize x0.87"
+  ]
+ },
+ {
+  "date": "2026-11-04",
+  "old": "0d5c830b7f4b04458254902896bbc2242fa6fb48",
+  "new": "a80c005240ad4eeba7c2430a4190d60f17c2d36d",
+  "evm": {
+   "mgas": 1094.2,
+   "ratio": 0.802,
+   "best": "nethermind",
+   "valid": 50,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "note": "main 2026-11-04 a80c005240, EVM tier only (no node runs since 11-03); 95b0d8d303 from 11-04 morning measured the same (x1.00)",
+  "shipped": [
+   "#25678 #25675 #25717 ExecuteBlockEphemerally, receipts and block building on NoMaterialize; #25695 warmup without interning",
+   "#25631 #25734 mark writes Done under the read lock; #25699 commitment hashed keys on first read"
+  ],
+  "better": [
+   "EVM push x1.08, comparison x1.08, iszero x1.07, arithmetic x1.06"
+  ],
+  "worse": [
+   "EVM x0.99, erigon/neth x0.82 to x0.80: shifts x0.82, codesize x0.84, call_frame_context_ops x0.86, jumpdests x0.87, selfbalance x0.89",
+   "the 11-03 dbg lost the same files and 95b0d8d303 (before #25717) too: likely #25678 or #25675; single EVM files move up to 12% between runs of one commit"
+  ]
+ },
+ {
+  "date": "2026-11-05",
+  "old": "0d5c830b7f4b04458254902896bbc2242fa6fb48",
+  "new": "10c35bcd28c8112614a1b8e19c3cc2dd54d71b5b",
+  "evm": {
+   "mgas": 1100.8,
+   "ratio": 0.814,
+   "best": "nethermind",
+   "valid": 50,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "note": "main 2026-11-05 10c35bcd28; node tiers measured 11-06 morning; no failed rows, gevm passes all files again",
+  "shipped": [
+   "#25491 fold commitment from the version map; #25486 BAL cold pages in io_uring batches; #25559 skip arrival validation; #25751 BAL-marked accounts from origin",
+   "#25743 RPC replays share code by hash; #25748 seek in inverted index files; #25766 faster uint256 Div; #25243 EIP-8141 frames"
+  ],
+  "better": [
+   "node x1.50, BAL-on x1.53 against 11-03, held on 11-06: every family, EVM-bound ones too (push x1.92, dup x1.79), while the EVM tier stays x1.01, so a per-block newPayload cost went away; not bisected, candidates #25491, #25717, #25559",
+   "EVM x1.01, erigon/neth x0.80 to x0.81: selfbalance x1.15, jumpdests x1.12 (both layout-sensitive), dup x1.07, swap x1.07, callvalue x1.06"
+  ],
+  "worse": [
+   "precompile *_uncachable x0.53 to x0.56 (sha256, ripemd160, identity, blake2f, alt_bn128): #25491, bisected (parent 1487 ms, #25491 2359 ms on sha256_uncachable)",
+   "selfdestruct_initcode x0.89, selfdestruct_created x0.90 EVM, x0.83 BAL-on (unconfirmed), storage_access_cold_benchmark x0.91 EVM: likely #25491 too, not bisected; node alt_bn128_benchmark x0.69 (5), back to x1.20 on 11-06"
+  ],
+  "node": {
+   "mgas": 9973.9,
+   "ratio": 1.924,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 9402.3,
+   "ratio": 1.337,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  }
+ },
+ {
+  "date": "2026-11-06",
+  "old": "10c35bcd28c8112614a1b8e19c3cc2dd54d71b5b",
+  "new": "731cb6417cfd3994394f515b984889f3703b3082",
+  "evm": {
+   "mgas": 1090.5,
+   "ratio": 0.763,
+   "best": "nethermind",
+   "valid": 52,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 10050.1,
+   "ratio": 1.927,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 9595.9,
+   "ratio": 1.355,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "main 2026-11-06 731cb6417c; the sub-test run reported a failure but its table was published; no failed rows in the other tiers",
+  "shipped": [
+   "#25770 read a version-map account under one lock; #25828 stripe TemporalMemBatch latest maps over 32 shards; #24792 GenericCache on the lock-free layer; #25746 gate the BAL trie prefetch",
+   "#25824 skip Transfer on a zero-value call to a code account; #25655 share the inverted index's last DB txNum; #25814 sync an account cell's path on a propagate fold; #21729 fork-scoped REST + SSZ Engine API"
+  ],
+  "better": [
+   "node x1.01, BAL-on x1.02: node clz_same x1.25, tstore x1.21 (4), auth_transaction x1.13 (16); BAL-on ether_transfers_to_precompile x1.30 (36), bls12_381 x1.24 (unconfirmed)"
+  ],
+  "worse": [
+   "EVM x0.96, erigon/neth x0.81 to x0.76 (neth x1.05, geth x1.00 on the same box): jumpdests x0.79, mcopy x0.84, returndatacopy x0.84, codecopy x0.86; the only EVM change is #25824, jumpdests and codecopy are layout-sensitive: one night, unconfirmed",
+   "node ripemd160_uncachable x0.53 (3), calldataload x0.86 (8): the EVM tier has ripemd160_uncachable flat and BAL-on x1.10, likely noise; BAL-on blake2f x0.79 (1), block_full_data x0.82 (2): unconfirmed"
+  ]
+ },
+ {
+  "date": "2026-11-07",
+  "old": "731cb6417cfd3994394f515b984889f3703b3082",
+  "new": "365d22b07fa3e1dc7dbc771016c987eefa3c122e",
+  "evm": {
+   "mgas": 1138.1,
+   "ratio": 0.825,
+   "best": "nethermind",
+   "valid": 52,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "note": "main 2026-11-07 365d22b07f; node tiers measured 11-08 morning; no failed rows. BAL-on erigon/best x1.36 to x0.80 is not erigon: the 11-08 weekly re-measured reth x1.73, geth x1.99 over 11-03",
+  "shipped": [
+   "#25864 ReadResult in registers on version-map reads; #25794 WasDestroyed under GetAccount's entry lock; #25830 storage btree under shard 0; #25801 fold only keys touched since the last step edge",
+   "#25798 validate every arrival again (undoes #25559, a candidate for the 11-05 node x1.50); #25859 MODEXP to evmone for big exponents; #25874 ETL spill files with RWF_DONTCACHE"
+  ],
+  "better": [
+   "EVM x1.04, erigon/neth x0.76 to x0.82: returndatacopy x1.21, mcopy x1.18, codecopy x1.16, jumpdests x1.13 win back the 11-06 losses; against 11-05 the tier is x0.99, so the 11-06 dip was noise",
+   "node x1.00, BAL-on x1.01: node modexp_uncachable x1.20 (3, likely #25859), p256verify x1.26 (3); ripemd160_uncachable x1.85 (3) and calldataload x1.14 (8) win back the 11-06 drop; BAL-on mcopy x1.06 (48), bitwise x1.08 (7): unconfirmed"
+  ],
+  "worse": [
+   "EVM push x0.89 against both 11-06 and 11-05; the only EVM-path change is #25859 (MODEXP), so likely code layout: one night, unconfirmed",
+   "node create x0.89 (20) and contract_creation x0.92 (6) against 11-05, below x0.95 on both nights, BAL-on flat: candidates #25770, #25798, not bisected; BAL-on ext_account_query_cold x0.88 (2), also two nights; node iszero x0.76 (1), BAL-on modexp_length_above_upper_bound x0.82 (3): one night, unconfirmed"
+  ],
+  "node": {
+   "mgas": 10022.6,
+   "ratio": 1.92,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 9652.8,
+   "ratio": 0.802,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  }
+ },
+ {
+  "date": "2026-11-08",
+  "old": "365d22b07fa3e1dc7dbc771016c987eefa3c122e",
+  "new": "e0baadbb4b394ca5e39fecad2fb681809b24a8d9",
+  "evm": {
+   "mgas": 1151.2,
+   "ratio": 0.818,
+   "best": "nethermind",
+   "valid": 51,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 10139.0,
+   "ratio": 1.173,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 9653.2,
+   "ratio": 0.806,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "main 2026-11-08 e0baadbb4b, measured 11-09 morning; (*EVM).run at offset 32 (0 on the other nights), so layout-sensitive EVM files move; no failed rows. Node erigon/best x1.92 to x1.17 is not erigon: the 11-09 weekly re-measured nethermind x1.67, reth x1.34, geth x1.30 over 11-03",
+  "shipped": [
+   "#25907 CALLDATALOAD inlined, in the cold switch; #25920 one senders path per block, cached on the tx; #25886 BAL batch prefetch on by default; #25934 skip interning read-only BAL accounts at seeding",
+   "#25908 branch cache tail 125k entries; #25913 tracers see tx writes at tx end on NoMaterialize; #25862 BAL-seeded cells no longer trip the Done->Estimate assert; #25512 root leaf path after a propagate fold"
+  ],
+  "better": [
+   "EVM x1.01, node x1.01, BAL-on x1.00. EVM push x1.14 wins back the 11-07 x0.89; node jumpi_fallthrough x1.20 (1), iszero x1.28 (1, back after 11-07); BAL-on contract_calling_many_addresses x1.10 (8), swapn x1.08 (3): all held on 11-09"
+  ],
+  "worse": [
+   "cheap precompiles against 11-07, held on 11-09: EVM identity_uncachable x0.91, blake2f_benchmark x0.92, blake2f_uncachable x0.92, sha256_fixed_size x0.94; node blake2f_benchmark x0.88 (4), blake2f_uncachable x0.93 (4), identity_uncachable x0.94 (3); BAL-on blake2f_benchmark x0.90 (4): likely #25907 (the only interpreter change, it rebuilds the dispatch loop), not bisected",
+   "bls12_381 node x0.91 (7), then x0.84 on 11-09; EVM x0.94, then x0.91: two nights, not bisected. BAL-on tstore x0.85 (4), deploy_then_interact x0.91 (5), jumps x0.92 (1): one night, unconfirmed"
+  ]
+ },
+ {
+  "date": "2026-11-09",
+  "old": "e0baadbb4b394ca5e39fecad2fb681809b24a8d9",
+  "new": "5d26726c59bb6b6b37b19eca3f433b194d8792df",
+  "evm": {
+   "mgas": 1128.7,
+   "ratio": 0.797,
+   "best": "nethermind",
+   "valid": 51,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 10032.4,
+   "ratio": 1.158,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 9575.6,
+   "ratio": 0.801,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "main 2026-11-09 5d26726c59; (*EVM).run back at offset 0; no failed rows",
+  "shipped": [
+   "#25945 no per-transaction allocations in the publish loop; #25936 cached eth_gasPrice without a temporal tx; #25981 remove the unused ForkValidator; #25839 first log txNum from the range's first block; #25885 txpool skips the startup reload wait"
+  ],
+  "better": [
+   "EVM files outside the layout list x1.02 (node x0.99, BAL-on x0.99): arithmetic x1.10, scenario ether_transfers x1.11, iszero x1.07 win back 11-08; node calldataload x1.13 (8), tstore x1.16 (4), ripemd160_uncachable x1.19 (3): one night, unconfirmed"
+  ],
+  "worse": [
+   "EVM x0.98, erigon/neth x0.82 to x0.80: codesize x0.84, shifts x0.84, blobhash x0.88, jumpdests x0.88 are the layout-sensitive files going back from offset 32 to 0, no code change; node codesize x0.76 (1), jumpdests x0.80 (1), returndatasize_nonzero x0.87 (12) and BAL-on x0.84 (12) follow the same files: unconfirmed",
+   "cheap precompiles stay down (EVM identity_uncachable x0.91, blake2f_benchmark x0.92 of 11-07), see 11-08; BAL-on point_evaluation x0.45 (1), ripemd160_uncachable x0.61 (4): one night, unconfirmed"
+  ]
+ },
+ {
+  "date": "2026-11-10",
+  "old": "5d26726c59bb6b6b37b19eca3f433b194d8792df",
+  "new": "f0ab4a2cd2fceab1cd68dde9b0299f5854fe8306",
+  "evm": {
+   "mgas": 1176.3,
+   "ratio": 0.82,
+   "best": "nethermind",
+   "valid": 52,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 10119.4,
+   "ratio": 1.167,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 9889.8,
+   "ratio": 0.825,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "main 2026-11-10 f0ab4a2cd2; (*EVM).run at offset 32 again (0 on 11-09), so layout-sensitive EVM files move; no failed rows",
+  "shipped": [
+   "#26049 faster uint256 Mod; #26039 Empty on an absent account only records the read; #26064 one BAL storage read entry per slot; #25979 validated and sealed writes without the entry lock; #25954 less per-tx work in the BAL builder; #26018 balance of accounts created from an absent base"
+  ],
+  "better": [
+   "EVM x1.04 (erigon/neth x0.80 to x0.82), node x1.01, BAL-on x1.03. mod x1.72 to x1.75 in all three tiers: #26049. EVM precompile *_uncachable x1.79 to x1.89 (sha256, ripemd160, identity, blake2f, alt_bn128), the 11-05 #25491 loss is back: likely #26039, not bisected",
+   "BAL-on contract_calling_many_addresses x1.20 (8), deploy_then_interact x1.19 (5), ether_transfers x1.15 (60), storage_access_cold x1.12 (14): likely #26039/#26064/#25979, one night, unconfirmed. Layout files codesize x1.17, shifts x1.15, jumpdests x1.13 go back to 11-08"
+  ],
+  "worse": [
+   "EVM push x0.86 (x0.85 vs 11-08 at the same offset), iszero x0.87, arithmetic x0.91; node iszero x0.75 (1), not_op x0.77 (1), bn128_pairings_amortized x0.83 (1), calldataload x0.88 (8, its 11-09 win given back): these files swing every night, unconfirmed; the 11-09 drops (codesize, jumpdests, BAL-on point_evaluation, ripemd160_uncachable) did not hold"
+  ]
+ },
+ {
+  "date": "2026-11-11",
+  "old": "f0ab4a2cd2fceab1cd68dde9b0299f5854fe8306",
+  "new": "57ca3827fcaab8ff6c83238ed85779826bb6d2a2",
+  "evm": {
+   "mgas": 1162.4,
+   "ratio": 0.82,
+   "best": "revme",
+   "valid": 50,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 10425.0,
+   "ratio": 1.198,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 10031.2,
+   "ratio": 0.838,
+   "best": "reth",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "main 2026-11-11 57ca3827fc; EVM x0.99 only because tstore and extcodecopy_warm went grey (52 to 50 valid), x1.03 on the same 50 files; best EVM client is now revm; no failed rows. 2026-11-12: lab.sh adds GODEBUG=gctrace=1 to every lab arm (gc= column); lab numbers before/after 2026-11-12 are a harness change",
+  "shipped": [
+   "#26062 warm Empty and repeat absent reads use the read set; #26041 a slot's prev value from its write record; #26060 copy the writes of a charged tx once; #26082 match the BAL sidecar without sorting the builder; #26081 bounded window for blocks without a BAL; #26029 trie prefetch gate samples storage tries; #26095 EIP-8246 create and destroy"
+  ],
+  "better": [
+   "node x1.03, broad: codesize x1.26 (1), contract_creation x1.20 (6), shifts x1.17 (2), call_frame_context_ops x1.16 (4), returndatasize_nonzero x1.13 (12), calldatasize x1.13 (8), swap x1.09 (16), dup x1.07 (16): likely #26062/#26041/#26060, one night, unconfirmed. EVM push x1.19, alt_bn128 x1.11, blake2f x1.09 win back 11-10",
+   "BAL-on x1.01: jumpdests x1.19 (1), state_root_computation x1.13 (6), returndatasize_nonzero x1.12 (12), swap x1.11 (16), storage_access_cold x1.09 (14): unconfirmed; the 11-10 BAL-on wins (ether_transfers, contract_calling_many_addresses, deploy_then_interact) held"
+  ],
+  "worse": [
+   "block_full_data down two nights: node x0.89 then x0.96 (x0.86 vs 11-09, 2 tests), EVM x0.97 then x0.94: GC noise, not a code change (isolated A/B of the three commits flat, 2026-11-12); block_full_data is now tagged GC-noisy (run/gc-noisy.txt) and goes to Worse only past 30% on 3 consecutive nights or on gc=0 rounds; node not_op x0.77 then x0.88 (x0.68 vs 11-09, 1 test)",
+   "BAL-on clz_same x0.81 (1), ripemd160 x0.84 (1), identity x0.84 (1), iszero x0.86 (1), extcodecopy_warm x0.91 (5): one night, unconfirmed, the single-test ones gave back their 11-10 wins"
+  ]
+ },
+ {
+  "date": "2026-11-12",
+  "old": "57ca3827fcaab8ff6c83238ed85779826bb6d2a2",
+  "new": "d615f2a61029d119de7127673138ce2d05c07e66",
+  "evm": {
+   "mgas": 1185.1,
+   "ratio": 0.838,
+   "best": "nethermind",
+   "valid": 51,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 10253.8,
+   "ratio": 1.182,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 9985.4,
+   "ratio": 0.787,
+   "best": "nethermind",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "main 2026-11-12 d615f2a610; (*EVM).run at offset 32 as on 11-11; EVM 51 valid files (50 on 11-11); BAL-on best client is now nethermind after its 11-12 re-run (erigon/nethermind x1.48 to x0.79; erigon/reth x0.84 to x0.83), an other-client change; no failed rows",
+  "shipped": [
+   "#25933 run ValidateChain on the given block, chunk the payload decode; the rest is CL, RPC, tracers and tests (#25739, #25994, #26066, #26074)"
+  ],
+  "better": [
+   "EVM x1.02, no file past 3%. create x1.07 (20) in node and x1.06 in BAL-on, the second night up in both (x1.11/x1.13 vs 11-10): likely #26062 (warm Empty and absent reads from the read set). node not_op x1.47 (1), jumps x1.18 (1), unchunkified_bytecode x1.09 (7), extcodecopy_warm x1.08 (5); block_full_data x1.12 (2, GC-noisy), maybe #25933: one night, unconfirmed",
+   "BAL-on clz_same x1.20 (1), tstore x1.17 (4), ripemd160 x1.13 (1), creates_collisions x1.13 (2), contract_creation x1.10 (6), ether_transfers_to_precompile x1.07 (36), ether_transfers x1.06 (60): one night, unconfirmed; the single-test ones win back their 11-11 losses"
+  ],
+  "worse": [
+   "node x0.98: the 11-11 wins given back (codesize x0.81, shifts x0.87, calldatasize x0.88, call_frame_context_ops x0.89, returndatasize_nonzero x0.90, dup x0.91, swap x0.93), about flat vs 11-10. node tload x0.79 (4, x0.87 vs 11-10), alt_bn128_benchmark x0.89 (5, num_pairs_6 halved), bls12_g1_msm x0.89 (4): one night, unconfirmed",
+   "BAL-on x1.00: the same 11-11 wins given back (calldatasize x0.87, call_frame_context_ops x0.88, returndatasize_nonzero x0.90, dup x0.90, swap x0.91); shifts_beyond_word_size x0.97 after x0.94 (8), x0.94 vs its 11-06..11-10 range, second night down: 11-11 PRs, not bisected. jumpdests x0.82 (1), clz_diff x0.83 (1), blobhash x0.86 (2): unconfirmed; block_full_data x0.81 (2) GC-noisy, under the 30% rule"
+  ]
+ },
+ {
+  "date": "2026-11-13",
+  "old": "d615f2a61029d119de7127673138ce2d05c07e66",
+  "new": "d5f161f4be0ca9481598f87c5dca79b69e489afd",
+  "evm": {
+   "mgas": 1163.7,
+   "ratio": 0.815,
+   "best": "nethermind",
+   "valid": 50,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 10274.2,
+   "ratio": 1.189,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 10041.2,
+   "ratio": 0.795,
+   "best": "nethermind",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "main 2026-11-13 d5f161f4be; (*EVM).run at offset 32 as on 11-12; EVM x0.98 only because tstore went grey (51 to 50 valid), x1.00 on the same 50 files; erigon/neth x0.84 to x0.82 with erigon flat; no failed rows",
+  "shipped": [
+   "#26088 a call that cannot pay its precompile does not wait on it; #26104 block warmup no longer re-reads keys the state cache holds; #26098 decode the BAL into a presized list; #26080 a write the BAL holds leaves readers clean; #26153 depend on an in-flight destruct on a committed read; #26242 flush buffered writes in write order; the rest is CL, txpool, tests and cleanups (#25925, #26067, #26109, #26107)"
+  ],
+  "better": [
+   "node x1.00: ether_transfers_to_precompile x1.34 (36): #26088. alt_bn128_benchmark x1.22 (5) and tload x1.10 (4) win back their 11-12 losses; EVM iszero x1.05 (1), no other EVM file past 3%",
+   "BAL-on x1.01: alt_bn128 x1.13 (22), contract_calling_many_addresses x1.11 (8), ext_account_query_cold x1.10 (2), storage_access_cold x1.07 (14): likely #26104/#26098/#26080, one night, unconfirmed; shifts_beyond_word_size x1.09 (8) ends its two-night drop; block_full_data x1.22 (2) GC-noisy"
+  ],
+  "worse": [
+   "node p256verify x0.91 (3), second night down past 5% (x0.94 on 11-12, x0.82 vs 11-10), still inside its 11-06..11-10 range: not bisected. node storage_access_cold_benchmark x0.89 (3), storage_access_warm_benchmark x0.91 (3), point_evaluation x0.89 (1), bls12_381 x0.91 (7), calldataload x0.92 (8): one night, unconfirmed; create x0.94 (20) and extcodecopy_warm x0.91 (5) give back 11-12",
+   "BAL-on alt_bn128_benchmark x0.86 (5), bls12_381 x0.90 (5), comparison x0.92 (5): one night, unconfirmed; create x0.93 (20) gives back its two-night gain"
+  ]
+ },
+ {
+  "date": "2026-11-14",
+  "old": "d5f161f4be0ca9481598f87c5dca79b69e489afd",
+  "new": "d20da4d8e92cfa4e5ddffbce528d142c251a9123",
+  "evm": {
+   "mgas": 1124.9,
+   "ratio": 0.812,
+   "best": "nethermind",
+   "valid": 50,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "node": {
+   "mgas": 10450.9,
+   "ratio": 1.209,
+   "best": "nethermind",
+   "valid": 1073,
+   "noise": 0.9,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "nodebal": {
+   "mgas": 10071.0,
+   "ratio": 0.797,
+   "best": "nethermind",
+   "valid": 1161,
+   "noise": 0.3,
+   "fixtures": "glamsterdam-devnet@v8.1.4"
+  },
+  "note": "main 2026-11-14 d20da4d8e9; (*EVM).run back at offset 0 (32 on 11-10..11-13), so EVM x0.97 is code layout: the layout-sensitive files fall (codesize, shifts x0.82, call_frame_context_ops x0.85), the other 27 files x1.01; no failed rows",
+  "shipped": [
+   "#26239 remove the serial executor; #26154 skip validating quiet base reads of account paths; #26101 skip storage-read checks for BAL-unchanged accounts; #26248 one cheaper rlp header path; #26244 BAL decode allocates once per kind; #26217/#26269 BAL warmup skips code-hash seeds; #26009, #26019 state fixes; #25299 payload header check before sender recovery; the rest is CL, CI, RPC and cleanups (#25846, #26050, #26197, #26310)"
+  ],
+  "better": [
+   "node x1.02: ext_account_query_cold x1.40 (2), contract_calling_many_addresses x1.15 (8), selfdestruct_existing x1.14 (2), storage_access_cold x1.11 (14), modexp x1.06 (89): likely #26154/#26101, one night, unconfirmed. p256verify x1.15 (3), storage_access_cold_benchmark x1.17 (3), calldataload x1.10 (8), bls12_381 x1.08 (7) win back 11-13, so the p256verify drop was noise",
+   "BAL-on x1.00: alt_bn128_benchmark x1.22 (5), ext_account_query_cold x1.21 (2), creates_reverting_initcode x1.16 (6), deploy_then_interact x1.10 (5), storage_access_cold x1.09 (14), state_root_computation x1.08 (6): likely #26101/#26154, one night, unconfirmed; block_full_data x1.23 (2) GC-noisy"
+  ],
+  "worse": [
+   "BAL-on alt_bn128_uncachable x0.93 (3), second night down past 5% (x0.92 on 11-13, x0.85 vs 11-12), now below its 11-06..11-13 range: not bisected, no precompile change merged",
+   "BAL-on p256verify x0.77 (3), tstore x0.80 (4), pc_op x0.85 (1), callvalue_from_origin x0.87 (2), prefetch_cold_storage x0.87 (1): one night, unconfirmed; node modexp_uncachable x0.83 (3), identity x0.87 (1): one night, unconfirmed"
+  ]
+ },
+ {
+  "date": "2026-11-15",
+  "old": "d20da4d8e92cfa4e5ddffbce528d142c251a9123",
+  "new": "c6b74e97fc001ecc3b8e1a48177697a9307735a9",
+  "evm": {
+   "mgas": 1102.9,
+   "ratio": 0.769,
+   "best": "nethermind",
+   "valid": 51,
+   "noise": 0.8,
+   "fixtures": "tests-benchmark@v0.0.9"
+  },
+  "note": "main 2026-11-15 c6b74e97fc, EVM tier and sub-tests only: the sub-tests ran slow under the box lock, so tonight's node tiers land with the next entry; (*EVM).run at offset 0 as on 11-14; the 11-15 day runs re-measured reth, nethermind, geth (nethermind BAL-on x1.00); no failed rows",
+  "shipped": [
+   "#25986 EXTCODECOPY reads a code segment; #26324 reset the storage of a contract created over an account with storage; #26326 keep the seeded removal Done; #26172 preserve values across repeated unwinds; #26188 hash block txs while reading cached receipts; #25880 keep downloading bodies while a batch executes; #26307 commitment .kvi hash part in heap; the rest is CL, RPC, CI and cleanups (#26085, #26099, #26163, #26250)"
+  ],
+  "better": [
+   "EVM codecopy_benchmark x1.06, push x1.04; no other non-precompile file past 3%"
+  ],
+  "worse": [
+   "EVM extcodecopy_warm x0.88, sub-tests copy_size_32..1024 x0.12 to x0.33 (copy_size_0 flat): #25986, confirmed by its 11-14 dbg arm; a miss keeps nothing in the code cache, so each repeated EXTCODECOPY decodes the code again",
+   "EVM x0.98, erigon/neth x0.81 to x0.77: jumpdests x0.79, callvalue x0.89/x0.93, iszero x0.92, calldatasize x0.92, clz_same x0.92, memory_access x0.92; the sub-tests show the same drop; run offset unchanged, #25986 is the only VM change, cause not pinned"
+  ]
+ }
 ]
