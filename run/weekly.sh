@@ -3,7 +3,7 @@
 # the nightly runs for erigon only (node BAL-off, node BAL-on, sub-tests). The nightly EVM blocks tier runs every client and
 # picks up the upgraded tools. A client that fails to upgrade or run is listed in ~/vm-bench-weekly.txt, which A1 reads; a node-tier
 # smoke failure lands there (and in the self-check) as soon as it happens.
-# crontab (Sunday 16:00 UTC): 0 16 * * 0 BENCH_LOCK=/tmp/bench.lock flock -n /tmp/vmbench-weekly.lock ~/vm-bench/run/weekly.sh >> ~/vm-bench/weekly.log 2>&1
+# crontab (Saturday 01:00 UTC): 0 1 * * 6 BENCH_LOCK=/tmp/bench.lock flock -n /tmp/vmbench-weekly.lock ~/vm-bench/run/weekly.sh >> ~/vm-bench/weekly.log 2>&1
 set -uo pipefail
 cd "$(dirname "$0")/.."
 export PATH=$HOME/go/bin:$HOME/.cargo/bin:$HOME/.dotnet:$PATH DOTNET_ROOT=${DOTNET_ROOT:-$HOME/.dotnet}
