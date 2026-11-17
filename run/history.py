@@ -131,3 +131,5 @@ html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({
 (root / "docs").mkdir(exist_ok=True)
 (root / "docs" / ".nojekyll").touch()
 page.write_text(html)
+(page.parent / "history").mkdir(exist_ok=True)
+(page.parent / "history" / "runs.json").write_text(json.dumps(progress))
