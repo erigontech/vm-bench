@@ -15,7 +15,7 @@ python3 - "$V/history" "$1" "$2" <<'PY'
 import csv, pathlib, statistics, sys
 vals = {}
 for d in pathlib.Path(sys.argv[1]).iterdir():
-    sha = next(l.split(",")[1].split("-")[-1] for l in open(d / "versions.csv") if l.startswith("erigon,"))
+    sha = next(l.strip().split(",")[1].split("-")[-1] for l in open(d / "versions.csv") if l.startswith("erigon,"))
     for r in csv.reader(open(d / "nodebal.csv")):
         if len(r) >= 3 and r[1] == "erigon":
             vals.setdefault(sha, {}).setdefault(r[0], []).append(float(r[2]))
