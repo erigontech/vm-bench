@@ -2,7 +2,8 @@
 """eth_call request bodies for the mainnet fixtures: one JSON-RPC body per line, prefixed by the fixture
 name and a tab, then the same call at "latest" after another tab. The call runs on the state before the
 fixture's block, the closest an RPC node offers to the fixture's pre-state (transactions earlier in the
-same block are not applied); the "latest" body is for a node that no longer keeps that state."""
+same block are not applied); the "latest" body is for a node that no longer keeps that state. A fourth field, when present, is the error the
+call is expected to return (a loop that burns all its gas); that error counts as a served call."""
 import json, sys
 from pathlib import Path
 
@@ -18,7 +19,8 @@ for p in sorted((root / "fixtures").glob("mainnet*/*.json")):
     else:
         call["maxFeePerGas"], call["maxPriorityFeePerGas"] = tx["maxFeePerGas"], tx["maxPriorityFeePerGas"]
     block = hex(int(env["currentNumber"], 16) - 1)
-    body = {"jsonrpc": "2.0", "id": 1, "method": "eth_call", "params": [call, block]}
+    over = [fx["stateOverride"]] if "stateOverride" in fx else []  # code the call needs on any network
+    body = {"jsonrpc": "2.0", "id": 1, "method": "eth_call", "params": [call, block, *over]}
     # Without its fee fields the call skips the balance check: the sender may hold no ETH at latest.
-    latest = {**body, "params": [{k: v for k, v in call.items() if k not in ("gasPrice", "maxFeePerGas", "maxPriorityFeePerGas")}, "latest"]}
-    print(p.parent.name + "/" + p.stem, json.dumps(body, separators=(",", ":")), json.dumps(latest, separators=(",", ":")), sep="\t")
+    latest = {**body, "params": [{k: v for k, v in call.items() if k not in ("gasPrice", "maxFeePerGas", "maxPriorityFeePerGas")}, "latest", *over]}
+    print(p.parent.name + "/" + p.stem, json.dumps(body, separators=(",", ":")), json.dumps(latest, separators=(",", ":")), *([fx["expectError"]] if "expectError" in fx else []), sep="\t")

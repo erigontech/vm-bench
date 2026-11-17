@@ -1,0 +1,30 @@
+{
+ "tstore-loop-16M": {
+  "_info": {
+   "source": "glamsterdam-devnet-8 blocks 215885-216230: txs to the 6-byte TSTORE loop 5b445a5d3656 (JUMPDEST PREVRANDAO GAS TSTORE CALLDATASIZE JUMP), empty calldata, all gas burnt; the code comes from a state override, so the call runs on any network"
+  },
+  "env": {
+   "currentNumber": "0x18dc809"
+  },
+  "transaction": {
+   "sender": "0x00000000000000000000000000000000000000aa",
+   "to": "0xe06493238d00ce26380453c2789d9d0985827382",
+   "gasLimit": [
+    "0x1000000"
+   ],
+   "value": [
+    "0x0"
+   ],
+   "data": [
+    "0x"
+   ],
+   "gasPrice": "0x0"
+  },
+  "stateOverride": {
+   "0xe06493238d00ce26380453c2789d9d0985827382": {
+    "code": "0x5b445a5d3656"
+   }
+  },
+  "expectError": "out of gas"
+ }
+}
