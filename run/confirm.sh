@@ -8,8 +8,10 @@ for x in *; do [ "$x" = run ] || [ "$x" = history ] || ln -s "$PWD/$x" "$V/$x"; 
 for s in "$1" "$2"; do
 	[ -d "$W/src-$s" ] || { git -C "$HOME/erigon" fetch -q origin && git -C "$HOME/erigon" worktree add -q --detach "$W/src-$s" "$s"; } || exit 1
 done
+# The nightly drops the suite's first test as warm-up; run it first here too, so every test of the family counts.
+F="regex:test_deploy_then_interact[[]fork_Amsterdam-blockchain_test_engine_x-greedy_fill-independent_pairs-|${3//\[/[[]}"
 for s in "$1" "$2" "$2" "$1" "$1" "$2"; do
-	(cd "$V" && ORDER=erigon ERIGON_SRC="$W/src-$s" ERIGON_LABEL="c$s" BALFIX="${BALFIX:-$HOME/bench/balfix}" run/nodebal.sh "$3") > "$W/run-$s.log" 2>&1
+	(cd "$V" && ORDER=erigon ERIGON_SRC="$W/src-$s" ERIGON_LABEL="c$s" BALFIX="${BALFIX:-$HOME/bench/balfix}" run/nodebal.sh "$F") > "$W/run-$s.log" 2>&1
 done
 python3 - "$V/history" "$1" "$2" <<'PY'
 import csv, pathlib, statistics, sys
