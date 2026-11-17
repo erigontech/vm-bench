@@ -167,6 +167,16 @@ tr.more button{font:inherit;font-size:14px;background:none;border:1px solid var(
 <div class="note" id="calls-note" hidden></div>
 <div id="calls" hidden></div>
 
+<h2 id="rivalbal-title" hidden>Rival main: newPayload BAL-on</h2>
+<div class="note" id="rivalbal-note" hidden></div>
+<section class="race" id="rivalbal-race" hidden></section>
+<div class="wrap" id="rivalbal-fam" hidden></div>
+<div class="wrap" id="rivalbal" hidden></div>
+
+<h2 id="rcalls-title" hidden>Rival main: eth_call per transaction</h2>
+<div class="note" id="rcalls-note" hidden></div>
+<div id="rcalls" hidden></div>
+
 <h2 id="sc-title" hidden>EEST benchmark scenario</h2>
 <div class="note" id="sc-bt-note" hidden></div>
 <section class="race" id="sc-bt-race" hidden></section>
@@ -452,7 +462,7 @@ function nodeSection(id, key, passKey, note) {
   const hc = nc.filter(c => tests.filter(t => res[t][c]).length * 2 >= tests.length);
   const hero = tests.filter(t => cat(t) !== "precompile" && hc.every(c => res[t][c]));
   const pp = (100 * Math.max(...Object.values(run[passKey]).map(r => Math.abs(r - 1)))).toFixed(1);
-  document.getElementById(id + "-note").innerHTML = buildTag(nv.erigon, run.date, { node: "newPayload BAL-off", nodebal: "newPayload BAL-on" }[id]) + fold(note({ tests, nc, hc, hero, nv, pp, rows: nc.map(c => [c, nv[c], modeMap(nv.modes)[c]]), extra: Object.entries(modeMap(nv.modes)).filter(([c]) => !nc.includes(c)).map(([c, m]) => c + " " + m) }));
+  document.getElementById(id + "-note").innerHTML = buildTag(nv.erigon, run.date, { node: "newPayload BAL-off", nodebal: "newPayload BAL-on", rivalbal: "Rival main newPayload BAL-on" }[id]) + (run.label ? `<p><b>${esc(run.label)}</b></p>` : "") + fold(note({ tests, nc, hc, hero, nv, pp, rows: nc.map(c => [c, nv[c], modeMap(nv.modes)[c]]), extra: Object.entries(modeMap(nv.modes)).filter(([c]) => !nc.includes(c)).map(([c, m]) => c + " " + m) }));
   const means = hc.map(c => ({ c, v: geomean(hero.map(t => res[t][c])) }));
   const ref = means.find(r => r.c === "erigon").v, max = Math.max(...means.map(r => r.v));
   document.getElementById(id + "-race").innerHTML = `<div><h3>${hero.length} instruction and scenario tests, ${run.date.slice(0, 10)}, geometric mean Mgas/s</h3><div class="bars">` +
@@ -480,7 +490,7 @@ nodeSection("node", "node", "nodePass", ({ tests, hero, nv, pp, rows }) => clien
   [`Fixtures ${esc(nv.fixtures)}, Osaka, 150M-gas blocks.`, `${tests.length} tests.`, `Pass-to-pass within ${pp}%.`,
    `The hero leaves out the ${tests.length - hero.length} precompile tests: geth and nethermind run with their default precompile result caches, so that group compares caches.`,
    `neth * = ${NETH_CACHE}: a precompile test that repeats one input; no e/neth ratio, and no geometric mean uses it.`]));
-const nodebalFam = nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc, hc, hero, nv, pp, rows, extra }) => clientNote(
+const balNote = ({ tests, nc, hc, hero, nv, pp, rows, extra }) => clientNote(
   `Node tier: engine_newPayload Mgas/s on Amsterdam blocks (glamsterdam-devnet-8 fixtures), BAL on: the same EEST compute tests ` +
   `filled for Amsterdam, so every block carries its block access list and every client runs in its BAL mode with the instance flags of ethpandaops/benchmarkoor-tests. ` +
   `Genesis state per test (small state), newPayload Mgas/s, driven by benchmarkoor. ` +
@@ -490,7 +500,9 @@ const nodebalFam = nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc
    `The hero and the family table use the ${hero.length} instruction and scenario tests that ${hc.join(", ")} all passed` +
    (nc.length > hc.length ? `; ${nc.filter(c => !hc.includes(c)).join(", ")} passed fewer than half of the tests and shows in the per-test table only.` : "."),
    `neth * = ${NETH_CACHE}: a precompile test that repeats one input; no e/neth ratio, and no geometric mean uses it.`,
-   ...extra.map(esc), ...(nv["not run"] ? [`Not run: ${esc(nv["not run"])}.`] : [])]));
+   ...extra.map(esc), ...(nv["not run"] ? [`Not run: ${esc(nv["not run"])}.`] : [])]);
+const nodebalFam = nodeSection("nodebal", "nodebal", "nodebalPass", balNote);
+nodeSection("rivalbal", "rivalbal", "rivalbalPass", balNote);
 
 // Goal: Lab mainnet win rate (Bronze = 3rd place), the BAL-on goal families against the best client, this week's merged wins.
 {
@@ -559,9 +571,9 @@ const nodebalFam = nodeSection("nodebal", "nodebal", "nodebalPass", ({ tests, nc
 if (data.branch) document.querySelector(".lede").innerHTML = `Branch build <span class="tag">${esc(data.branch)}</span>: erigon is main plus open PRs, the other clients are the same runs as on the <a href="./">main page</a>. ` +
   `Use it to find the next bottlenecks; the main page and its Progress trend stay main only.`;
 // eth_call per transaction: the latest snapshot with calls, change against the one before it.
-const callRuns = data.runs.filter(r => Object.keys(r.calls).length);
+function callSection(px, what, callRuns) {
 if (callRuns.length) {
-  for (const id of ["calls-title", "calls-note", "calls"]) document.getElementById(id).hidden = false;
+  for (const id of [px + "-title", px + "-note", px]) document.getElementById(id).hidden = false;
   const pick = (by, p) => Object.entries(by || {}).find(([c]) => c.startsWith(p)) || [];
   const erigonOf = r => pick(Object.values(r.calls)[0], "erigon")[0] || "", isDbg = r => erigonOf(r).includes("dbg");
   // tables = dbg: the latest dbg run unless a later day has a main run; the change column compares with main
@@ -573,7 +585,7 @@ if (callRuns.length) {
   const [nn0] = nr ? pick(Object.values(nr.calls).find(v => pick(v, "nethermind")[0]), "nethermind") : [];
   // exec time comes from a CPU profile of erigon main only; a dbg run has none, so take the newest run that has it.
   const execRun = callRuns.filter(r => Object.values(r.calls).some(v => pick(v, "erigon")[1]?.exec)).pop();
-  document.getElementById("calls-note").innerHTML = buildTag(ec, cr.date, "eth_call per transaction") + "<p>" + esc(`Against reth ${(rc || "").replace(/^reth-/, "")} in the same run. ` +
+  document.getElementById(px + "-note").innerHTML = buildTag(ec, cr.date, what) + (cr.label ? `<p><b>${esc(cr.label)}</b></p>` : "") + "<p>" + esc(`Against reth ${(rc || "").replace(/^reth-/, "")} in the same run. ` +
     (nr ? `neth = ${(nn0 || "").replace(/^nethermind-/, "Nethermind ")}, measured ${short(nr.date)}, in the erigon main run of that night; it keeps only the latest state, so its rows run at latest; e/n = erigon rps / neth rps of that run. ` : "") +
     `e/r and e/n divide only runs that executed the same gas; "–" = the clients ran different work (at latest their states can differ). One mainnet transaction per row, replayed as eth_call at its own block, 16 connections; "at latest" = the block is older than the state the node keeps; a row without numbers is a call that fails on this node; ` +
     `erigon and reth Mgas/s = the call's gas x rps, the gas served per second at 16 connections; ` +
@@ -594,20 +606,23 @@ if (callRuns.length) {
   // An erigon row that executed under half the transaction's gas did not replay it (for example a state where the call
   // does nothing), so its rps is not comparable; flag the run when that holds for most rows.
   const short_ = rows.filter(x => { const e = pick(cr.calls[x.f], "erigon")[1], g = data.callGas[x.f]; return e?.gas && g && e.gas < g / 2; });
-  if (short_.length * 2 > rows.length) document.getElementById("calls-note").innerHTML += `<p><b class="old">Not valid: in ${short_.length} of ${rows.length} rows erigon executed under half the transaction's gas (e.g. ${esc(short_[0].f.split("/").pop())}: ${pick(cr.calls[short_[0].f], "erigon")[1].gas} of ${data.callGas[short_[0].f]}), so its node did not replay these transactions; its rps and Mgas/s are not comparable.</b></p>`;
+  if (short_.length * 2 > rows.length) document.getElementById(px + "-note").innerHTML += `<p><b class="old">Not valid: in ${short_.length} of ${rows.length} rows erigon executed under half the transaction's gas (e.g. ${esc(short_[0].f.split("/").pop())}: ${pick(cr.calls[short_[0].f], "erigon")[1].gas} of ${data.callGas[short_[0].f]}), so its node did not replay these transactions; its rps and Mgas/s are not comparable.</b></p>`;
   const unit = (v, d, u) => isNaN(v) ? "–" : `${fmt(v, d)} ${u}`, dash = `<td class="gas" title="different work: the clients executed different gas">–</td>`;
   const tot = { e: geomean(rows.map(x => x.e)), em: geomean(rows.map(x => x.em)), rm: geomean(rows.map(x => x.rm)), xm: geomean(rows.map(x => x.xm)), ov: geomean(rows.map(x => x.ov)), n: geomean(rows.map(x => x.n)), er: geomean(rows.map(x => x.er)), en: geomean(rows.map(x => x.en)), r: geomean(rows.map(x => x.r)) };
   const byF = Object.fromEntries(rows.map(x => [x.f, x])), oldest = Math.min(...rows.map(x => data.callFixtures[x.f]));
-  document.getElementById("calls").innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>erigon Mgas/s</th><th>exec (Mgas/s)</th><th>overhead (µs)</th><th>over goal (µs)</th><th>reth rps</th><th>reth Mgas/s</th><th>e/r</th>${nr ? "<th>neth rps</th><th>e/n</th>" : ""}</tr></thead><tbody>` +
+  document.getElementById(px).innerHTML = `<div class="wrap"><table><thead><tr><th>transaction</th><th>erigon rps</th><th>erigon Mgas/s</th><th>exec (Mgas/s)</th><th>overhead (µs)</th><th>over goal (µs)</th><th>reth rps</th><th>reth Mgas/s</th><th>e/r</th>${nr ? "<th>neth rps</th><th>e/n</th>" : ""}</tr></thead><tbody>` +
     Object.keys({ ...data.callFixtures, ...cr.calls }).sort((a, b) => a.localeCompare(b, "en", { numeric: true })).map(f => { const x = byF[f];
       return x ? `<tr><td class="f" title="${x.f}">${x.f}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.em, 0)}</td><td class="${x.xm < 1000 ? "down" : ""}">${unit(x.xm, 0, "Mgas/s")}</td><td class="${x.ov > 20 ? "down" : ""}">${unit(x.ov, 0, "µs")}</td><td>${unit(x.og, 0, "µs")}</td><td>${fmt(x.r, 0)}</td><td>${fmt(x.rm, 0)}</td>${isNaN(x.er) ? (x.r ? dash : `<td class="gas">–</td>`) : ratioCell(x.er)}${nr ? `<td>${fmt(x.n, 0)}</td>${isNaN(x.en) ? (x.n ? dash : `<td class="gas">–</td>`) : ratioCell(x.en)}` : ""}</tr>`
         : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="${nr ? 10 : 8}">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
     `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.em, 0)}</b></td><td><b>${unit(tot.xm, 0, "Mgas/s")}</b></td><td><b>${unit(tot.ov, 0, "µs")}</b></td><td></td><td><b>${fmt(tot.r, 0)}</b></td><td><b>${fmt(tot.rm, 0)}</b></td>${isNaN(tot.er) ? "<td></td>" : ratioCell(tot.er)}${nr ? `<td><b>${fmt(tot.n, 0)}</b></td>${isNaN(tot.en) ? "<td></td>" : ratioCell(tot.en)}` : ""}</tr></tbody></table></div>`;
 }
+}
+callSection("calls", "eth_call per transaction", data.runs.filter(r => !r.label && Object.keys(r.calls).length));
+callSection("rcalls", "Rival main eth_call", data.runs.filter(r => r.label && Object.keys(r.calls).length));
 
 // Status: the build and date each section shows, in page order, and what failed in the run behind the EVM blocks tables.
 {
-  const rank = w => ["Progress", "Stateful", "newPayload BAL-off", "newPayload BAL-on", "eth_call", "EEST benchmark scenario", "EEST benchmark instruction"].findIndex(p => w.startsWith(p));
+  const rank = w => ["Progress", "Stateful", "newPayload BAL-off", "newPayload BAL-on", "eth_call", "Rival main", "EEST benchmark scenario", "EEST benchmark instruction"].findIndex(p => w.startsWith(p));
   const age = d => (Date.now() - Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10), +d.slice(11, 13) || 0, +d.slice(13, 15) || 0)) / 36e5;
   const when = d => d.slice(0, 10) + (d[10] === "T" ? ` ${d.slice(11, 13)}:${d.slice(13, 15)} UTC` : "");
   const errs = btRun?.errors || [];

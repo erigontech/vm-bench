@@ -10,7 +10,9 @@ hidden = {"besu", "nimbus", "ethrex"}
 runs = []
 src, page, branch = (root / sys.argv[1], root / sys.argv[2], sys.argv[3]) if len(sys.argv) > 3 else (root / "history", root / "docs" / "index.html", None)
 for d in sorted(p for p in src.iterdir() if p.is_dir()):
-    run = {"date": d.name, "versions": {}, "calls": {}, "bt": {}, "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}, "st": {}, "stArms": [], "callsprof": {}}
+    run = {"date": d.name, "versions": {}, "calls": {}, "bt": {}, "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}, "st": {}, "stArms": [], "callsprof": {}, "rivalbal": {}, "rivalbalPass": {}}
+    if (d / "label.txt").exists():
+        run["label"] = (d / "label.txt").read_text().strip()
     if (d / "errors.txt").exists():
         run["errors"] = (d / "errors.txt").read_text().split("\n")[:-1]
     for f in d.glob("*.csv"):
@@ -83,6 +85,17 @@ def scenario_point(run):
 scenario = list(map(scenario_point, (r for r in runs if r["bt"])))
 # a trend whose newest run gives no point would show an old number as current
 scenario = [p for p in scenario if p] if scenario and scenario[-1] else []
+# A labelled run (label.txt, e.g. rival main images) also gets its own BAL-on section, with erigon from the newest run that measured it.
+for r in (r for r in runs if r.get("label") and r["nodebal"]):
+    e = next((o for o in reversed(runs) if not o.get("label") and any("erigon" in row for row in o["nodebal"].values())), None)
+    r["rivalbal"], r["rivalbalPass"] = {t: dict(row) for t, row in r["nodebal"].items()}, dict(r["nodebalPass"])
+    r["versions"] = dict(r["versions"])
+    if e and not any("erigon" in row for row in r["rivalbal"].values()):
+        for t, row in e["nodebal"].items():
+            if "erigon" in row and t in r["rivalbal"]:
+                r["rivalbal"][t]["erigon"] = row["erigon"]
+        r["rivalbalPass"]["erigon"] = e["nodebalPass"].get("erigon", 1.0)
+        r["versions"]["erigon"] = f"{e['versions'].get('erigon', '')} (measured {e['date'][:10]})"
 # The page shows one table per tier: the latest dbg build (main + open PRs) unless a later main run exists, else the latest run.
 isdbg = lambda r: r["versions"].get("erigon", "").startswith("dbg")
 for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "stArms")):
