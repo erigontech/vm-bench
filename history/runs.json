@@ -2170,5 +2170,46 @@
       "EVM extcodecopy_warm x0.88, sub-tests copy_size_32..1024 x0.12 to x0.33 (copy_size_0 flat): #25986, confirmed by its 11-14 dbg arm; a miss keeps nothing in the code cache, so each repeated EXTCODECOPY decodes the code again",
       "EVM x0.98, erigon/neth x0.81 to x0.77: jumpdests x0.79, callvalue x0.89/x0.93, iszero x0.92, calldatasize x0.92, clz_same x0.92, memory_access x0.92; the sub-tests show the same drop; run offset unchanged, #25986 is the only VM change, cause not pinned"
     ]
+  },
+  {
+    "date": "2026-11-16",
+    "old": "c6b74e97fc001ecc3b8e1a48177697a9307735a9",
+    "new": "0c1bad275f03ebd70018b0544163a76e66ded0ba",
+    "evm": {
+      "mgas": 1147.1,
+      "ratio": 0.786,
+      "best": "nethermind",
+      "valid": 51,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10591.2,
+      "ratio": 1.22,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 10250.6,
+      "ratio": 0.813,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-16 0c1bad275f; node x1.02 and BAL-on x1.03 vs the late 11-15 node tiers (main c6b74e97fc, x0.99 and x0.99 vs 11-14); (*EVM).run at offset 0 as on 11-15; BAL-on best client now reth (fresh 11-16 day run); no failed rows",
+    "shipped": [
+      "#26383 a repeated EXTCODECOPY copies from the read record; #26380 validate account reads at the BAL existence marker against the destruct; #25620 dispatch window scales with workers; #26337 error on non-versioned state; #25515 EIP-8272; the rest is CL, db/state, tests and cleanups (#26336, #26339, #26340, #26199)"
+    ],
+    "better": [
+      "extcodecopy_warm x6.2 node (5), x6.3 BAL-on (5), EVM sub-tests copy_size_32..1024 x6.6 to x7.8: #26383 wins back the #25986 loss. EVM x1.04 wins back 11-15 (jumpdests x1.26, iszero x1.14, callvalue_from_origin x1.14, calldatasize/memory_access/clz_same x1.08), so that drop was noise",
+      "node ext_account_query_cold x1.26 (2), contract_calling_many_addresses x1.23 (8), tload x1.23 (4), contract_creation x1.08 (6); BAL-on tstore x1.33 (4), contract_creation x1.20 (6), auth_transaction x1.15 (16), p256verify x1.25 (3) wins back 11-14: one night, unconfirmed"
+    ],
+    "worse": [
+      "BAL-on create x0.94 (20), deploy_then_interact x0.93 (5), selfdestruct_existing x0.94 (2), second night down past 5% (x0.89, x0.83, x0.87 vs 11-14): likely #26324 (11-15, create over an account with storage) and #26380 (destruct check), not bisected",
+      "node storage_access_cold_benchmark x0.96 (3), storage_access_warm x0.96 (3), bls12_pairing x0.96 (5): second night down, x0.91..x0.93 vs 11-14; alt_bn128_benchmark x0.84 (5), BAL-on identity x0.72 (1), clz_same x0.83 (1), modexp_length_above_upper_bound x0.84 (3): one night, unconfirmed"
+    ]
   }
 ]
