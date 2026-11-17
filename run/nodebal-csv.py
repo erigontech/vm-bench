@@ -6,7 +6,7 @@
 import csv, glob, json, math, re, sys
 
 pre, out, C = sys.argv[1], sys.argv[2], sys.argv[3:]
-g = lambda xs: math.exp(sum(map(math.log, xs)) / len(xs))
+g = lambda xs: math.exp(sum(map(math.log, xs)) / len(xs)) if xs else float("nan")  # a precompile-only filter has no hero tests
 
 
 def load(d):
