@@ -36,6 +36,8 @@ fi
 export BENCHMARKOOR=${BENCHMARKOOR:-$HOME/bm24402727/src/benchmarkoor/bin/benchmarkoor}
 ERIGON_SRC=$src ORDER=erigon run/node.sh > results/node-nightly.log 2>&1 || echo "node tier failed, see results/node-nightly.log" >> results/build-errors.txt
 BALFIX=${BALFIX:-$HOME/bench/balfix} ERIGON_SRC=$src ORDER=erigon run/nodebal.sh > results/nodebal-nightly.log 2>&1 || echo "BAL-on node tier failed, see results/nodebal-nightly.log" >> results/build-errors.txt
+# A BAL-on family >=5% slower than last night counts only after an interleaved re-run of both mains confirms it (history/<stamp>/confirm.csv).
+run/confirm.py history > results/confirm.log 2>&1 || echo "BAL-on confirm re-run failed, see results/confirm.log" >> results/build-errors.txt
 # eth_call tier: the box with the mainnet node measures it from its own cron (CALLS_FROM = rsync source of its CSVs,
 # named <UTC stamp>-<arm>.csv); each CSV becomes history/<stamp>/calls.csv.
 if [ -n "${CALLS_FROM:-}" ]; then
