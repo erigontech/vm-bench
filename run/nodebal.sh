@@ -18,7 +18,7 @@ for c in "${!IMG[@]}"; do v=IMG_$c; [ -z "${!v:-}" ] || IMG[$c]=${!v}; done
 declare -A ARGS=(
 	[erigon]="--exec.no-merge=true --exec.no-prune=true --exec.no-background-maintenance --experimental.parallel-commitment"
 	[geth]="--cache.noprecompile --engine.maxreorgdepth=1024"
-	[reth]=""
+	[reth]="${RETH_ARGS:-}"
 	[nethermind]="--FlatDb.Enabled=true --FlatDb.CompactionOffset=0 --FlatDb.MinReorgDepth=1024 --FlatDb.MaxReorgDepth=1024 --Blocks.ParallelExecution=true --Blocks.ParallelExecutionBatchRead=true"
 	[besu]="--Xplugin-rocksdb-high-spec-enabled=true --Xbal-perfect-parallelization-enabled=true --Xbal-state-root-enabled=true"
 	[ethrex]="--skip-genesis-validation --no-precompile-cache"
