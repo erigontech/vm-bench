@@ -1,0 +1,15 @@
+family,nightly_ratio,rerun_ratio,verdict
+test_selfdestruct_created,0.857,1.029,NOISE
+test_block_full_data,0.888,0.941,CONFIRMED
+test_jump_benchmark,0.901,1.056,NOISE
+test_p256verify,0.909,0.988,NOISE
+test_selfdestruct_initcode,0.925,1.011,NOISE
+test_callvalue_from_call,0.928,0.992,NOISE
+test_prefetch_cold_storage,0.928,1.026,NOISE
+test_sha256_uncachable,0.931,0.973,NOISE
+test_identity_uncachable,0.934,0.992,NOISE
+test_sha256_fixed_size,0.944,0.985,NOISE
+test_return_revert,0.947,1.013,NOISE
+test_bls12_381,0.948,1.021,NOISE
+test_jumpi_fallthrough,0.949,1.052,NOISE
+test_tstore,0.949,1.032,NOISE
