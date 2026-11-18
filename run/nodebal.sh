@@ -48,6 +48,11 @@ instance_extra() {
       environment:
         BESU_OPTS: "-Xms8g -Xmx8g -XX:+AlwaysPreTouch"
 YML
+	# ERIGON_ENV="K=V,K=V": environment of the erigon container (e.g. NEWPAYLOAD_PHASES=true for its newPayload phase log).
+	if [ $1 = erigon ] && [ -n "${ERIGON_ENV:-}" ]; then
+		echo "      environment:"
+		tr ',' '\n' <<< "$ERIGON_ENV" | while IFS== read -r k v; do echo "        $k: \"$v\""; done
+	fi
 	if [ -z "${ARGS[$1]:-}" ]; then echo "      extra_args: []"; else
 		echo "      extra_args:"
 		for a in ${ARGS[$1]:-}; do echo "        - \"$a\""; done
