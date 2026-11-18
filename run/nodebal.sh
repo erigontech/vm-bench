@@ -34,8 +34,8 @@ echo "filter=$FILTER smoke=$SMOKE fixtures=$BALFIX"
 	echo "erigon,$EV"
 	for c in $ORDER; do
 		[ $c = erigon ] && continue
-		r=${REF[$c]%@*} d=${REF[$c]##*@sha256:}
-		echo "$c,${r##*:}@${d:0:12}"
+		r=${REF[$c]%@*} d=${REF[$c]##*@sha256:} v=VER_$c
+		echo "$c,${!v:-${r##*:}@${d:0:12}}"
 	done
 	printf 'modes,"'
 	for c in $ORDER; do printf '%s%s %s' "${sep:-}" $c "${ARGS[$c]:-defaults}"; sep="; "; done
