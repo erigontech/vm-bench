@@ -3,18 +3,27 @@
 # usage: run/calls.sh <client label> [url]  -> fixture,client,rps,p50_ms,p99_ms,err,at,gas on stdout
 # gas = the call's gasUsed from debug_traceCall (callTracer, top call), empty when the node has no tracer.
 # needs wrk and bodies3.lua (LUA=...). at = block, or latest when the node no longer keeps the fixture's block.
+# AT_FROM=<csv of an earlier client>: run each row at that client's at (block or latest) and skip rows it did not run,
+# so two clients serve the same call; run/calls-match.py then fails a row whose gas differs.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 client=$1 url=${2:-http://127.0.0.1:8545/} LUA=${LUA:-$HOME/bench/bodies3.lua}
 tmp=$(mktemp -d)
 ok() { curl -s -m 60 -H 'Content-Type: application/json' --data-binary @"$tmp/body" "$url" | grep -qE '"result"'"${expect:+|\"error\".*$expect}"; }
 run/calls.py | while IFS=$'\t' read -r fixture body latest expect; do
-	at=block
-	printf '%s\n' "$body" > "$tmp/body"
-	if ! ok; then
-		at=latest
-		printf '%s\n' "$latest" > "$tmp/body"
-		ok || { echo "$fixture: call failed" >&2; continue; }
+	if [ -n "${AT_FROM:-}" ]; then
+		at=$(awk -F, -v f="$fixture" '$1 == f { print $7; exit }' "$AT_FROM")
+		[ -n "$at" ] || { echo "$fixture: not run by the first client" >&2; continue; }
+		if [ "$at" = latest ]; then printf '%s\n' "$latest" > "$tmp/body"; else printf '%s\n' "$body" > "$tmp/body"; fi
+		ok || { echo "$fixture: call failed at $at" >&2; continue; }
+	else
+		at=block
+		printf '%s\n' "$body" > "$tmp/body"
+		if ! ok; then
+			at=latest
+			printf '%s\n' "$latest" > "$tmp/body"
+			ok || { echo "$fixture: call failed" >&2; continue; }
+		fi
 	fi
 	jq -c '.method="debug_traceCall" | .params=(.params[0:2]+[{"tracer":"callTracer","tracerConfig":{"onlyTopCall":true}} + (if .params[2] then {"stateOverrides":.params[2]} else {} end)])' "$tmp/body" > "$tmp/trace"
 	gas=$(curl -s -m 60 -H 'Content-Type: application/json' --data-binary @"$tmp/trace" "$url" | jq -r '.result.gasUsed // empty' 2> /dev/null || true)

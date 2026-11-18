@@ -1,0 +1,16 @@
+mainnet-edge-cases/13-c0b6ab3a-storage-b9c2: not comparable: erigon-3894513253 at latest gas 407159, reth-main-c09a02d4e0 at latest gas 409959
+mainnet-edge-cases/17-8653e244-ecrecover-330-110KB: not comparable: erigon-3894513253 at latest gas 4351170, reth-main-c09a02d4e0 at block gas 12064215
+mainnet-edge-cases/18-3c70f07a-metamorpho-redeem-3302: not comparable: erigon-3894513253 at latest gas 554779, reth-main-c09a02d4e0 at block gas 554851
+mainnet-edge-cases/20-fe16276b-sha256-sstore-20a6: not comparable: erigon-3894513253 at latest gas 1137224, reth-main-c09a02d4e0 at block gas 3535492
+mainnet-edge-cases/21-d4c854e7-multicall3-forward: not comparable: erigon-3894513253 at latest gas 674996, reth-main-c09a02d4e0 at block gas 674996
+mainnet-edge-cases/22-efd056de-modexp-proof-verify: not comparable: erigon-3894513253 at latest gas 2164971, reth-main-c09a02d4e0 at block gas 2316107
+mainnet-edge-cases/23-a500a7f4-transferfrom-262: not comparable: erigon-3894513253 at latest gas 1419607, reth-main-c09a02d4e0 at block gas 1436707
+mainnet-edge-cases/24-e312d0cf-morpho-bundle: not comparable: erigon-3894513253 at latest gas 808945, reth-main-c09a02d4e0 at block gas 808957
+mainnet-edge-cases/26-3e27e037-7702-batch-transfer-315: not comparable: erigon-3894513253 at latest gas 8371001, reth-main-c09a02d4e0 at block gas 3397541
+mainnet-edge-cases/28-86c02805-roles-exec-morpho: not comparable: erigon-3894513253 at latest gas 878460, reth-main-c09a02d4e0 at block gas 883634
+mainnet-edge-cases/29-ad24b118-swap-route-a323: not comparable: erigon-3894513253 at latest gas 238021, reth-main-c09a02d4e0 at block gas 1466914
+mainnet-edge-cases/31-692aa8bf-unlock-compressed-batch: not comparable: erigon-3894513253 at latest gas 247191, reth-main-c09a02d4e0 at block gas 437271
+mainnet-edge-cases/34-tstore-loop-16M: not comparable: erigon-3894513253 at latest gas 16777216, reth-main-c09a02d4e0 at block gas 16777216
+mainnet-popular/0c320640-00fe7820-2.8M: not comparable: erigon-3894513253 at latest gas 2705344, reth-main-c09a02d4e0 at block gas 2722444
+mainnet-popular/61c94904-usdt-transfer: not comparable: erigon-3894513253 at latest gas 46109, reth-main-c09a02d4e0 at block gas 46109
+mainnet-popular/6ca3b71a-c10fc8fa-2.5M: not comparable: erigon-3894513253 at latest gas 2516361, reth-main-c09a02d4e0 at block gas 2511078

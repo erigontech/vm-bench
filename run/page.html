@@ -595,8 +595,8 @@ if (callRuns.length) {
     "";
   // e/r and e/n divide erigon by the other client only when both executed the same gas; at latest the two nodes can
   // hold different states, and the same call then does different work.
-  const sameWork = (a, b, g) => a?.rps && b?.rps && (a.gas ?? g) === (b.gas ?? g) ? a.rps / b.rps : NaN;
-  console.assert(isNaN(sameWork({ rps: 1, gas: 21528 }, { rps: 1, gas: 21057725 })) && sameWork({ rps: 4, gas: 5 }, { rps: 2, gas: 5 }) === 2, "eth_call ratio self-check");
+  const sameWork = (a, b, g) => a?.rps && b?.rps && a.at === b.at && (a.gas ?? g) === (b.gas ?? g) ? a.rps / b.rps : NaN;
+  console.assert(isNaN(sameWork({ rps: 1, gas: 21528 }, { rps: 1, gas: 21057725 })) && isNaN(sameWork({ rps: 1, gas: 5, at: "latest" }, { rps: 1, gas: 5, at: "block" })) && sameWork({ rps: 4, gas: 5 }, { rps: 2, gas: 5 }) === 2, "eth_call ratio self-check");
   const rows = Object.keys(cr.calls).map(f => {
     const [, e] = pick(cr.calls[f], "erigon"), [, r] = pick(cr.calls[f], "reth");
     const [, nn] = pick(nr?.calls[f], "nethermind"), [, ne] = pick(nr?.calls[f], "erigon");

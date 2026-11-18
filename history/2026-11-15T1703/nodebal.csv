@@ -24,7 +24,6 @@ benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::te
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_deploy_then_interact[fork_Amsterdam-blockchain_test_engine_x-max_txs-single_contract-benchmark-gas-value_150M],besu,560.73
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_deploy_then_interact[fork_Amsterdam-blockchain_test_engine_x-max_txs-single_contract-benchmark-gas-value_150M],nimbus,811.13
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_mixed_dependency_graph[fork_Amsterdam-blockchain_test_engine_x-greedy_fill-group_size_1-benchmark-gas-value_150M],reth,2283.76
-benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_mixed_dependency_graph[fork_Amsterdam-blockchain_test_engine_x-greedy_fill-group_size_1-benchmark-gas-value_150M],nethermind,877.13
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_mixed_dependency_graph[fork_Amsterdam-blockchain_test_engine_x-greedy_fill-group_size_1-benchmark-gas-value_150M],geth,1680.37
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_mixed_dependency_graph[fork_Amsterdam-blockchain_test_engine_x-greedy_fill-group_size_1-benchmark-gas-value_150M],besu,764.01
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_mixed_dependency_graph[fork_Amsterdam-blockchain_test_engine_x-greedy_fill-group_size_1-benchmark-gas-value_150M],nimbus,213.99
@@ -74,7 +73,6 @@ benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::te
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_parallel_execution_serial_chain[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],besu,741.47
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_parallel_execution_serial_chain[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],nimbus,212.68
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_prefetch_cold_storage[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],reth,1939.96
-benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_prefetch_cold_storage[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],nethermind,1645.65
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_prefetch_cold_storage[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],geth,1415.71
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_prefetch_cold_storage[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],besu,632.18
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_prefetch_cold_storage[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],nimbus,759.47
@@ -264,12 +262,10 @@ benchmark/compute/instruction/test_account_query.py::test_codesize[fork_Amsterda
 benchmark/compute/instruction/test_account_query.py::test_codesize[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],besu,800.80
 benchmark/compute/instruction/test_account_query.py::test_codesize[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],nimbus,369.40
 benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_False-opcode_BALANCE-benchmark-gas-value_150M],reth,4221.96
-benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_False-opcode_BALANCE-benchmark-gas-value_150M],nethermind,1873.20
 benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_False-opcode_BALANCE-benchmark-gas-value_150M],geth,841.34
 benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_False-opcode_BALANCE-benchmark-gas-value_150M],besu,598.63
 benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_False-opcode_BALANCE-benchmark-gas-value_150M],nimbus,1483.08
 benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_True-opcode_BALANCE-benchmark-gas-value_150M],reth,4451.90
-benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_True-opcode_BALANCE-benchmark-gas-value_150M],nethermind,2061.37
 benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_True-opcode_BALANCE-benchmark-gas-value_150M],geth,816.53
 benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_True-opcode_BALANCE-benchmark-gas-value_150M],besu,612.96
 benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_True-opcode_BALANCE-benchmark-gas-value_150M],nimbus,1584.84
@@ -3539,7 +3535,6 @@ benchmark/compute/instruction/test_stack.py::test_swapn[fork_Amsterdam-blockchai
 benchmark/compute/instruction/test_stack.py::test_swapn[fork_Amsterdam-blockchain_test_engine_x-stack_235-benchmark-gas-value_150M],besu,1509.07
 benchmark/compute/instruction/test_stack.py::test_swapn[fork_Amsterdam-blockchain_test_engine_x-stack_235-benchmark-gas-value_150M],nimbus,378.07
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_False-SSLOAD-benchmark-gas-value_150M],reth,5699.48
-benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_False-SSLOAD-benchmark-gas-value_150M],nethermind,4223.36
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_False-SSLOAD-benchmark-gas-value_150M],geth,2194.62
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_False-SSLOAD-benchmark-gas-value_150M],besu,829.36
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_False-SSLOAD-benchmark-gas-value_150M],nimbus,2140.62
@@ -3609,7 +3604,6 @@ benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Ams
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_True-SSTORE same value-benchmark-gas-value_150M],besu,8673.68
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_True-SSTORE same value-benchmark-gas-value_150M],nimbus,22537.20
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],reth,7303.97
-benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],nethermind,29529.78
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],geth,5334.70
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],besu,1497.84
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],nimbus,2176.92
@@ -3624,7 +3618,6 @@ benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmar
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SSTORE_same-benchmark-gas-value_150M],besu,1041.04
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SSTORE_same-benchmark-gas-value_150M],nimbus,1776.99
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],reth,14282.69
-benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],nethermind,19186.47
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],geth,4516.21
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],besu,1654.55
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],nimbus,1533.55
@@ -3639,7 +3632,6 @@ benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Ams
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SSTORE same value-benchmark-gas-value_150M],besu,1393.11
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SSTORE same value-benchmark-gas-value_150M],nimbus,892.19
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],reth,26464.88
-benchmark/compute/instruction/test_storage.py::test_storage_access_warm_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],nethermind,22256.57
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],geth,4287.17
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],besu,1983.71
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],nimbus,2078.16
@@ -3964,7 +3956,6 @@ benchmark/compute/instruction/test_system.py::test_selfdestruct_created[fork_Ams
 benchmark/compute/instruction/test_system.py::test_selfdestruct_created[fork_Amsterdam-blockchain_test_engine_x-value_bearing_True-benchmark-gas-value_150M],besu,4722.84
 benchmark/compute/instruction/test_system.py::test_selfdestruct_created[fork_Amsterdam-blockchain_test_engine_x-value_bearing_True-benchmark-gas-value_150M],nimbus,9443.87
 benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Amsterdam-blockchain_test_engine_x-value_bearing_False-benchmark-gas-value_150M],reth,6010.41
-benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Amsterdam-blockchain_test_engine_x-value_bearing_False-benchmark-gas-value_150M],nethermind,13174.50
 benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Amsterdam-blockchain_test_engine_x-value_bearing_False-benchmark-gas-value_150M],geth,3844.74
 benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Amsterdam-blockchain_test_engine_x-value_bearing_False-benchmark-gas-value_150M],besu,1756.51
 benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Amsterdam-blockchain_test_engine_x-value_bearing_False-benchmark-gas-value_150M],nimbus,2122.39
@@ -3974,7 +3965,6 @@ benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Am
 benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Amsterdam-blockchain_test_engine_x-value_bearing_True-benchmark-gas-value_150M],besu,525.75
 benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Amsterdam-blockchain_test_engine_x-value_bearing_True-benchmark-gas-value_150M],nimbus,622.14
 benchmark/compute/instruction/test_system.py::test_selfdestruct_initcode[fork_Amsterdam-blockchain_test_engine_x-with value burnt to self-benchmark-gas-value_150M],reth,22576.54
-benchmark/compute/instruction/test_system.py::test_selfdestruct_initcode[fork_Amsterdam-blockchain_test_engine_x-with value burnt to self-benchmark-gas-value_150M],nethermind,33265.93
 benchmark/compute/instruction/test_system.py::test_selfdestruct_initcode[fork_Amsterdam-blockchain_test_engine_x-with value burnt to self-benchmark-gas-value_150M],geth,18944.99
 benchmark/compute/instruction/test_system.py::test_selfdestruct_initcode[fork_Amsterdam-blockchain_test_engine_x-with value burnt to self-benchmark-gas-value_150M],besu,5762.51
 benchmark/compute/instruction/test_system.py::test_selfdestruct_initcode[fork_Amsterdam-blockchain_test_engine_x-with value burnt to self-benchmark-gas-value_150M],nimbus,7527.97

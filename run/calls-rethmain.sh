@@ -51,7 +51,7 @@ measure $L http://127.0.0.1:$EP/ calls-erigon.csv
 erigon_down x
 RV=$($HOME/rethmain/reth --version | sed -n '1s/Reth Version: //p')
 reth_up x; wait_stable $RP || { echo NO_RESPONSE reth; tail -20 $D/reth-x.log; reth_down x; echo CALLS_DONE; exit 1; }
-measure reth-$RV http://127.0.0.1:$RP/ calls-reth.csv
+AT_FROM=$D/calls-erigon.csv measure reth-$RV http://127.0.0.1:$RP/ calls-reth.csv
 reth_down x
-cat $D/calls-erigon.csv $D/calls-reth.csv > $D/calls.csv
+(cd ~/vm-bench && run/calls-match.py $D/calls-erigon.csv $D/calls-reth.csv > $D/calls.csv)
 echo CALLS_DONE

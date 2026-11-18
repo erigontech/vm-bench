@@ -16,10 +16,15 @@ def load(d):
         if t["genesis"] not in seen:
             seen.add(t["genesis"])
             warm.add(t["name"])
+    # A test whose block the client did not apply leaves the head behind after the run: its fast "success" timed no execution.
+    unapplied = set()
+    for line in open(glob.glob(f"{d}/runs/*/benchmarkoor.log")[0]):
+        if "Block number mismatch after rollback" in line and (m := re.search(r'test="([^"]+)"', line)):
+            unapplied.add(m[1])
     v = {}
     for n, t in r["tests"].items():
         a = t["steps"].get("test", {}).get("aggregated")
-        if n not in warm and a and a["fail"] == 0 and a["success"] > 0 and a["gas_used_time_total"] > 0:
+        if n not in warm and n not in unapplied and a and a["fail"] == 0 and a["success"] > 0 and a["gas_used_time_total"] > 0:
             v[n] = a["gas_used_total"] / a["gas_used_time_total"] * 1e3
     return v, len(r["tests"])
 

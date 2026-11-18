@@ -14,7 +14,6 @@ benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::te
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_deploy_then_interact[fork_Amsterdam-blockchain_test_engine_x-max_txs-single_contract-benchmark-gas-value_150M],nethermind,1760.98
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_deploy_then_interact[fork_Amsterdam-blockchain_test_engine_x-max_txs-single_contract-benchmark-gas-value_150M],geth,2327.89
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_mixed_dependency_graph[fork_Amsterdam-blockchain_test_engine_x-greedy_fill-group_size_1-benchmark-gas-value_150M],reth,2631.57
-benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_mixed_dependency_graph[fork_Amsterdam-blockchain_test_engine_x-greedy_fill-group_size_1-benchmark-gas-value_150M],nethermind,877.66
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_mixed_dependency_graph[fork_Amsterdam-blockchain_test_engine_x-greedy_fill-group_size_1-benchmark-gas-value_150M],geth,1633.68
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_mixed_dependency_graph[fork_Amsterdam-blockchain_test_engine_x-greedy_fill-group_size_2-benchmark-gas-value_150M],reth,2575.92
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_mixed_dependency_graph[fork_Amsterdam-blockchain_test_engine_x-greedy_fill-group_size_2-benchmark-gas-value_150M],nethermind,807.64
@@ -44,7 +43,6 @@ benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::te
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_parallel_execution_serial_chain[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],nethermind,806.28
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_parallel_execution_serial_chain[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],geth,1556.82
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_prefetch_cold_storage[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],reth,1824.35
-benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_prefetch_cold_storage[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],nethermind,1605.30
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_prefetch_cold_storage[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],geth,1388.93
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_state_root_computation[fork_Amsterdam-blockchain_test_engine_x-greedy_fill-contract_per_tx-benchmark-gas-value_150M],reth,4248.95
 benchmark/compute/eip7928_block_level_access_lists/test_block_access_list.py::test_state_root_computation[fork_Amsterdam-blockchain_test_engine_x-greedy_fill-contract_per_tx-benchmark-gas-value_150M],nethermind,3567.93
@@ -158,10 +156,8 @@ benchmark/compute/instruction/test_account_query.py::test_codesize[fork_Amsterda
 benchmark/compute/instruction/test_account_query.py::test_codesize[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],nethermind,3370.49
 benchmark/compute/instruction/test_account_query.py::test_codesize[fork_Amsterdam-blockchain_test_engine_x-benchmark-gas-value_150M],geth,2292.92
 benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_False-opcode_BALANCE-benchmark-gas-value_150M],reth,2685.92
-benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_False-opcode_BALANCE-benchmark-gas-value_150M],nethermind,1887.51
 benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_False-opcode_BALANCE-benchmark-gas-value_150M],geth,863.72
 benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_True-opcode_BALANCE-benchmark-gas-value_150M],reth,2824.50
-benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_True-opcode_BALANCE-benchmark-gas-value_150M],nethermind,2046.28
 benchmark/compute/instruction/test_account_query.py::test_ext_account_query_cold[fork_Amsterdam-blockchain_test_engine_x-absent_accounts_True-opcode_BALANCE-benchmark-gas-value_150M],geth,799.26
 benchmark/compute/instruction/test_account_query.py::test_extcodecopy_warm[fork_Amsterdam-blockchain_test_engine_x-copy_size_0-benchmark-gas-value_150M],reth,21082.97
 benchmark/compute/instruction/test_account_query.py::test_extcodecopy_warm[fork_Amsterdam-blockchain_test_engine_x-copy_size_0-benchmark-gas-value_150M],nethermind,4261.69
@@ -2123,7 +2119,6 @@ benchmark/compute/instruction/test_stack.py::test_swapn[fork_Amsterdam-blockchai
 benchmark/compute/instruction/test_stack.py::test_swapn[fork_Amsterdam-blockchain_test_engine_x-stack_235-benchmark-gas-value_150M],nethermind,7665.26
 benchmark/compute/instruction/test_stack.py::test_swapn[fork_Amsterdam-blockchain_test_engine_x-stack_235-benchmark-gas-value_150M],geth,2631.76
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_False-SSLOAD-benchmark-gas-value_150M],reth,4996.28
-benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_False-SSLOAD-benchmark-gas-value_150M],nethermind,5334.63
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_False-SSLOAD-benchmark-gas-value_150M],geth,2240.32
 "benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_False-SSTORE new value, out of gas-benchmark-gas-value_150M]",reth,34983.78
 "benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_False-SSTORE new value, out of gas-benchmark-gas-value_150M]",nethermind,39208.81
@@ -2165,7 +2160,6 @@ benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Ams
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_True-SSTORE same value-benchmark-gas-value_150M],nethermind,103563.85
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold[fork_Amsterdam-blockchain_test_engine_x-absent_slots_True-SSTORE same value-benchmark-gas-value_150M],geth,29575.89
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],reth,6353.54
-benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],nethermind,30400.53
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],geth,6249.74
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SSTORE_new-benchmark-gas-value_150M],reth,67436.89
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SSTORE_new-benchmark-gas-value_150M],nethermind,83524.67
@@ -2174,7 +2168,6 @@ benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmar
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SSTORE_same-benchmark-gas-value_150M],nethermind,25835.47
 benchmark/compute/instruction/test_storage.py::test_storage_access_cold_benchmark[fork_Amsterdam-blockchain_test_engine_x-SSTORE_same-benchmark-gas-value_150M],geth,4005.88
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],reth,20881.99
-benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],nethermind,19475.47
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],geth,4334.10
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SSTORE new value-benchmark-gas-value_150M],reth,4960.35
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SSTORE new value-benchmark-gas-value_150M],nethermind,10553.62
@@ -2183,7 +2176,6 @@ benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Ams
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SSTORE same value-benchmark-gas-value_150M],nethermind,15694.13
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm[fork_Amsterdam-blockchain_test_engine_x-SSTORE same value-benchmark-gas-value_150M],geth,2758.94
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],reth,25090.15
-benchmark/compute/instruction/test_storage.py::test_storage_access_warm_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],nethermind,23166.71
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm_benchmark[fork_Amsterdam-blockchain_test_engine_x-SLOAD-benchmark-gas-value_150M],geth,4267.65
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm_benchmark[fork_Amsterdam-blockchain_test_engine_x-SSTORE new value-benchmark-gas-value_150M],reth,4746.12
 benchmark/compute/instruction/test_storage.py::test_storage_access_warm_benchmark[fork_Amsterdam-blockchain_test_engine_x-SSTORE new value-benchmark-gas-value_150M],nethermind,10392.93
@@ -2378,13 +2370,11 @@ benchmark/compute/instruction/test_system.py::test_selfdestruct_created[fork_Ams
 benchmark/compute/instruction/test_system.py::test_selfdestruct_created[fork_Amsterdam-blockchain_test_engine_x-value_bearing_True-benchmark-gas-value_150M],nethermind,29097.38
 benchmark/compute/instruction/test_system.py::test_selfdestruct_created[fork_Amsterdam-blockchain_test_engine_x-value_bearing_True-benchmark-gas-value_150M],geth,16630.80
 benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Amsterdam-blockchain_test_engine_x-value_bearing_False-benchmark-gas-value_150M],reth,6850.20
-benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Amsterdam-blockchain_test_engine_x-value_bearing_False-benchmark-gas-value_150M],nethermind,12304.80
 benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Amsterdam-blockchain_test_engine_x-value_bearing_False-benchmark-gas-value_150M],geth,3882.35
 benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Amsterdam-blockchain_test_engine_x-value_bearing_True-benchmark-gas-value_150M],reth,3449.79
 benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Amsterdam-blockchain_test_engine_x-value_bearing_True-benchmark-gas-value_150M],nethermind,5447.36
 benchmark/compute/instruction/test_system.py::test_selfdestruct_existing[fork_Amsterdam-blockchain_test_engine_x-value_bearing_True-benchmark-gas-value_150M],geth,1390.39
 benchmark/compute/instruction/test_system.py::test_selfdestruct_initcode[fork_Amsterdam-blockchain_test_engine_x-with value burnt to self-benchmark-gas-value_150M],reth,22079.04
-benchmark/compute/instruction/test_system.py::test_selfdestruct_initcode[fork_Amsterdam-blockchain_test_engine_x-with value burnt to self-benchmark-gas-value_150M],nethermind,36239.28
 benchmark/compute/instruction/test_system.py::test_selfdestruct_initcode[fork_Amsterdam-blockchain_test_engine_x-with value burnt to self-benchmark-gas-value_150M],geth,18585.19
 benchmark/compute/instruction/test_system.py::test_selfdestruct_initcode[fork_Amsterdam-blockchain_test_engine_x-with value moved to the creator-benchmark-gas-value_150M],reth,35280.19
 benchmark/compute/instruction/test_system.py::test_selfdestruct_initcode[fork_Amsterdam-blockchain_test_engine_x-with value moved to the creator-benchmark-gas-value_150M],nethermind,36960.22
