@@ -1,0 +1,17 @@
+family,nightly_ratio,rerun_ratio,verdict
+test_clz_diff,0.813,0.961,NOISE
+test_keccak_max_permutations,0.851,0.901,CONFIRMED
+test_jumpis,0.870,0.997,NOISE
+test_iszero,0.877,1.094,NOISE
+test_ripemd160_fixed_size,0.882,1.047,NOISE
+test_jumpdests,0.892,0.976,NOISE
+test_ext_account_query_cold,0.904,0.974,NOISE
+test_dupn,0.918,0.900,CONFIRMED
+test_returndatasize_zero,0.929,1.014,NOISE
+test_creates_reverting_initcode,0.935,0.959,NOISE
+test_comparison,0.935,0.933,CONFIRMED
+test_point_evaluation_uncachable,0.941,1.035,NOISE
+test_jumps,0.944,0.990,NOISE
+test_bn128_pairings_amortized,0.946,1.011,NOISE
+test_gas_op,0.947,1.039,NOISE
+test_storage_access_cold_benchmark,0.948,1.051,NOISE

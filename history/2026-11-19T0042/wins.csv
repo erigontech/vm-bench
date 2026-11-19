@@ -1,0 +1,18 @@
+25714,2026-11-18T01:39:11Z,db/state: remove the file-read cache,et    +0.7%    ~2.7%
+26411,2026-11-17T08:05:15Z,execution/state: faster EIP-7702 delegation to empty accounts,auth_transaction empty_authority   -26.2%
+26383,2026-11-16T16:21:01Z,execution/state: a repeated EXTCODECOPY of one address copies from the read record,extcodecopy_warm 32      -89.3%    -90.5%
+25986,2026-11-15T04:10:58Z,execution/vm: EXTCODECOPY reads a code segment,"code_size_24576, DIFF_MAX          -43.2% (noise ~3%)"
+26307,2026-11-15T02:21:50Z,"disk format: keep the ""commitment .kvi hash part"" in heap","mainnet blocks, 0-30 Mgas               -2.2%   (noise ~0.6%)"
+26244,2026-11-14T13:23:53Z,"execution/types: BAL decode allocates once per kind, not per change","transfers  (28k accounts, 70k changes)  126019 -> 7         7.4 ->  6.8 MB   6.17 -> 6.09 ms  -1%"
+26269,2026-11-14T11:40:29Z,execution/exec: BAL warmup without a code phase no longer writes code-hash seeds,"ext_account_query_cold, existing accounts   -2.7%  (noise ~3%)"
+26154,2026-11-14T05:53:07Z,execution/state: skip validating quiet base reads of account paths,"creates_reverting 1KiB revert, CREATE    -17.9%   ~4%"
+26101,2026-11-14T04:24:55Z,execution/state: skip storage-read checks for BAL-unchanged accounts,sload_benchmark                      -7.9%  (noise ~2%)
+26248,2026-11-14T02:56:27Z,rlp: one cheaper header path makes every decoder 11-24% faster,rlp Decode                                        -13.7%
+26217,2026-11-14T02:52:47Z,execution/exec: BAL warmup skips code-hash seeds of codeless accounts,"ext_account_query_cold, absent accounts, BALANCE     -8.7%  (noise ~2%)"
+26104,2026-11-13T14:35:59Z,execution/exec: block warmup no longer re-reads keys the state cache holds,"ext_account_query_cold, absent accounts       -5.1%    ~9%"
+26098,2026-11-13T02:23:17Z,execution/types: decode the block access list into a presized list,"ext_account_query_cold, absent accounts   -10.0% (noise ~3-6%)"
+26088,2026-11-13T01:46:35Z,execution: a call that cannot pay its precompile does not wait on it,amount_1 rows (18)      -52.3%
+26080,2026-11-13T01:32:12Z,execution/stagedsync: a write the BAL holds leaves readers clean,creates_reverting 1KiB revert CREATE -16.8% (arms do not overlap)
+26232,2026-11-12T23:44:29Z,db/state: publish the exec-read latest view once per block,0-30 Mgas             -0.7% (noise ~0.6%)
+26182,2026-11-12T03:17:27Z,execution/state: size the BAL builder from the block access list,ext_account_query_cold absent_accounts_False   -14.3% (noise ~8%)
+26008,2026-11-12T02:17:17Z,execution/stagedsync: test resumed BAL blocks that have no sidecar,account_access BALANCE 24576 300M       -7.8% (noise ~8%; BAL check 70 ms -> 26 ms)
