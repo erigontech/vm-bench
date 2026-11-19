@@ -2211,5 +2211,85 @@
       "BAL-on create x0.94 (20), deploy_then_interact x0.93 (5), selfdestruct_existing x0.94 (2), second night down past 5% (x0.89, x0.83, x0.87 vs 11-14): likely #26324 (11-15, create over an account with storage) and #26380 (destruct check), not bisected",
       "node storage_access_cold_benchmark x0.96 (3), storage_access_warm x0.96 (3), bls12_pairing x0.96 (5): second night down, x0.91..x0.93 vs 11-14; alt_bn128_benchmark x0.84 (5), BAL-on identity x0.72 (1), clz_same x0.83 (1), modexp_length_above_upper_bound x0.84 (3): one night, unconfirmed"
     ]
+  },
+  {
+    "date": "2026-11-17",
+    "old": "0c1bad275f03ebd70018b0544163a76e66ded0ba",
+    "new": "0e4d81963ae6c70a30aed7395e46628686bbb7a6",
+    "evm": {
+      "mgas": 1145.7,
+      "ratio": 0.805,
+      "best": "nethermind",
+      "valid": 50,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10682.2,
+      "ratio": 1.24,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 10310.1,
+      "ratio": 0.825,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-17 0e4d81963a; EVM x1.00, node x1.01, BAL-on x1.01; the nightly started late (11-18 04:47 UTC); (*EVM).run at offset 32 on both nights; no failed rows",
+    "shipped": [
+      "#24304 commitment trie with per-node records; #26267 fold window BAL blocks ahead; #26411 faster EIP-7702 delegation to empty accounts; #26395 keep the access list's value of a write that a re-run drops; #26409 reset stage cursor after pruning; the rest is CL, db/state, txpool, CI and synctest (#26403, #26334, #26374, #26386, #26415)"
+    ],
+    "better": [
+      "node storage_access_warm_benchmark x1.18 (3), swap x1.14 (16), calldatasize x1.13 (8); BAL-on msize x1.20 (5), returndatasize_nonzero x1.16 (12), swap x1.11 (16): one night, unconfirmed; node storage_access_cold/warm win back the 11-16 drop"
+    ],
+    "worse": [
+      "BAL-on block_full_data x0.89 (2), re-run x0.94 CONFIRMED, but a GC-noisy family (counts only past 30%) and x1.28 back on 11-18; the other 13 BAL-on drops past 5% are night-to-night variance (re-run x0.97 to x1.06)",
+      "EVM push x0.86, keccak_max_permutations x0.91; node modexp_uncachable x0.90 (3), not_op x0.85 (1): one night, unconfirmed, all back on 11-18"
+    ]
+  },
+  {
+    "date": "2026-11-18",
+    "old": "0e4d81963ae6c70a30aed7395e46628686bbb7a6",
+    "new": "ecd128a6fcdce8de7168fceeb13fc7d9270b2386",
+    "evm": {
+      "mgas": 1152.9,
+      "ratio": 0.851,
+      "best": "nethermind",
+      "valid": 50,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10608.1,
+      "ratio": 1.226,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 10340.4,
+      "ratio": 0.825,
+      "best": "nethermind",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-18 ecd128a6fc; EVM x1.01 (erigon/neth x0.81 to x0.85: neth slower tonight), node x0.99, BAL-on x1.00; reth and geth BAL-on re-measured 11-18, best client now nethermind; no failed rows",
+    "shipped": [
+      "#25714 remove the file-read cache; #26452 wait for BAL arenas to be collected; #26462 commitment flush no longer blocks the fold; #26472 intra-block commitment checkpoints; #26430, #26477, #26228, #26492 destruct and creation checks; #26356 read slots older than a creation as zero; the rest is CL, RPC, db and tests (#26444, #26420, #25965, #26441)"
+    ],
+    "better": [
+      "BAL-on deploy_then_interact x1.14 (5), create x1.10 (20), selfdestruct_existing x1.07 (2): win back the 11-15/11-16 drop, likely #26430 and #26492; BAL-on selfdestruct_created x1.32 (2), block_full_data x1.28 (2); EVM push x1.19, keccak_max_permutations x1.17 win back 11-17"
+    ],
+    "worse": [
+      "BAL-on keccak_max_permutations x0.85 (1, re-run x0.90), dupn x0.92 (3, re-run x0.90), comparison x0.94 (5, re-run x0.93) CONFIRMED: compute-only tests, so per-block cost; likely #26452, #26462 or #26472, not bisected; the other 14 BAL-on drops are night-to-night variance (re-run x0.96 to x1.09)",
+      "node selfdestruct_existing x0.93 (2), second night down (x0.88 vs 11-16), likely #26228 or #26477; storage_access_warm/cold_benchmark x0.84/x0.85 (3), tstore x0.87 (4), EVM returndatacopy x0.67 (one sub-test, return_size_0-mem_size_0; the dbg arm keeps the 11-17 time): one night, unconfirmed"
+    ]
   }
 ]
