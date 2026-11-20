@@ -2291,5 +2291,45 @@
       "BAL-on keccak_max_permutations x0.85 (1, re-run x0.90), dupn x0.92 (3, re-run x0.90), comparison x0.94 (5, re-run x0.93) CONFIRMED: compute-only tests, so per-block cost; likely #26452, #26462 or #26472, not bisected; the other 14 BAL-on drops are night-to-night variance (re-run x0.96 to x1.09)",
       "node selfdestruct_existing x0.93 (2), second night down (x0.88 vs 11-16), likely #26228 or #26477; storage_access_warm/cold_benchmark x0.84/x0.85 (3), tstore x0.87 (4), EVM returndatacopy x0.67 (one sub-test, return_size_0-mem_size_0; the dbg arm keeps the 11-17 time): one night, unconfirmed"
     ]
+  },
+  {
+    "date": "2026-11-19",
+    "old": "ecd128a6fcdce8de7168fceeb13fc7d9270b2386",
+    "new": "9841635dac581b692f23afc2eace79c6a1513221",
+    "evm": {
+      "mgas": 984.7,
+      "ratio": 0.72,
+      "best": "nethermind",
+      "valid": 47,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10719.9,
+      "ratio": 1.239,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 10352.9,
+      "ratio": 0.828,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-19 9841635dac; EVM x0.85 is a slow block-test run, not a code change: erigon setup time x2.5 on every block, other clients flat, and the sub-tests of the same build stay x1.00; node x1.01, BAL-on x1.00; (*EVM).run at offset 32 on both nights; no failed rows",
+    "shipped": [
+      "#26491 net effect of a create and destruct over an existing account; #26499 keep createdContract after a reverted SELFDESTRUCT; #26475 grow the journal by doubling; #26489 bound the v3 fold reorder backlog; #26488 stop storage work when an account read fails; #25602 EIP-7906 transaction assertions; the rest is CL, RPC, db and CI (#26546, #26500, #26504, #26484, #26495, #26508)"
+    ],
+    "better": [
+      "node tstore x1.45 (4), storage_access_warm x1.11 (3), storage_access_cold_benchmark x1.09 (3), selfdestruct_existing x1.07 (2): win back 11-18; EVM returndatacopy x1.46 wins back 11-18; BAL-on dupn x1.05 (3) back; BAL-on prefetch_cold_storage x1.19 (1), blobhash x1.16 (2), storage_access_warm x1.13 (3): one night, unconfirmed"
+    ],
+    "worse": [
+      "BAL-on selfdestruct_initcode x0.92 (3, re-run x0.91), jumpis x0.89 (1, re-run x0.94), ext_account_query_cold x0.94 (2, re-run x0.94) CONFIRMED; jumpis and ext_account_query_cold second night down; selfdestruct_initcode likely #26499 or #26491, the others not bisected; the other 17 BAL-on drops are night-to-night variance (re-run x0.95 to x1.13)",
+      "node create x0.93 (20), second night down (x0.88 vs 11-17), likely #26491 or the 11-18 creation checks (#26430, #26492); node tload x0.87 (4), ext_account_query_cold x0.91 (2), bls12_g2_msm x0.90 (4): one night, unconfirmed"
+    ]
   }
 ]
