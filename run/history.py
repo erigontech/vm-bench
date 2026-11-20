@@ -41,7 +41,7 @@ for d in sorted(p for p in src.iterdir() if p.is_dir()):
             run["nodePass" if f.name == "pass.csv" else "nodebalPass"] = {client: float(r) for client, r in csv.reader(open(f)) if client not in hidden}
             continue
             continue
-        if f.name in ("winrate.csv", "wins.csv"):
+        if f.name in ("winrate.csv", "winrate-sepolia.csv", "wins.csv"):
             run[f.stem] = list(csv.reader(open(f)))
             continue
         if f.name == "callsneth.csv":

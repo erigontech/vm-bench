@@ -469,7 +469,7 @@ function nodeSection(id, key, passKey, note) {
     body([...new Set(tests.map(cat))].flatMap(g => [`<tr class="group"><td colspan="${1 + nc.length + no.length}">${g}</td></tr>`, ...tests.filter(t => cat(t) === g).map(t => `<tr><td class="f" title="${t}">${label(t)}${gcTag(fam(t))}</td>` +
       nc.map(c => cached(t, c) ? `<td class="gas" title="${NETH_CACHE}">${fmt(res[t][c] ?? NaN)}*</td>` : `<td>${fmt(res[t][c] ?? NaN)}</td>`).join("") +
       no.map(c => cached(t, c) ? `<td class="gas" title="${NETH_CACHE}">cache</td>` : ratioCell(res[t].erigon / res[t][c])).join("") + "</tr>")])) + "</tbody></table>";
-  return { run, ho, fm };
+  return { run, ho, fm, res, label, cached };
 }
 nodeSection("node", "node", "nodePass", ({ tests, hero, nv, pp, rows }) => clientNote(
   `Node tier: engine_newPayload Mgas/s on Osaka blocks, BAL off (Osaka blocks carry no block access list). ` +
@@ -493,36 +493,36 @@ const balNote = ({ tests, nc, hc, hero, nv, pp, rows, extra }) => clientNote(
    ...extra.map(esc), ...(nv["not run"] ? [`Not run: ${esc(nv["not run"])}.`] : [])]);
 const nodebalFam = nodeSection("nodebal", "nodebal", "nodebalPass", balNote);
 
-// Goal: Lab mainnet win rate (Bronze = 3rd place), the BAL-on goal families against the best client, this week's merged wins.
+// Goal: Gold = 1st among clients on the Benchmarkoor worst rows (newPayload BAL-on, eth_call); Bronze = 3rd on the Lab reference nodes.
+const goalTable = (head, rows) => `<div class="wrap"><table><thead><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
+const goalNote = html => `<p class="note" style="margin:14px 0 4px">${html}</p>`;
 {
-  const lab = data.runs.filter(r => r.winrate), wr = {};
-  for (const r of lab) for (const [d, c, w] of r.winrate) (wr[d] ??= {})[c] = +w;
-  const days = Object.keys(wr).sort().slice(-14).reverse();
-  const share = (d, x) => x ? `${name(x[0])} ${(100 * x[1] / Object.values(wr[d]).reduce((a, b) => a + b, 0)).toFixed(1)}% (${x[1]})` : "–";
-  const labRow = d => {
-    const cs = Object.entries(wr[d]).sort((a, b) => b[1] - a[1]), e = cs.find(([c]) => c.toLowerCase() === "erigon");
-    const rank = e && `${cs.filter(x => x[1] === e[1]).length > 1 ? "=" : ""}${1 + cs.filter(x => x[1] > e[1]).length} of ${cs.length}`;
-    return `<tr><td>${d}</td><td>${rank || "no row"}</td><td>${e ? share(d, e).replace(/^\S+ /, "") : "–"}</td><td>${share(d, cs[0])}</td><td>${share(d, cs[2])}</td></tr>`;
+  let bal = "";
+  if (nodebalFam) {
+    const { res, label, cached, run } = nodebalFam;
+    const rows = Object.entries(res).flatMap(([t, r]) => {
+      const others = Object.entries(r).filter(([c]) => c !== "erigon" && !cached(t, c));
+      if (!r.erigon || !others.length) return [];
+      const [b, v] = others.reduce((a, x) => x[1] > a[1] ? x : a);
+      return [{ t, e: r.erigon, b, v, k: r.erigon / v }];
+    }).sort((a, b) => a.k - b.k);
+    bal = goalNote(`<b>Gold, newPayload BAL-on</b>: erigon is #1 on ${rows.filter(x => x.k >= 1).length} of ${rows.length} rows. The 10 rows where erigon / best other client is lowest, Mgas/s:`) +
+      buildTag(run.versions.erigon, run.date) +
+      goalTable(["test", "erigon", "best client", "best", "e/best"], rows.slice(0, 10).map(x =>
+        `<tr><td class="f" title="${esc(x.t)}">${esc(label(x.t))}</td><td>${fmt(x.e)}</td><td>${name(x.b)}${clientStale(run.versions[x.b])}</td><td>${fmt(x.v)}</td>${ratioCell(x.k)}</tr>`));
+  }
+  const labLine = (key, what) => {
+    const wr = {};
+    for (const r of data.runs) for (const [d, c, w] of r[key] || []) (wr[d] ??= {})[c] = +w;
+    const d = Object.keys(wr).sort().pop();
+    if (!d) return "";
+    const cs = Object.entries(wr[d]).sort((a, b) => b[1] - a[1]), tot = cs.reduce((a, x) => a + x[1], 0), e = cs.find(([c]) => c.toLowerCase() === "erigon");
+    const pct = x => `${(100 * x[1] / tot).toFixed(1)}%`;
+    return `<li>${what}, ${d}: ` + (e ? `erigon #${1 + cs.filter(x => x[1] > e[1]).length} of ${cs.length}, ${pct(e)} of the newPayload wins (${e[1]} of ${tot}); leader ${name(cs[0][0])} ${pct(cs[0])}` : "no erigon row") + "</li>";
   };
-  const GOAL = ["selfdestruct_created", "selfdestruct_initcode", "storage_access_cold_benchmark", "contract_calling_many_addresses", "ext_account_query_cold", "creates_reverting_initcode"];
-  const famRow = f => {
-    if (!nodebalFam) return "";
-    const { ho, fm, run } = nodebalFam, e = fm("test_" + f, "erigon"), [b, v] = ho.map(c => [c, fm("test_" + f, c)]).filter(x => x[1] > 0).sort((x, y) => y[1] - x[1])[0] || ["–", NaN];
-    return `<tr><td class="f">${f}</td><td>${fmt(e)}</td><td>${name(b)}${clientStale(run.versions[b])}</td><td>${fmt(v)}</td>${ratioCell(e / v)}</tr>`;
-  };
-  const wins = [...data.runs].reverse().find(r => r.wins), pr = n => `<a href="https://github.com/erigontech/erigon/pull/${n}">#${n}</a>`;
-  document.getElementById("goal").innerHTML = `<h3 style="margin:24px 0 6px;font-size:15px">Goal</h3>` +
-    (days.length ? `<p class="note" style="margin:0 0 4px"><b>Lab mainnet</b>: newPayload wins per day of the eip7870-block-builder reference nodes, ` +
-      `share of the day's wins (count). Bronze goal: 3rd place. Fetched ${short(lab[lab.length - 1].date)}${staleBadge(lab[lab.length - 1].date)}.</p>` +
-      `<div class="wrap"><table><thead><tr><th>day</th><th>erigon rank</th><th>erigon</th><th>leader</th><th>3rd place</th></tr></thead><tbody>${days.map(labRow).join("")}</tbody></table></div>` : "") +
-    (nodebalFam ? `<p class="note" style="margin:14px 0 4px"><b>BAL-on goal families</b>: geometric mean Mgas/s over the family's tests in the newPayload BAL-on family table, against the best other client there.</p>` +
-      buildTag(nodebalFam.run.versions.erigon, nodebalFam.run.date) +
-      `<div class="wrap"><table><thead><tr><th>family</th><th>erigon</th><th>best client</th><th>best</th><th>e/best</th></tr></thead><tbody>${GOAL.map(famRow).join("")}</tbody></table></div>` : "") +
-    (wins ? `<p class="note" style="margin:14px 0 4px"><b>Merged wins this week</b>: erigon PRs by AskAlexSharov merged in the 7 days before ${short(wins.date)}${staleBadge(wins.date)} ` +
-      `whose body has a perf table; the row is the first line with a signed % in the body's first code block, as written.</p>` +
-      (wins.wins.length ? `<div class="wrap"><table><thead><tr><th>PR</th><th>merged</th><th>title</th><th>headline row</th></tr></thead><tbody>` +
-        wins.wins.map(([n, at, t, row]) => `<tr><td>${pr(n)}</td><td>${short(at)}</td><td class="f s" title="${esc(t)}">${esc(t)}</td><td class="s" style="font-family:ui-monospace,monospace;font-size:12px;white-space:normal">${esc(row)}</td></tr>`).join("") +
-        "</tbody></table></div>" : `<p class="note">None.</p>`) : "");
+  document.getElementById("goal").innerHTML = `<h3 style="margin:24px 0 6px;font-size:15px">Goal</h3>` + bal + `<div id="goal-calls"></div>` +
+    goalNote(`<b>Bronze</b>: 3rd place in the Lab newPayload win rate (ethpandaops, last finished day).`) +
+    `<ul class="note" style="margin:0">${labLine("winrate", "mainnet, eip7870-block-builder reference nodes")}${labLine("winrate-sepolia", "sepolia, all nodes")}</ul>`;
 }
 
 // Worst families: each row's erigon against the best other client on the page, so a family cannot hide in a tier's mean.
@@ -604,9 +604,18 @@ if (callRuns.length) {
       return x ? `<tr><td class="f" title="${x.f}">${x.f}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>${fmt(x.em, 0)}</td><td class="${x.xm < 1000 ? "down" : ""}">${unit(x.xm, 0, "Mgas/s")}</td><td class="${x.ov > 20 ? "down" : ""}">${unit(x.ov, 0, "µs")}</td><td>${unit(x.og, 0, "µs")}</td><td>${fmt(x.r, 0)}</td><td>${fmt(x.rm, 0)}</td>${isNaN(x.er) ? (x.r ? dash : `<td class="gas">–</td>`) : ratioCell(x.er)}${nr ? `<td>${fmt(x.n, 0)}</td>${isNaN(x.en) ? (x.n ? dash : `<td class="gas">–</td>`) : ratioCell(x.en)}` : ""}</tr>`
         : `<tr><td class="f" title="${f}">${f}</td><td class="gas" colspan="${nr ? 10 : 8}">${data.callFixtures[f] < oldest ? "no state on this node" : "call fails on this node"}</td></tr>`; }).join("") +
     `<tr><td><b>geometric mean, ${rows.length}</b></td><td><b>${fmt(tot.e, 0)}</b></td><td><b>${fmt(tot.em, 0)}</b></td><td><b>${unit(tot.xm, 0, "Mgas/s")}</b></td><td><b>${unit(tot.ov, 0, "µs")}</b></td><td></td><td><b>${fmt(tot.r, 0)}</b></td><td><b>${fmt(tot.rm, 0)}</b></td>${isNaN(tot.er) ? "<td></td>" : ratioCell(tot.er)}${nr ? `<td><b>${fmt(tot.n, 0)}</b></td>${isNaN(tot.en) ? "<td></td>" : ratioCell(tot.en)}` : ""}</tr></tbody></table></div>`;
+  return { rows, rc, cr };
 }
 }
-callSection("calls", "eth_call per transaction", data.runs.filter(r => Object.keys(r.calls).length));
+{
+  const calls = callSection("calls", "eth_call per transaction", data.runs.filter(r => Object.keys(r.calls).length));
+  const rows = (calls?.rows || []).filter(x => !isNaN(x.er)).sort((a, b) => a.er - b.er);
+  if (rows.length) document.getElementById("goal-calls").innerHTML =
+    goalNote(`<b>Gold, eth_call</b>: like-for-like rows against ${esc((calls.rc || "reth").replace(/^reth-/, "reth "))} in the same run (both executed the same gas), ` +
+      `geometric mean e/r ×${fmt(geomean(rows.map(x => x.er)), 2)}; erigon is #1 on ${rows.filter(x => x.er >= 1).length} of ${rows.length}. The 10 worst, rps:`) +
+    goalTable(["transaction", "erigon", "best client", "best", "e/best"], rows.slice(0, 10).map(x =>
+      `<tr><td class="f" title="${esc(x.f)}">${esc(x.f.split("/").pop())}${x.latest ? ` <span class="gas">at latest</span>` : ""}</td><td>${fmt(x.e, 0)}</td><td>reth</td><td>${fmt(x.r, 0)}</td>${ratioCell(x.er)}</tr>`));
+}
 
 // Status: the build and date each section shows, in page order, and what failed in the run behind the EVM blocks tables.
 {
