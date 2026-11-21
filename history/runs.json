@@ -2331,5 +2331,46 @@
       "BAL-on selfdestruct_initcode x0.92 (3, re-run x0.91), jumpis x0.89 (1, re-run x0.94), ext_account_query_cold x0.94 (2, re-run x0.94) CONFIRMED; jumpis and ext_account_query_cold second night down; selfdestruct_initcode likely #26499 or #26491, the others not bisected; the other 17 BAL-on drops are night-to-night variance (re-run x0.95 to x1.13)",
       "node create x0.93 (20), second night down (x0.88 vs 11-17), likely #26491 or the 11-18 creation checks (#26430, #26492); node tload x0.87 (4), ext_account_query_cold x0.91 (2), bls12_g2_msm x0.90 (4): one night, unconfirmed"
     ]
+  },
+  {
+    "date": "2026-11-20",
+    "old": "9841635dac581b692f23afc2eace79c6a1513221",
+    "new": "638ac8ca25dd0bc54b6f93e1fbe1f58ef07b635f",
+    "evm": {
+      "mgas": 1194.4,
+      "ratio": 0.834,
+      "best": "nethermind",
+      "valid": 52,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10619.8,
+      "ratio": 1.228,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 10229.5,
+      "ratio": 0.808,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-20 638ac8ca25; EVM x1.21 is the 11-19 slow block-test run going away (x1.04 vs 11-18); node x0.99, BAL-on x0.99; no failed rows",
+    "shipped": [
+      "#26555 one interpreter for the version-map account readers; #26540, #26541 build and run on the versioned state; #26572 shared CREATE/CREATE2 metering; #26512 fix overlay constructor replay; #26596 v3 branch prefetch no longer pauses at the commitment round start; #26588, #26590 genesis and BlobGasUsed in parallel exec; the rest is CL, db, txpool, cmd, docs and CI (#26607, #26605, #26571, #26510, #21114)"
+    ],
+    "better": [
+      "BAL-on jumpis x1.20 (1), ext_account_query_cold x1.08 (2), selfdestruct_initcode x1.05 (3) win back 11-19; node create x1.05 (20) back after two nights down; node contract_calling_many_addresses x1.14 (8), tstore x1.13 (4), extcodecopy_warm x1.10 (5), comparison x1.10 (5): one night, unconfirmed"
+    ],
+    "worse": [
+      "BAL-on swapn x0.57 (3, re-run x0.58), jumpdest_analysis x0.94 (9, re-run x0.88), p256verify_uncachable x0.95 (1, re-run x0.88), slotnum x0.92 (1, re-run x0.94), swap x0.90 (16, re-run x0.95), blake2f_benchmark x0.92 (4, re-run x0.95) CONFIRMED; compute-only tests, likely #26512 (new code in the (*EVM).run defer) or #26572, not bisected",
+      "BAL-on codesize, selfbalance, calldatasize, blobhash, returndatasize_nonzero, block_context_ops, call_frame_context_ops x0.82 to x0.91, re-run x0.87 to x0.94 CONFIRMED, but all code-layout-sensitive, and node and EVM show the same rows down; block_full_data x0.65 (re-run x0.83) is GC-noisy, under 30%; the other 19 BAL-on drops are night-to-night variance (re-run x0.96 to x1.12)",
+      "node jumpis x0.81 (1), blake2f x0.87 (1), dup x0.90 (16), log x0.90 (60), selfdestruct_initcode x0.90 (2): one night, unconfirmed"
+    ]
   }
 ]
