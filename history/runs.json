@@ -2372,5 +2372,46 @@
       "BAL-on codesize, selfbalance, calldatasize, blobhash, returndatasize_nonzero, block_context_ops, call_frame_context_ops x0.82 to x0.91, re-run x0.87 to x0.94 CONFIRMED, but all code-layout-sensitive, and node and EVM show the same rows down; block_full_data x0.65 (re-run x0.83) is GC-noisy, under 30%; the other 19 BAL-on drops are night-to-night variance (re-run x0.96 to x1.12)",
       "node jumpis x0.81 (1), blake2f x0.87 (1), dup x0.90 (16), log x0.90 (60), selfdestruct_initcode x0.90 (2): one night, unconfirmed"
     ]
+  },
+  {
+    "date": "2026-11-21",
+    "old": "638ac8ca25dd0bc54b6f93e1fbe1f58ef07b635f",
+    "new": "bae5ea9bbb81a9e6bdde126ca250b360cb4d924c",
+    "evm": {
+      "mgas": 1211.2,
+      "ratio": 0.817,
+      "best": "nethermind",
+      "valid": 53,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10594.8,
+      "ratio": 1.226,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 10262.1,
+      "ratio": 0.813,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-21 bae5ea9bbb; EVM x1.01, node x1.00, BAL-on x1.00; (*EVM).run moved from offset 32 to 0, so the code-layout-sensitive EVM rows shift both ways; no failed rows",
+    "shipped": [
+      "#26617 state.New builds a versioned state; #26447 put back the deleted balance of a derived removal when a re-run drops a write; #26520 follow EIP-7702 delegation only from Prague; #26595 genesis root of allocs with a constructor; #26511 file-only commitment convert and restore; #26118 seg accessor rebuild and salt renewal; the rest is CL, txpool, execmodule and db (#26640, #26610, #26566, #26561, #26412, #26633, #26634)"
+    ],
+    "better": [
+      "BAL-on jumpdest_analysis x1.09 (9) back after 11-20; BAL-on jumpi_fallthrough x1.22 (1), extcodecopy_warm x1.18 (5), modexp_length_above_upper_bound x1.17 (3), identity_fixed_size x1.14 (4), bls12_381 x1.13 (5); node jumpis x1.13 (1), selfdestruct_initcode x1.06 (2), dup x1.04 (16), log x1.04 (60) back after 11-20; node blake2f x1.29 (1), not_op x1.21 (1), identity_fixed_size x1.13 (4), bls12_g2_msm x1.11 (4): one night, unconfirmed"
+    ],
+    "worse": [
+      "node point_evaluation x0.92 (1), second night down (x0.87 vs 11-19, a cached precompile, so per-block cost), likely #26617 or the 11-20 versioned-state PRs (#26555, #26540, #26541), not bisected; BAL-on swapn stays x0.56 vs 11-19 (11-20 drop, likely #26512 or #26572)",
+      "all 8 BAL-on drops (iszero x0.73, gas_op x0.86, clz_same x0.89, jumpis x0.91, identity x0.92, creates_collisions, slotnum, selfbalance) are night-to-night variance (re-run x1.00 to x1.11)",
+      "node storage_access_cold_benchmark x0.85 (3), clz_same x0.86 (1), calldataload x0.91 (8), bls12_pairing x0.92 (5), swap x0.94 (16); EVM push x0.91, clz_same x0.92, arithmetic x0.93, codecopy_benchmark x0.93 (other clients flat): one night, unconfirmed; node block_full_data x0.76 is GC-noisy, under 30%"
+    ]
   }
 ]
