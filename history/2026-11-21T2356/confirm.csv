@@ -1,0 +1,9 @@
+family,nightly_ratio,rerun_ratio,verdict
+test_iszero,0.727,1.106,NOISE
+test_gas_op,0.862,0.999,NOISE
+test_clz_same,0.895,1.018,NOISE
+test_jumpis,0.913,1.050,NOISE
+test_identity,0.919,1.046,NOISE
+test_creates_collisions,0.932,1.059,NOISE
+test_slotnum,0.942,1.011,NOISE
+test_selfbalance,0.943,1.022,NOISE
