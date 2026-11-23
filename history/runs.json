@@ -2413,5 +2413,46 @@
       "all 8 BAL-on drops (iszero x0.73, gas_op x0.86, clz_same x0.89, jumpis x0.91, identity x0.92, creates_collisions, slotnum, selfbalance) are night-to-night variance (re-run x1.00 to x1.11)",
       "node storage_access_cold_benchmark x0.85 (3), clz_same x0.86 (1), calldataload x0.91 (8), bls12_pairing x0.92 (5), swap x0.94 (16); EVM push x0.91, clz_same x0.92, arithmetic x0.93, codecopy_benchmark x0.93 (other clients flat): one night, unconfirmed; node block_full_data x0.76 is GC-noisy, under 30%"
     ]
+  },
+  {
+    "date": "2026-11-22",
+    "old": "bae5ea9bbb81a9e6bdde126ca250b360cb4d924c",
+    "new": "c58e44eb68c0ade68637a71ed599494c05f45f7f",
+    "evm": {
+      "mgas": 1216.9,
+      "ratio": 0.88,
+      "best": "nethermind",
+      "valid": 53,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10542.9,
+      "ratio": 1.22,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 9798.7,
+      "ratio": 0.776,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-22 c58e44eb68; EVM x1.00, node x1.00, BAL-on x0.95 tier-wide, but 7 of the 8 re-run families come back at x0.98 to x1.04, so most of it is a slow night; EVM erigon / best moves to x0.88 because the weekly run re-measured nethermind; no failed rows",
+    "shipped": [
+      "#26648 BAL commitment read-ahead by trie variant; #26673 hand-written encoder in Log.EncodeRLP; #26652, #26647, #26654 commitment v3 rebuild and verify; #26644 purge the whole bad block; #26631, #26591 eth_getLogs head-block log cache and log filters indexed by address; the rest is cmd/integration, db, snapcfg and CI (#26646, #26651, #26649, #26650, #26615, #26614, #26547, #26666, #26548)"
+    ],
+    "better": [
+      "BAL-on selfdestruct_created x1.33 (2), gas_op x1.22 (1), selfbalance x1.18 (2), creates_reverting_initcode x1.17 (6), storage_access_warm_benchmark x1.17 (3), selfdestruct_initcode x1.15 (3); node storage_access_cold_benchmark x1.26 (3), point_evaluation x1.24 (1) back after two nights down, jumpdest_analysis x1.16 (6), swap x1.11 (16), calldatasize x1.13 (8); EVM block_full_data x1.21: one night, unconfirmed"
+    ],
+    "worse": [
+      "BAL-on calldataload x0.84 (8, re-run x0.90) CONFIRMED, x0.81 vs 11-20; a compute-only test, likely #26648 (the only PR on the BAL exec path), not bisected; node calldataload is x1.05, so the cost is BAL-on only",
+      "BAL-on not_op x0.81, selfdestruct_existing x0.87, contract_creation x0.87, ext_account_query_cold x0.88, create x0.88, alt_bn128_benchmark x0.89, identity_fixed_size x0.89 are night-to-night variance (re-run x0.98 to x1.04); 22 more BAL-on families x0.89 to x0.95 (codecopy_benchmark, tload, storage_access_cold, modexp, memory_access and others) had no re-run: unconfirmed",
+      "node not_op x0.82 (1), blake2f x0.82 (1), comparison x0.88 (5), shifts x0.88 (2), bls12_g2_msm x0.88 (4), bitwise x0.90 (7), create x0.92 (20), memory_access x0.95 (90): one night, unconfirmed; EVM flat (no file under x0.96)"
+    ]
   }
 ]
