@@ -1,0 +1,2 @@
+26475,2026-11-19T00:52:22Z,execution/state: grow the journal by doubling,"tstore, fixed_value False, fixed_key False    -31.1%   (noise ~7.6%)"
+25714,2026-11-18T01:39:11Z,db/state: remove the file-read cache,et    +0.7%    ~2.7%
