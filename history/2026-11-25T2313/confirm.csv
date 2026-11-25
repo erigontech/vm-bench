@@ -1,0 +1,16 @@
+family,nightly_ratio,rerun_ratio,verdict
+test_callvalue_from_call,0.930,,SKIPPED
+test_shifts_beyond_word_size,0.932,,SKIPPED
+test_mcopy,0.936,,SKIPPED
+test_arithmetic,0.936,,SKIPPED
+test_jumpi_fallthrough,0.939,,SKIPPED
+test_bls12_g1_msm,0.940,,SKIPPED
+test_dupn,0.947,,SKIPPED
+test_slotnum,0.647,1.179,NOISE
+test_blake2f,0.756,1.050,NOISE
+test_iszero,0.830,1.020,NOISE
+test_ext_account_query_cold,0.841,1.057,NOISE
+test_callvalue_from_origin,0.884,1.077,NOISE
+test_clz_same,0.913,1.111,NOISE
+test_jump_benchmark,0.921,0.996,NOISE
+test_p256verify,0.929,1.188,NOISE
