@@ -2454,5 +2454,128 @@
       "BAL-on not_op x0.81, selfdestruct_existing x0.87, contract_creation x0.87, ext_account_query_cold x0.88, create x0.88, alt_bn128_benchmark x0.89, identity_fixed_size x0.89 are night-to-night variance (re-run x0.98 to x1.04); 22 more BAL-on families x0.89 to x0.95 (codecopy_benchmark, tload, storage_access_cold, modexp, memory_access and others) had no re-run: unconfirmed",
       "node not_op x0.82 (1), blake2f x0.82 (1), comparison x0.88 (5), shifts x0.88 (2), bls12_g2_msm x0.88 (4), bitwise x0.90 (7), create x0.92 (20), memory_access x0.95 (90): one night, unconfirmed; EVM flat (no file under x0.96)"
     ]
+  },
+  {
+    "date": "2026-11-23",
+    "old": "c58e44eb68c0ade68637a71ed599494c05f45f7f",
+    "new": "0dff37fee757bc4f8e4a71d819092906fcc6bd62",
+    "evm": {
+      "mgas": 1193.5,
+      "ratio": 0.788,
+      "best": "nethermind",
+      "valid": 52,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10643.2,
+      "ratio": 1.234,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 9914.5,
+      "ratio": 0.785,
+      "best": "nethermind",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-23 0dff37fee7; EVM x1.00, node x1.01, BAL-on x1.01; EVM erigon / best x0.79 is one grey block (52 of 53 valid), not a code change; no failed rows",
+    "shipped": [
+      "#26667 BAL checkpoints fold only the new changes; #26710 read a transfer's recipient only when a lower tx touched it; #26712 fewer allocations in balCommitmentWarmupKeys; #26623 versioned balance/nonce writes without stateObject; #26715 simplify frame fee handling; #26283 frame transactions for Bogota devnet-2; #26662 shared gas and SetCode admission checks; the rest is mdbx (#26700, #26695, #26685), CL, rpc, downloader and diagnostics (#26699, #26694, #26629, #26684, #26645, #26612, #26613, #26611)"
+    ],
+    "better": [
+      "BAL-on ext_account_query_cold x1.40 (2), not_op x1.17 (1) and iszero x1.17 (1) back after 11-22, clz_same x1.16 (1), comparison x1.15 (5); node tload x1.26 (4), bn128_pairings_amortized x1.18 (1), ext_account_query_cold x1.16 (2), bitwise x1.15 (7); EVM comparison x1.15, push x1.11: one night, unconfirmed"
+    ],
+    "worse": [
+      "BAL-on calldatasize x0.87 (8, re-run x0.91) CONFIRMED; node calldatasize x0.89 and EVM calldatasize x0.90 too, with the other context reads (codesize, returndatasize, selfbalance, gas_op x0.87 to x0.94) down in all three tiers, so not BAL-only; likely #26715 or #26283 (tx and frame handling), not bisected",
+      "BAL-on blake2f x0.72, creates_collisions, identity, selfdestruct_created, p256verify, calldatacopy_from_call, storage_access_warm_benchmark are night-to-night variance (re-run x0.96 to x1.03); jumpdest_analysis x0.89, bls12_pairing x0.91, jumps, dupn, returndatasize_nonzero x0.93 had no re-run: unconfirmed",
+      "node bls12_g1_msm x0.81 (4), jumpi_fallthrough x0.86 (1), ripemd160 x0.87 (1), msize x0.90 (5): one night, unconfirmed"
+    ]
+  },
+  {
+    "date": "2026-11-24",
+    "old": "0dff37fee757bc4f8e4a71d819092906fcc6bd62",
+    "new": "40a8f25b1f0260114d8e234cc9fd0cbafe1d6150",
+    "evm": {
+      "mgas": 1223.5,
+      "ratio": 0.883,
+      "best": "nethermind",
+      "valid": 53,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10665.4,
+      "ratio": 1.234,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 9914.8,
+      "ratio": 0.782,
+      "best": "nethermind",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-24 40a8f25b1f; EVM x1.01, node x1.00, BAL-on x1.00; EVM erigon / best back to x0.88 with all 53 blocks valid; no failed rows",
+    "shipped": [
+      "#26626 versioned write paths without stateObject (CreateAccount, SetCode, SetStorage and others); #26658 delete the materialized stateObject type; #26657 remove the materialized finalize machinery; #26742 no nonce write for a fresh account; #26734 re-creation check at a seeded destruct; #26443 EIP-8253 for Bogota devnet-2; #26682 PeerDAS recovery through c-kzg; the rest is CL, rpc, txpool and CI (#26757, #26676, #26729, #26726, #26713, #26741, #26679, #26672, #26641, #26683)"
+    ],
+    "better": [
+      "BAL-on blake2f x1.38 (1) and creates_collisions x1.30 (2) back after 11-23 noise, jumpdest_analysis x1.13 (9) back after 11-23, selfdestruct_created x1.16 (2), creates_reverting_initcode x1.16 (6), bls12_g1_msm x1.15 (4); node bls12_g1_msm x1.22 (4) back after 11-23, jump_benchmark x1.16 (1), create x1.12 (20): one night, unconfirmed"
+    ],
+    "worse": [
+      "BAL-on CONFIRMED: ext_account_query_cold x0.76 (2, re-run x0.90), jumpi_fallthrough x0.79 (1, x0.84), clz_diff x0.82 (1, x0.87), point_evaluation x0.86 (1, x0.82), returndatasize_zero x0.87 (1, x0.94), jumpis x0.88 (1, x0.95); node is flat or up on these, so BAL-on only; likely #26626, #26658 or #26657 (versioned-state rewrite), not bisected",
+      "BAL-on block_full_data x0.82 and codecopy_benchmark x0.87 are night-to-night variance (re-run x1.03, x0.98); tstore x0.83, alt_bn128_benchmark x0.86, blobhash x0.90, calldataload x0.90 and 15 more x0.90 to x0.95 had no re-run: unconfirmed",
+      "node calldatasize x0.90, returndatasize_nonzero x0.89, codesize x0.87 and EVM calldatasize x0.90, codesize x0.91 stay down a second night vs 11-22; node ext_account_query_cold x0.87 (2), identity x0.87 (1), tstore x0.91 (4): one night, unconfirmed"
+    ]
+  },
+  {
+    "date": "2026-11-25",
+    "old": "40a8f25b1f0260114d8e234cc9fd0cbafe1d6150",
+    "new": "2841804a8ebbb7e595d3cc4aaaf5329bf79b18fb",
+    "evm": {
+      "mgas": 1228.0,
+      "ratio": 0.819,
+      "best": "nethermind",
+      "valid": 53,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 10740.2,
+      "ratio": 1.241,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 10052.1,
+      "ratio": 0.775,
+      "best": "reth",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-25 2841804a8e; EVM x1.01, node x1.01, BAL-on x1.01; (*EVM).run moved from offset 32 to 0, so the code-layout-sensitive EVM rows shift both ways; no failed rows",
+    "shipped": [
+      "#26659 simplify and de-version the IntraBlockState; #26404 lock-free interning; #26717 avoid repeated BAL scans for empty-account removals; #26458 SENDALL (EIP-4758) for Bogota devnet-2; #26817 code and storage file version bump; #26551 fix a file mapping leak in snapshot builds; #26778 match BAL replies before decoding; the rest is CL, txpool, rpc and db (#26727, #26783, #26752, #26787, #26664, #26747, #26748, #26777)"
+    ],
+    "better": [
+      "node calldatasize x1.13 (8), codesize x1.20 (1), returndatasize_nonzero x1.08 (12) and EVM calldatasize x1.08, codesize x1.15 back after two nights down, maybe #26659 or #26404; BAL-on returndatasize_zero x1.23 (1) and point_evaluation x1.17 (1) back after the 11-24 drop, storage_access_cold_benchmark x1.61 (3), calldataload x1.20 (8); node selfdestruct_created x1.32 (2), selfdestruct_initcode x1.28 (2), p256verify x1.24 (3): one night, unconfirmed"
+    ],
+    "worse": [
+      "BAL-on jumpi_fallthrough x0.94 (1, no re-run) is x0.74 vs 11-23, ext_account_query_cold x0.64, clz_diff x0.82 vs 11-23: the 11-24 confirmed drops are not back",
+      "all 8 BAL-on drops (slotnum x0.65, blake2f x0.76, iszero x0.83, ext_account_query_cold x0.84, callvalue_from_origin, clz_same, jump_benchmark, p256verify) are night-to-night variance (re-run x1.00 to x1.19)",
+      "node storage_access_warm_benchmark x0.84 (3), clz_same x0.88 (1), jumpis x0.90 (1); EVM jumpdests x0.89, comparison x0.91 (layout shift): one night, unconfirmed"
+    ]
   }
 ]
