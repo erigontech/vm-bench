@@ -53,6 +53,17 @@ YML
 		echo "      environment:"
 		tr ',' '\n' <<< "$ERIGON_ENV" | while IFS== read -r k v; do echo "        $k: \"$v\""; done
 	fi
+	# benchmarkoor's default nethermind command minus --Blocks.CachePrecompilesOnBlockProcessing and
+	# --Merge.NewPayloadBlockProcessingTimeout, which nethermind master no longer accepts.
+	if [ $1 = nethermind ]; then
+		echo "      command:"
+		for a in --datadir=/data --Network.DiscoveryPort=0 --Network.MaxActivePeers=0 --Init.DiscoveryEnabled=false \
+			--Sync.MaxAttemptsToUpdatePivot=0 --Network.ExternalIp=127.0.0.1 --JsonRpc.Enabled=true --JsonRpc.Host=0.0.0.0 \
+			--JsonRpc.Port=8545 --JsonRpc.EnabledModules=Net,Eth,Consensus,Subscribe,Web3,Admin,Debug,Rpc,Health,TxPool \
+			--JsonRpc.Timeout=600000 --JsonRpc.JwtSecretFile=/tmp/jwtsecret --JsonRpc.EngineHost=0.0.0.0 --JsonRpc.EnginePort=8551 \
+			--Metrics.Enabled=true --Metrics.ExposePort=8008 --config=none --HealthChecks.Enabled=true --Init.AutoDump=None \
+			--Merge.TerminalTotalDifficulty=0; do echo "        - \"$a\""; done
+	fi
 	if [ -z "${ARGS[$1]:-}" ]; then echo "      extra_args: []"; else
 		echo "      extra_args:"
 		for a in ${ARGS[$1]:-}; do echo "        - \"$a\""; done
