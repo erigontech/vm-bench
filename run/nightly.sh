@@ -34,7 +34,8 @@ else
 fi
 # BAL-off: erigon main and the latest release of every other client in one run, so the page compares one night and one harness.
 # BAL-on: erigon main only; history.py fills the other clients from their latest run and marks them stale past 2 days.
-export BENCHMARKOOR=${BENCHMARKOOR:-$HOME/bm24402727/src/benchmarkoor/bin/benchmarkoor}
+# The weekly's benchmarkoor build (32a0739): edb39d4 passes nethermind a flag 2.2.x rejects, so nethermind cannot start.
+export BENCHMARKOOR=${BENCHMARKOOR:-$HOME/vm-bench-tools/benchmarkoor}
 latest() { curl -sfL "https://api.github.com/repos/$1/releases/latest" | jq -re .tag_name; }
 imgs=()
 for x in reth=paradigmxyz/reth=ghcr.io/paradigmxyz/reth nethermind=NethermindEth/nethermind=nethermind/nethermind geth=ethereum/go-ethereum=ethereum/client-go; do
