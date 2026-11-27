@@ -2,6 +2,7 @@
 # confirm-off.sh <prev sha> <cur sha> [filter]: BAL-off node tier (run/node.sh) for erigon at both commits, interleaved prev,cur,cur,prev,prev,cur,
 # from a copy of run/ so no snapshot reaches history/; prints "RATIO <median over the filter's tests of cur/prev median Mgas/s>" and "GEOMEAN <their geomean>".
 set -uo pipefail
+export BENCHMARKOOR=${BENCHMARKOOR:-$HOME/vm-bench-tools/benchmarkoor}
 cd "$(dirname "$0")/.."
 W=${CONFIRM_DIR:-$HOME/vmb-confirm-off}; V=$W/vb; rm -rf "$V"; mkdir -p "$V/history"; cp -r run "$V/"
 for x in *; do [ "$x" = run ] || [ "$x" = history ] || ln -s "$PWD/$x" "$V/$x"; done
