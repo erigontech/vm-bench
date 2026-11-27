@@ -7,6 +7,8 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parent.parent
 hidden = {"besu", "nimbus", "ethrex"}
+# BAL-on tests whose block repeats an earlier test's block: every client answers them with a quick VALID, so no mean may use them.
+cachedValid = {l for l in (root / "run" / "cached-valid.txt").read_text().split("\n") if l and not l.startswith("#")}
 runs = []
 # A node-tier peer filled in from another run is comparable with erigon only within PEER_DAYS and on the same fixtures.
 PEER_DAYS = float(os.environ.get("VMB_PEER_DAYS", 2))
@@ -127,6 +129,8 @@ for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "st
         if run is not keep:
             for k in ks:
                 run[k] = {}
+for run in runs:
+    run["nodebalCached"] = {t: run["nodebal"].pop(t) for t in cachedValid & run["nodebal"].keys()}
 progress = src / "runs.json"
 progress = json.load(open(progress)) if progress.exists() else []
 # eth_call fixture -> block, so the page can list the fixtures a node could not run.

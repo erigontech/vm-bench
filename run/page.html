@@ -442,11 +442,15 @@ if (stRun) { stSection("sc-", ["scenario"]); stSection("in-", ["instruction", "p
 // Node: benchmarkoor newPayload Mgas/s, latest snapshot that has it. Hero and family rows use the tests every hero client passed;
 // a client valid on fewer than half of the tests keeps its per-test column but stays out of the hero.
 const NETH_CACHE = "Nethermind result cache (PrecompileCachedCodeInfoRepository)";
+// history.py moves the BAL-on tests of run/cached-valid.txt to nodebalCached: no mean, Gold row or summary uses them.
+const CV = "the test block repeats an earlier test's block: every client answers it with a quick VALID from its block cache, so the test times no execution";
+const cvTag = n => n === 0 ? "" : ` <span class="tag" title="${n ? n + " left out of this family: " : ""}${CV}">${n ? n + " " : ""}cached VALID</span>`;
+const famOf = t => t.split("::")[1].replace(/\[.*/, "");
 function nodeSection(id, key, passKey, note) {
   const run = [...data.runs].reverse().find(r => Object.keys(r[key]).length);
   if (!run) return;
   for (const x of ["-title", "-note", "-race", "-fam", ""]) document.getElementById(id + x).hidden = false;
-  const res = run[key], tests = Object.keys(res).sort(), nv = run.versions;
+  const res = run[key], tests = Object.keys(res).sort(), nv = run.versions, cq = run[key + "Cached"] || {};
   const stale = run[key + "Stale"], rc = k => stale.length ? staleCell(stale) : ratioCell(k);
   const order = ["erigon", "reth", "nethermind", "geth"], rank = c => (order.indexOf(c) + 1) || 99;
   const nc = [...new Set(tests.flatMap(t => Object.keys(res[t])))].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
@@ -457,7 +461,7 @@ function nodeSection(id, key, passKey, note) {
   const hero = tests.filter(t => cat(t) !== "precompile" && hc.every(c => res[t][c]));
   const pp = (100 * Math.max(...Object.values(run[passKey]).map(r => Math.abs(r - 1)))).toFixed(1);
   document.getElementById(id + "-note").innerHTML = buildTag(nv.erigon, run.date, { node: "newPayload BAL-off", nodebal: "newPayload BAL-on" }[id]) +
-    (stale.length ? `<p><b class="old">Ratios stale: ${esc(stale.join(", "))} measured more than ${data.peerDays} days before erigon or on other fixtures.</b></p>` : "") + fold(note({ tests, nc, hc, hero, nv, pp, rows: nc.map(c => [c, nv[c], modeMap(nv.modes)[c]]), extra: Object.entries(modeMap(nv.modes)).filter(([c]) => !nc.includes(c)).map(([c, m]) => c + " " + m) }));
+    (stale.length ? `<p><b class="old">Ratios stale: ${esc(stale.join(", "))} measured more than ${data.peerDays} days before erigon or on other fixtures.</b></p>` : "") + fold(note({ tests, cq, nc, hc, hero, nv, pp, rows: nc.map(c => [c, nv[c], modeMap(nv.modes)[c]]), extra: Object.entries(modeMap(nv.modes)).filter(([c]) => !nc.includes(c)).map(([c, m]) => c + " " + m) }));
   const means = hc.map(c => ({ c, v: geomean(hero.map(t => res[t][c])) }));
   const ref = means.find(r => r.c === "erigon").v, max = Math.max(...means.map(r => r.v));
   document.getElementById(id + "-race").innerHTML = `<div><h3>${hero.length} instruction and scenario tests, ${run.date.slice(0, 10)}, geometric mean Mgas/s</h3><div class="bars">` +
@@ -465,13 +469,15 @@ function nodeSection(id, key, passKey, note) {
   const ho = hc.filter(c => c !== "erigon"), fams = [...new Set(hero.map(fam))].sort();
   const fm = (f, c) => geomean(hero.filter(t => fam(t) === f).map(t => res[t][c]));
   document.getElementById(id + "-fam").innerHTML = `<table><thead><tr><th>family</th><th>tests</th>${hc.map(c => `<th>${name(c)}</th>`).join("")}${ho.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
-    body(fams.map(f => `<tr><td class="f" title="${f}">${f.replace(/^test_/, "")}${gcTag(f)}</td><td class="gas">${hero.filter(t => fam(t) === f).length}</td>` +
+    body(fams.map(f => `<tr><td class="f" title="${f}">${f.replace(/^test_/, "")}${gcTag(f)}${cvTag(Object.keys(cq).filter(t => fam(t) === f).length)}</td><td class="gas">${hero.filter(t => fam(t) === f).length}</td>` +
       hc.map(c => `<td>${fmt(fm(f, c))}</td>`).join("") + ho.map(c => rc(fm(f, "erigon") / fm(f, c))).join("") + "</tr>")) + "</tbody></table>";
   // Nethermind serves precompile calls that repeat one input from PrecompileCachedCodeInfoRepository; *_uncachable tests vary the input.
   const cached = (t, c) => c === "nethermind" && cat(t) === "precompile" && !t.includes("uncachable");
   const label = t => t.split("::")[1].replace(/fork_\w+-blockchain_test_engine_x-/, "").replace(/-?benchmark-gas-value_\d+M/, "").replace("[]", "");
   document.getElementById(id).innerHTML = `<table><thead><tr><th>test</th>${nc.map(c => `<th>${name(c)}</th>`).join("")}${no.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
-    body([...new Set(tests.map(cat))].flatMap(g => [`<tr class="group"><td colspan="${1 + nc.length + no.length}">${g}</td></tr>`, ...tests.filter(t => cat(t) === g).map(t => `<tr><td class="f" title="${t}">${label(t)}${gcTag(fam(t))}</td>` +
+    body([...new Set(tests.map(cat))].flatMap(g => [`<tr class="group"><td colspan="${1 + nc.length + no.length}">${g}</td></tr>`, ...[...tests, ...Object.keys(cq)].filter(t => cat(t) === g).sort().map(t => cq[t] ?
+      `<tr><td class="f" title="${t}">${label(t)}${cvTag()}</td>` + nc.map(c => `<td class="gas" title="${CV}">${fmt(cq[t][c] ?? NaN)}</td>`).join("") + no.map(() => `<td class="gas" title="${CV}">–</td>`).join("") + "</tr>" :
+      `<tr><td class="f" title="${t}">${label(t)}${gcTag(fam(t))}</td>` +
       nc.map(c => cached(t, c) ? `<td class="gas" title="${NETH_CACHE}">${fmt(res[t][c] ?? NaN)}*</td>` : `<td>${fmt(res[t][c] ?? NaN)}</td>`).join("") +
       no.map(c => cached(t, c) ? `<td class="gas" title="${NETH_CACHE}">cache</td>` : rc(res[t].erigon / res[t][c])).join("") + "</tr>")])) + "</tbody></table>";
   return { run, ho, fm, res, label, cached, rc, stale };
@@ -485,7 +491,7 @@ nodeSection("node", "node", "nodePass", ({ tests, hero, nv, pp, rows }) => clien
   [`Fixtures ${esc(nv.fixtures)}, Osaka, 150M-gas blocks.`, `${tests.length} tests.`, `Pass-to-pass within ${pp}%.`,
    `The hero leaves out the ${tests.length - hero.length} precompile tests: geth and nethermind run with their default precompile result caches, so that group compares caches.`,
    `neth * = ${NETH_CACHE}: a precompile test that repeats one input; no e/neth ratio, and no geometric mean uses it.`]));
-const balNote = ({ tests, nc, hc, hero, nv, pp, rows, extra }) => clientNote(
+const balNote = ({ tests, cq, nc, hc, hero, nv, pp, rows, extra }) => clientNote(
   `Node tier: engine_newPayload Mgas/s on Amsterdam blocks (glamsterdam-devnet-8 fixtures), BAL on: the same EEST compute tests ` +
   `filled for Amsterdam, so every block carries its block access list and every client runs in its BAL mode with the instance flags of ethpandaops/benchmarkoor-tests. ` +
   `Genesis state per test (small state), newPayload Mgas/s, driven by benchmarkoor. ` +
@@ -495,6 +501,7 @@ const balNote = ({ tests, nc, hc, hero, nv, pp, rows, extra }) => clientNote(
    `The hero and the family table use the ${hero.length} instruction and scenario tests that ${hc.join(", ")} all passed` +
    (nc.length > hc.length ? `; ${nc.filter(c => !hc.includes(c)).join(", ")} passed fewer than half of the tests and shows in the per-test table only.` : "."),
    `neth * = ${NETH_CACHE}: a precompile test that repeats one input; no e/neth ratio, and no geometric mean uses it.`,
+   ...Object.keys(cq).length ? [`cached VALID: in ${Object.keys(cq).length} more tests ${CV}. They show in the per-test table only: no family, hero, Gold or Worst families number uses them, for any client.`] : [],
    ...extra.map(esc), ...(nv["not run"] ? [`Not run: ${esc(nv["not run"])}.`] : [])]);
 const nodebalFam = nodeSection("nodebal", "nodebal", "nodebalPass", balNote);
 
@@ -543,7 +550,7 @@ const goalNote = html => `<p class="note" style="margin:14px 0 4px">${html}</p>`
       return [{ f: t.split("::")[1].replace(/\[.*/, ""), k: r.erigon / v, cache: best === "nethermind" && /compute\/precompile\//.test(t) && !t.includes("uncachable") }];
     });
     const peers = [...new Set(Object.values(run[key]).flatMap(r => Object.keys(r)))].filter(c => c !== "erigon").map(c => `${name(c)} ${esc((String(run.versions[c]).match(/measured \d{4}-(\d\d-\d\d)/) || [, short(run.date)])[1])}${clientStale(run.versions[c])}`);
-    return [{ label, rows, ks: rows.map(r => r.k), run, peers, stale: run[key + "Stale"] }];
+    return [{ label, rows, ks: rows.map(r => r.k), run, peers, stale: run[key + "Stale"], cv: Object.keys(run[key + "Cached"] || {}).map(famOf) }];
   });
   if (tiers.length) {
     const fams = [...new Set(tiers.flatMap(t => t.rows.map(r => r.f)))].map(f => {
@@ -557,7 +564,7 @@ const goalNote = html => `<p class="note" style="margin:14px 0 4px">${html}</p>`
         `${t.ks.filter(k => k < 0.5).length} under ×0.5, ${t.ks.filter(k => k < 0.33).length} under ×0.33, median ×${upperMedian(t.ks).toFixed(2)}. ` +
         `erigon ${esc(buildName(t.run.versions.erigon))} ${short(t.run.date)}${staleBadge(t.run.date)}, others ${t.peers.join(", ")}.</p>`).join("") +
       `<div class="wrap"><table><thead><tr><th>family</th>${tiers.map(t => `<th>${t.label} / best</th><th>${t.label} under ×0.5</th>`).join("")}</tr></thead><tbody>` +
-      listed.map(x => `<tr><td class="f" title="${esc(x.f)}">${esc(x.f.replace(/^test_/, "")).replace(/_/g, "_<wbr>")}${x.by.some(b => b?.cache) ? "*" : ""}</td>${cols(x.by)}</tr>`).join("") + "</tbody></table></div>" +
+      listed.map(x => `<tr><td class="f" title="${esc(x.f)}">${esc(x.f.replace(/^test_/, "")).replace(/_/g, "_<wbr>")}${x.by.some(b => b?.cache) ? "*" : ""}${cvTag(tiers.reduce((n, t) => n + t.cv.filter(f => f === x.f).length, 0))}</td>${cols(x.by)}</tr>`).join("") + "</tbody></table></div>" +
       `<p class="note" style="margin:6px 0 0">The ${listed.length} of ${fams.length} families with a median under ×0.5 in a tier, worst first. Each row is erigon divided by the best other client on that test; the family value is the median of its rows; under ×0.5 counts its rows as n/total. All tests count, also precompile tests where the best is a result cache (*).</p>`;
   }
 }

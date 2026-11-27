@@ -59,6 +59,9 @@ marked `*` and must never be quoted as an EVM comparison.
   latency one rung below it; latency at the knee is not reproducible (open loop). Each rung sends ≥ 20000 requests.
 - **Node tier: one execution per test per container.** Sending the same test again in one container measures nothing:
   erigon answers a block it already has with VALID in under a millisecond. Take more samples with more fresh containers.
+- **Cached VALID.** A BAL-on test whose block repeats an earlier test's block (`run/cached-valid.txt`, written by
+  `run/cached-valid.py <suite dir>`) times a quick VALID on every client, not an execution. `run/history.py` keeps it out of
+  every mean, and the BAL-on point in `history/runs.json` leaves it out too. A new fixture set needs a new list.
 - **Pin everything.** Client versions go to `history/<t>/versions.csv`; RPC corpora pin `latest` to a block number;
   node-tier images are pinned by digest in the run log.
 
