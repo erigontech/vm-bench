@@ -1,0 +1,7 @@
+fixtures,"EEST tests-glamsterdam-devnet@v8.1.4 tests/benchmark/compute, filled for Amsterdam at 150M gas with the geth glamsterdam-devnet-8 t8n"
+erigon,main-2ae54a108a
+reth,main-59570fc8fb (ethpandaops/reth@a0243b346504414b04292b8e70848cf574ebb0aa3cb6a00fe376ce17871622b1)
+nethermind,main-5ee58de859 (ethpandaops/nethermind@80cdefe322630c6a4eb64bdc9ab3e28b86f704883c05218cff807ac55ecc0abd)
+geth,main-bbafd66b (ethpandaops/geth@bf65deecb223817ed4550f5fe780dc219a87c3982cf601ec60f365d004c508c2)
+modes,"reth defaults; nethermind --FlatDb.Enabled=true --FlatDb.CompactionOffset=0 --FlatDb.MinReorgDepth=1024 --FlatDb.MaxReorgDepth=1024 --Blocks.ParallelExecution=true --Blocks.ParallelExecutionBatchRead=true; geth --cache.noprecompile --engine.maxreorgdepth=1024"
+missing,"14 of the 1177 tests are absent because filling them ran out of memory: blockhash (5), unchunkified_bytecode (7), bls12_pairing_uncachable with 24 pairs and block_full_access_list_and_data"

@@ -1,0 +1,20 @@
+family,nightly_ratio,rerun_ratio,verdict
+test_blobhash,0.912,,SKIPPED
+test_storage_access_warm_benchmark,0.916,,SKIPPED
+test_storage_access_warm,0.922,,SKIPPED
+test_tstore,0.923,,SKIPPED
+test_parallel_execution_serial_chain,0.932,,SKIPPED
+test_storage_access_cold_benchmark,0.935,,SKIPPED
+test_msize,0.937,,SKIPPED
+test_bls12_g2_msm,0.937,,SKIPPED
+test_identity,0.938,,SKIPPED
+test_selfdestruct_existing,0.938,,SKIPPED
+test_identity_uncachable,0.943,,SKIPPED
+test_not_op,0.849,1.047,NOISE
+test_tload,0.856,0.832 1.047,NOISE
+test_returndatasize_nonzero,0.858,0.913 0.917,CONFIRMED
+test_calldatasize,0.898,0.892 0.889,CONFIRMED
+test_gas_op,0.904,0.945 0.943,CONFIRMED
+test_p256verify_uncachable,0.905,0.931 0.986,NOISE
+test_returndatasize_zero,0.906,0.949 0.849,CONFIRMED
+test_modexp_length_above_upper_bound,0.907,1.018,NOISE
