@@ -210,6 +210,9 @@ const shown = [];
 // A section stays on the page at any age; past 36 h (erigon) or 8 days (another client's weekly run) it carries a stale badge.
 const ageH = d => (Date.now() - Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10), +d.slice(11, 13) || 0, +d.slice(13, 15) || 0)) / 36e5;
 const staleBadge = (d, h = 36) => ageH(d) > h ? ` <span class="stale">stale</span>` : "";
+// A node tier shows cross-client ratios only when every peer history.py filled in from another run is fresh (nodeStale, nodebalStale).
+const tierStale = key => [...data.runs].reverse().find(r => Object.keys(r[key]).length)?.[key + "Stale"] || [];
+const staleCell = s => `<td class="gas" title="${esc(`measured more than ${data.peerDays} days before erigon or on other fixtures: ${s.join(", ")}`)}">stale</td>`;
 const clientStale = v => { const m = String(v).match(/\(measured (\d{4}-\d\d-\d\d)\)/); return m ? staleBadge(m[1], 8 * 24) : ""; };
 const buildTag = (v, date, what) => { if (what) shown.push([what, buildName(v), date]); const b = buildName(v);
   return `<div class="build">erigon ${b.startsWith("dbg") ? `<b>${esc(b)}</b> (main + open PRs)` : esc(b)}, measured ${date.slice(0, 10)}${staleBadge(date)}</div>`; };
@@ -279,10 +282,10 @@ if (prog.length) {
         `<span class="d ${Math.abs(pct) <= noise ? "even" : pct > 0 ? "win" : "loss"}">${Math.abs(pct) <= noise ? "= within noise" : `${pct > 0 ? "▲ +" : "▼ "}${pct.toFixed(1)}%`}</span>`;
       return `<div${last ? ` class="ne" title="${esc(nb.map(b => `${short(b.date)} ${b.why}`).join("\n"))}"` : ""}><small>${head}, ${short(rs[i].date)}</small><b>${f(p[m])}</b>${d}</div>`;
     };
-    const mg = v => v.toFixed(0), ra = v => "×" + v.toFixed(2);
+    const mg = v => v.toFixed(0), ra = v => "×" + v.toFixed(2), st = k === "evm" ? [] : tierStale(k);
     return `<div class="tier"><div class="tn">${t}<small>main ${short(l.date)}${staleBadge(l.date)}</small></div>` +
       `<div><small>Mgas/s now</small><b>${mg(l[k].mgas)}</b></div>${then("mgas", mg, 7)}${then("mgas", mg, 30)}` +
-      `<div><small>/ best now (${name(l[k].best)})</small><b>${ra(l[k].ratio)}</b></div>${then("ratio", ra, 7)}${then("ratio", ra, 30)}</div>`;
+      `<div><small>/ best now (${name(l[k].best)})</small><b>${st.length ? "stale" : ra(l[k].ratio)}</b></div>${st.length ? "<div></div><div></div>" : then("ratio", ra, 7) + then("ratio", ra, 30)}</div>`;
   };
   document.getElementById("tiers").innerHTML = TIERS.filter(x => x.rs.length).map(tierLine).join("") +
     `<p class="note" style="margin:10px 0 0">▲ ▼ = now against that day, past the noise of the tier. ≠ = a fixture, harness or other-client change lies between the two points, so the numbers do not compare. / best = erigon divided by the best other client.</p>`;
@@ -444,6 +447,7 @@ function nodeSection(id, key, passKey, note) {
   if (!run) return;
   for (const x of ["-title", "-note", "-race", "-fam", ""]) document.getElementById(id + x).hidden = false;
   const res = run[key], tests = Object.keys(res).sort(), nv = run.versions;
+  const stale = run[key + "Stale"], rc = k => stale.length ? staleCell(stale) : ratioCell(k);
   const order = ["erigon", "reth", "nethermind", "geth"], rank = c => (order.indexOf(c) + 1) || 99;
   const nc = [...new Set(tests.flatMap(t => Object.keys(res[t])))].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
   const no = nc.filter(c => c !== "erigon");
@@ -452,30 +456,31 @@ function nodeSection(id, key, passKey, note) {
   const hc = nc.filter(c => tests.filter(t => res[t][c]).length * 2 >= tests.length);
   const hero = tests.filter(t => cat(t) !== "precompile" && hc.every(c => res[t][c]));
   const pp = (100 * Math.max(...Object.values(run[passKey]).map(r => Math.abs(r - 1)))).toFixed(1);
-  document.getElementById(id + "-note").innerHTML = buildTag(nv.erigon, run.date, { node: "newPayload BAL-off", nodebal: "newPayload BAL-on" }[id]) + fold(note({ tests, nc, hc, hero, nv, pp, rows: nc.map(c => [c, nv[c], modeMap(nv.modes)[c]]), extra: Object.entries(modeMap(nv.modes)).filter(([c]) => !nc.includes(c)).map(([c, m]) => c + " " + m) }));
+  document.getElementById(id + "-note").innerHTML = buildTag(nv.erigon, run.date, { node: "newPayload BAL-off", nodebal: "newPayload BAL-on" }[id]) +
+    (stale.length ? `<p><b class="old">Ratios stale: ${esc(stale.join(", "))} measured more than ${data.peerDays} days before erigon or on other fixtures.</b></p>` : "") + fold(note({ tests, nc, hc, hero, nv, pp, rows: nc.map(c => [c, nv[c], modeMap(nv.modes)[c]]), extra: Object.entries(modeMap(nv.modes)).filter(([c]) => !nc.includes(c)).map(([c, m]) => c + " " + m) }));
   const means = hc.map(c => ({ c, v: geomean(hero.map(t => res[t][c])) }));
   const ref = means.find(r => r.c === "erigon").v, max = Math.max(...means.map(r => r.v));
   document.getElementById(id + "-race").innerHTML = `<div><h3>${hero.length} instruction and scenario tests, ${run.date.slice(0, 10)}, geometric mean Mgas/s</h3><div class="bars">` +
-    means.map(r => { const k = ref / r.v; return `<div class="c">${name(r.c)}</div><div class="b ${r.c === "erigon" ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div><div class="v">${fmt(r.v)}</div><div class="r ${r.c === "erigon" ? "" : cls(k)}">${r.c === "erigon" ? "" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>";
+    means.map(r => { const k = ref / r.v; return `<div class="c">${name(r.c)}</div><div class="b ${r.c === "erigon" ? "erigon" : ""}"><i style="width:${100 * r.v / max}%"></i></div><div class="v">${fmt(r.v)}</div><div class="r ${r.c === "erigon" || stale.length ? "" : cls(k)}">${r.c === "erigon" ? "" : stale.length ? "stale" : "×" + fmt(k, 2)}</div>`; }).join("") + "</div></div>";
   const ho = hc.filter(c => c !== "erigon"), fams = [...new Set(hero.map(fam))].sort();
   const fm = (f, c) => geomean(hero.filter(t => fam(t) === f).map(t => res[t][c]));
   document.getElementById(id + "-fam").innerHTML = `<table><thead><tr><th>family</th><th>tests</th>${hc.map(c => `<th>${name(c)}</th>`).join("")}${ho.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
     body(fams.map(f => `<tr><td class="f" title="${f}">${f.replace(/^test_/, "")}${gcTag(f)}</td><td class="gas">${hero.filter(t => fam(t) === f).length}</td>` +
-      hc.map(c => `<td>${fmt(fm(f, c))}</td>`).join("") + ho.map(c => ratioCell(fm(f, "erigon") / fm(f, c))).join("") + "</tr>")) + "</tbody></table>";
+      hc.map(c => `<td>${fmt(fm(f, c))}</td>`).join("") + ho.map(c => rc(fm(f, "erigon") / fm(f, c))).join("") + "</tr>")) + "</tbody></table>";
   // Nethermind serves precompile calls that repeat one input from PrecompileCachedCodeInfoRepository; *_uncachable tests vary the input.
   const cached = (t, c) => c === "nethermind" && cat(t) === "precompile" && !t.includes("uncachable");
   const label = t => t.split("::")[1].replace(/fork_\w+-blockchain_test_engine_x-/, "").replace(/-?benchmark-gas-value_\d+M/, "").replace("[]", "");
   document.getElementById(id).innerHTML = `<table><thead><tr><th>test</th>${nc.map(c => `<th>${name(c)}</th>`).join("")}${no.map(c => `<th>e/${name(c)}</th>`).join("")}</tr></thead><tbody>` +
     body([...new Set(tests.map(cat))].flatMap(g => [`<tr class="group"><td colspan="${1 + nc.length + no.length}">${g}</td></tr>`, ...tests.filter(t => cat(t) === g).map(t => `<tr><td class="f" title="${t}">${label(t)}${gcTag(fam(t))}</td>` +
       nc.map(c => cached(t, c) ? `<td class="gas" title="${NETH_CACHE}">${fmt(res[t][c] ?? NaN)}*</td>` : `<td>${fmt(res[t][c] ?? NaN)}</td>`).join("") +
-      no.map(c => cached(t, c) ? `<td class="gas" title="${NETH_CACHE}">cache</td>` : ratioCell(res[t].erigon / res[t][c])).join("") + "</tr>")])) + "</tbody></table>";
-  return { run, ho, fm, res, label, cached };
+      no.map(c => cached(t, c) ? `<td class="gas" title="${NETH_CACHE}">cache</td>` : rc(res[t].erigon / res[t][c])).join("") + "</tr>")])) + "</tbody></table>";
+  return { run, ho, fm, res, label, cached, rc, stale };
 }
 nodeSection("node", "node", "nodePass", ({ tests, hero, nv, pp, rows }) => clientNote(
   `Node tier: engine_newPayload Mgas/s on Osaka blocks, BAL off (Osaka blocks carry no block access list). ` +
   `EEST compute tests, genesis state per test (small state), newPayload Mgas/s, driven by benchmarkoor. ` +
   `This is not the large-state number: every test runs on its own small pre-state, with no mainnet-sized database behind it. ` +
-  `Same cpuset and memory limit for every client, a fresh container per client and run, the first test of each genesis group dropped as warm-up, ` +
+  `Same memory limit and no cpuset (all 16 threads of the box) for every client, a fresh container per client and run, the first test of each genesis group dropped as warm-up, ` +
   `two passes (erigon, reth, nethermind, geth, then reversed), Mgas/s = mean of the passes.`, rows,
   [`Fixtures ${esc(nv.fixtures)}, Osaka, 150M-gas blocks.`, `${tests.length} tests.`, `Pass-to-pass within ${pp}%.`,
    `The hero leaves out the ${tests.length - hero.length} precompile tests: geth and nethermind run with their default precompile result caches, so that group compares caches.`,
@@ -484,7 +489,7 @@ const balNote = ({ tests, nc, hc, hero, nv, pp, rows, extra }) => clientNote(
   `Node tier: engine_newPayload Mgas/s on Amsterdam blocks (glamsterdam-devnet-8 fixtures), BAL on: the same EEST compute tests ` +
   `filled for Amsterdam, so every block carries its block access list and every client runs in its BAL mode with the instance flags of ethpandaops/benchmarkoor-tests. ` +
   `Genesis state per test (small state), newPayload Mgas/s, driven by benchmarkoor. ` +
-  `Same cpuset, memory limit, warm-up drop and two passes as the BAL-off section. ` +
+  `Same memory limit, no cpuset, warm-up drop and two passes as the BAL-off section. ` +
   `Amsterdam reprices gas, so the same test burns a different amount of gas for the same work: compare clients inside this section, not Mgas/s across the two sections.`, rows,
   [`Fixtures: ${esc(nv.fixtures)}.`, `${tests.length} tests (${esc(nv.missing)}).`, `Pass-to-pass within ${pp}%.`,
    `The hero and the family table use the ${hero.length} instruction and scenario tests that ${hc.join(", ")} all passed` +
@@ -499,17 +504,17 @@ const goalNote = html => `<p class="note" style="margin:14px 0 4px">${html}</p>`
 {
   let bal = "";
   if (nodebalFam) {
-    const { res, label, cached, run } = nodebalFam;
+    const { res, label, cached, run, rc, stale } = nodebalFam;
     const rows = Object.entries(res).flatMap(([t, r]) => {
       const others = Object.entries(r).filter(([c]) => c !== "erigon" && !cached(t, c));
       if (!r.erigon || !others.length) return [];
       const [b, v] = others.reduce((a, x) => x[1] > a[1] ? x : a);
       return [{ t, e: r.erigon, b, v, k: r.erigon / v }];
     }).sort((a, b) => a.k - b.k);
-    bal = goalNote(`<b>Gold, newPayload BAL-on</b>: erigon is #1 on ${rows.filter(x => x.k >= 1).length} of ${rows.length} rows. The 10 rows where erigon / best other client is lowest, Mgas/s:`) +
+    bal = goalNote(`<b>Gold, newPayload BAL-on</b>: ${stale.length ? "ratios stale" : `erigon is #1 on ${rows.filter(x => x.k >= 1).length} of ${rows.length} rows`}. The 10 rows where erigon / best other client is lowest, Mgas/s:`) +
       buildTag(run.versions.erigon, run.date) +
       goalTable(["test", "erigon", "best client", "best", "e/best"], rows.slice(0, 10).map(x =>
-        `<tr><td class="f" title="${esc(x.t)}">${esc(label(x.t))}</td><td>${fmt(x.e)}</td><td>${name(x.b)}${clientStale(run.versions[x.b])}</td><td>${fmt(x.v)}</td>${ratioCell(x.k)}</tr>`));
+        `<tr><td class="f" title="${esc(x.t)}">${esc(label(x.t))}</td><td>${fmt(x.e)}</td><td>${name(x.b)}${clientStale(run.versions[x.b])}</td><td>${fmt(x.v)}</td>${rc(x.k)}</tr>`));
   }
   const labLine = (key, what) => {
     const wr = {};
@@ -538,17 +543,17 @@ const goalNote = html => `<p class="note" style="margin:14px 0 4px">${html}</p>`
       return [{ f: t.split("::")[1].replace(/\[.*/, ""), k: r.erigon / v, cache: best === "nethermind" && /compute\/precompile\//.test(t) && !t.includes("uncachable") }];
     });
     const peers = [...new Set(Object.values(run[key]).flatMap(r => Object.keys(r)))].filter(c => c !== "erigon").map(c => `${name(c)} ${esc((String(run.versions[c]).match(/measured \d{4}-(\d\d-\d\d)/) || [, short(run.date)])[1])}${clientStale(run.versions[c])}`);
-    return [{ label, rows, ks: rows.map(r => r.k), run, peers }];
+    return [{ label, rows, ks: rows.map(r => r.k), run, peers, stale: run[key + "Stale"] }];
   });
   if (tiers.length) {
     const fams = [...new Set(tiers.flatMap(t => t.rows.map(r => r.f)))].map(f => {
-      const by = tiers.map(t => { const rs = t.rows.filter(r => r.f === f); return rs.length ? { m: upperMedian(rs.map(r => r.k)), under: rs.filter(r => r.k < 0.5).length, n: rs.length, cache: rs.some(r => r.cache) } : null; });
+      const by = tiers.map(t => { const rs = t.stale.length ? [] : t.rows.filter(r => r.f === f); return rs.length ? { m: upperMedian(rs.map(r => r.k)), under: rs.filter(r => r.k < 0.5).length, n: rs.length, cache: rs.some(r => r.cache) } : null; });
       return { f, by, worst: Math.min(...by.filter(Boolean).map(b => b.m)) };
     }).sort((a, b) => a.worst - b.worst);
     const listed = fams.filter(x => x.worst < 0.5);
-    const cols = by => by.map(b => b ? `<td class="${b.m < 0.5 ? "down" : ""}">×${b.m.toFixed(2)}</td><td>${b.under}/${b.n}</td>` : `<td class="gas">–</td><td class="gas">–</td>`).join("");
+    const cols = by => by.map((b, i) => tiers[i].stale.length ? staleCell(tiers[i].stale) + staleCell(tiers[i].stale) : b ? `<td class="${b.m < 0.5 ? "down" : ""}">×${b.m.toFixed(2)}</td><td>${b.under}/${b.n}</td>` : `<td class="gas">–</td><td class="gas">–</td>`).join("");
     document.getElementById("worst").innerHTML = `<h3 style="margin:24px 0 6px;font-size:15px">Worst families</h3>` +
-      tiers.map(t => `<p class="note" style="margin:0 0 4px"><b>${t.label}</b>: ${t.ks.filter(k => k < 1).length} of ${t.ks.length} rows behind the best other client, ` +
+      tiers.map(t => t.stale.length ? `<p class="note" style="margin:0 0 4px"><b>${t.label}</b>: ratios stale, ${esc(t.stale.join(", "))} measured more than ${data.peerDays} days before erigon or on other fixtures.</p>` : `<p class="note" style="margin:0 0 4px"><b>${t.label}</b>: ${t.ks.filter(k => k < 1).length} of ${t.ks.length} rows behind the best other client, ` +
         `${t.ks.filter(k => k < 0.5).length} under ×0.5, ${t.ks.filter(k => k < 0.33).length} under ×0.33, median ×${upperMedian(t.ks).toFixed(2)}. ` +
         `erigon ${esc(buildName(t.run.versions.erigon))} ${short(t.run.date)}${staleBadge(t.run.date)}, others ${t.peers.join(", ")}.</p>`).join("") +
       `<div class="wrap"><table><thead><tr><th>family</th>${tiers.map(t => `<th>${t.label} / best</th><th>${t.label} under ×0.5</th>`).join("")}</tr></thead><tbody>` +

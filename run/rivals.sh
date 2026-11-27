@@ -1,6 +1,6 @@
 #!/bin/bash
 # rivals.sh: BAL-on newPayload (the nodebal set) for the latest main/master images of reth, nethermind and geth, run by the
-# nightly only when an image changed since the last measured run (~/vm-bench-rivals.digests); versions.csv names each commit.
+# nightly when an image changed since the last measured run or that run is 20 h old (~/vm-bench-rivals.digests); versions.csv names each commit.
 set -u
 cd "$(dirname "$0")/.."
 st=$HOME/vm-bench-rivals.digests new="" changed=0
@@ -19,6 +19,8 @@ for c in reth nethermind geth; do
 	new+="$c $dig"$'\n'
 	echo "rivals: $c ${sha:-unknown} $dig"
 done
+# history.py marks a peer older than 2 days stale: re-measure unchanged images after 20 h too.
+[ -n "$(find "$st" -mmin -1200 2> /dev/null)" ] || changed=1
 [ $changed = 1 ] || { echo "rivals: no new main image since the last run"; exit 0; }
 ORDER="reth nethermind geth" run/nodebal.sh || exit 1
 printf '%s' "$new" > "$st"

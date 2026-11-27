@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Weekly: upgrade every other client to its latest release, record the versions, then measure the other clients in the tiers
-# the nightly runs for erigon only (node BAL-off, node BAL-on, sub-tests). The nightly EVM blocks tier runs every client and
+# the nightly runs for erigon only (node BAL-on, sub-tests). The nightly EVM blocks tier runs every client and
 # picks up the upgraded tools. A client that fails to upgrade or run is listed in ~/vm-bench-weekly.txt, which A1 reads; a node-tier
 # smoke failure lands there (and in the self-check) as soon as it happens.
 # crontab (Saturday 01:00 UTC): 0 1 * * 6 BENCH_LOCK=/tmp/bench.lock flock -n /tmp/vmbench-weekly.lock ~/vm-bench/run/weekly.sh >> ~/vm-bench/weekly.log 2>&1
@@ -39,14 +39,8 @@ step "revme upgrade" up_revme
 step "evmone upgrade" up_evmone
 step "nethtest upgrade" up_nethtest
 
-# Node BAL-off: each client's latest release image. Node BAL-on: the newest image under each pinned devnet tag.
-for x in reth=paradigmxyz/reth=ghcr.io/paradigmxyz/reth nethermind=NethermindEth/nethermind=nethermind/nethermind geth=ethereum/go-ethereum=ethereum/client-go; do
-	IFS== read -r c repo img <<< "$x"
-	if t=$(latest "$repo"); then export "IMG_$c=$img:$t"; else fails+=("$c latest release"); fi
-done
+# Node BAL-on: the newest image under each pinned devnet tag. The nightly measures node BAL-off for every client.
 src=${ERIGON_MAIN:-$HOME/erigon-vmb-main}
-step "node tier (reth nethermind geth)" env ERIGON_SRC="$src" ORDER="reth nethermind geth" run/node.sh
-unset IMG_reth IMG_nethermind IMG_geth
 for c in reth nethermind geth besu nimbus; do
 	ref=$(sed -n "s/^\t\[$c\]=\([^@]*\)@.*/\1/p" run/nodebal.sh)
 	[ -n "$ref" ] && export "IMG_$c=$ref"

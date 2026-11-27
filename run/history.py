@@ -2,15 +2,20 @@
 """Build docs/index.html from history/*/.
 run/history.py <dir> <page> <branch>: the same page for a branch build, e.g. branches/dbg docs/dbg.html dbg."""
 import datetime
-import csv, json, math, re, sys
+import csv, json, math, os, re, sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parent.parent
 hidden = {"besu", "nimbus", "ethrex"}
 runs = []
+# A node-tier peer filled in from another run is comparable with erigon only within PEER_DAYS and on the same fixtures.
+PEER_DAYS = float(os.environ.get("VMB_PEER_DAYS", 2))
+when = lambda d: datetime.datetime.strptime(d[:15], "%Y-%m-%dT%H%M")
+def stale(run, old):
+    return when(run["date"]) - when(old["date"]) > datetime.timedelta(days=PEER_DAYS) or run["versions"].get("fixtures") != old["versions"].get("fixtures")
 src, page, branch = (root / sys.argv[1], root / sys.argv[2], sys.argv[3]) if len(sys.argv) > 3 else (root / "history", root / "docs" / "index.html", None)
 for d in sorted(p for p in src.iterdir() if p.is_dir()):
-    run = {"date": d.name, "versions": {}, "calls": {}, "bt": {}, "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "callsneth": {}, "st": {}, "stArms": [], "callsprof": {}}
+    run = {"date": d.name, "versions": {}, "calls": {}, "bt": {}, "node": {}, "nodePass": {}, "nodebal": {}, "nodebalPass": {}, "nodeStale": [], "nodebalStale": [], "callsneth": {}, "st": {}, "stArms": [], "callsprof": {}}
     if (d / "errors.txt").exists():
         run["errors"] = (d / "errors.txt").read_text().split("\n")[:-1]
     for f in d.glob("*.csv"):
@@ -114,6 +119,8 @@ for ks in (("node", "nodePass"), ("nodebal", "nodebalPass"), ("bt",), ("st", "st
                         keep[ks[0]][test][c] = row[c]
                 if c in old[ks[1]]:
                     keep[ks[1]][c] = old[ks[1]][c]
+                if stale(keep, old):
+                    keep[ks[0] + "Stale"].append(f"{c} {old['date'][:10]}")
                 if c in old["versions"] and c not in keep["versions"]:
                     keep["versions"][c] = f"{old['versions'][c]} (measured {old['date'][:10]})"
     for run in has:
@@ -127,7 +134,7 @@ callFx = {f"{p.parent.name}/{p.stem}": next(iter(json.load(open(p)).values())) f
 callFixtures = {f: int(fx["env"]["currentNumber"], 16) for f, fx in callFx.items()}
 # The mainnet receipt's gas, for rows measured before calls.csv carried the call's own gas.
 callGas = {f: int(fx["_info"]["gasUsed"], 16) for f, fx in callFx.items() if "gasUsed" in fx.get("_info", {})}
-html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "branch": branch, "callFixtures": callFixtures, "callGas": callGas, "paused": [l for l in (root / "run" / "paused-sections.txt").read_text().split("\n") if l and not l.startswith("#")] if (root / "run" / "paused-sections.txt").exists() else [], "layoutSensitive": [l for l in (root / "run" / "layout-sensitive.txt").read_text().split("\n") if l and not l.startswith("#")], "gcNoisy": [l for l in (root / "run" / "gc-noisy.txt").read_text().split("\n") if l and not l.startswith("#")], "scenario": scenario, "updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"), "mainSha": next((r["versions"].get("erigon-evm", "")[5:] for r in reversed(runs) if r["versions"].get("erigon-evm", "").startswith("main-")), "")}))
+html = (root / "run" / "page.html").read_text().replace("/*DATA*/", json.dumps({"runs": runs, "progress": progress, "branch": branch, "callFixtures": callFixtures, "callGas": callGas, "paused": [l for l in (root / "run" / "paused-sections.txt").read_text().split("\n") if l and not l.startswith("#")] if (root / "run" / "paused-sections.txt").exists() else [], "layoutSensitive": [l for l in (root / "run" / "layout-sensitive.txt").read_text().split("\n") if l and not l.startswith("#")], "gcNoisy": [l for l in (root / "run" / "gc-noisy.txt").read_text().split("\n") if l and not l.startswith("#")], "scenario": scenario, "peerDays": PEER_DAYS, "updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"), "mainSha": next((r["versions"].get("erigon-evm", "")[5:] for r in reversed(runs) if r["versions"].get("erigon-evm", "").startswith("main-")), "")}))
 (root / "docs").mkdir(exist_ok=True)
 (root / "docs" / ".nojekyll").touch()
 page.write_text(html)

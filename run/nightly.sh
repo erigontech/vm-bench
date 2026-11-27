@@ -32,9 +32,16 @@ if [ -n "$dref" ] && git -C "$dsrc" fetch -q origin "$dref" && git -C "$dsrc" ch
 else
 	echo "erigon-evm: build of the dbg branch failed, see results/erigon-dbg-build.log" >> results/build-errors.txt
 fi
-# The node tiers re-measure erigon main only; history.py fills the other clients from their latest full run.
+# BAL-off: erigon main and the latest release of every other client in one run, so the page compares one night and one harness.
+# BAL-on: erigon main only; history.py fills the other clients from their latest run and marks them stale past 2 days.
 export BENCHMARKOOR=${BENCHMARKOOR:-$HOME/bm24402727/src/benchmarkoor/bin/benchmarkoor}
-ERIGON_SRC=$src ORDER=erigon run/node.sh > results/node-nightly.log 2>&1 || echo "node tier failed, see results/node-nightly.log" >> results/build-errors.txt
+latest() { curl -sfL "https://api.github.com/repos/$1/releases/latest" | jq -re .tag_name; }
+imgs=()
+for x in reth=paradigmxyz/reth=ghcr.io/paradigmxyz/reth nethermind=NethermindEth/nethermind=nethermind/nethermind geth=ethereum/go-ethereum=ethereum/client-go; do
+	IFS== read -r c repo img <<< "$x"
+	t=$(latest "$repo") && imgs+=("IMG_$c=$img:$t")
+done
+env "${imgs[@]}" ERIGON_SRC=$src ORDER="erigon reth nethermind geth" run/node.sh > results/node-nightly.log 2>&1 || echo "node tier failed, see results/node-nightly.log" >> results/build-errors.txt
 # Rivals at their latest main/master, re-measured only when an image changed; before erigon, so erigon's run is the newest.
 BALFIX=${BALFIX:-$HOME/bench/balfix} ERIGON_SRC=$src run/rivals.sh > results/rivals-nightly.log 2>&1 || echo "rivals BAL-on run failed, see results/rivals-nightly.log" >> results/build-errors.txt
 # BAL-on erigon runs commitment v3; confirm.sh re-runs both mains with the same env.
