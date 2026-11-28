@@ -1,0 +1,15 @@
+family,nightly_ratio,rerun_ratio,verdict
+test_alt_bn128_uncachable,0.933,,SKIPPED
+test_jump_benchmark,0.936,,SKIPPED
+test_block_full_data,0.946,,SKIPPED
+test_selfdestruct_initcode,0.946,,SKIPPED
+test_gas_op,0.948,,SKIPPED
+test_shifts,0.950,,SKIPPED
+test_selfdestruct_created,0.865,1.019,NOISE
+test_block_context_ops,0.872,0.933 0.973,NOISE
+test_iszero,0.894,1.133,NOISE
+test_jumpi_fallthrough,0.899,1.003,NOISE
+test_creates_collisions,0.911,1.077,NOISE
+test_bls12_pairing,0.912,0.957,NOISE
+test_jumpdests,0.915,1.065,NOISE
+test_pc_op,0.918,0.921 0.990,NOISE
