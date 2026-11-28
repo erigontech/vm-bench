@@ -2619,5 +2619,45 @@
       "BAL-on not_op x0.85, tload x0.86, p256verify_uncachable, modexp_length_above_upper_bound are night-to-night variance (re-run x0.98 to x1.05); blobhash, storage_access_warm, tstore x0.91 to x0.94 had no re-run: unconfirmed",
       "node calldataload x0.85 (8), codesize x0.88 (1), selfdestruct_initcode x0.88 (2) undo the 11-25 gain (x1.00 to x1.13 vs 11-24); node point_evaluation x0.89 (1), p256verify_uncachable x0.90 (1): one night, unconfirmed"
     ]
+  },
+  {
+    "date": "2026-11-27",
+    "old": "2ae54a108ac3737c3cb1f53ed6034321d37f5410",
+    "new": "0ae25bfbdaee8653f1a97c8a4ad844fba24106d3",
+    "evm": {
+      "mgas": 1242.7,
+      "ratio": 0.87,
+      "best": "nethermind",
+      "valid": 53,
+      "noise": 0.8,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "node": {
+      "mgas": 11005.0,
+      "ratio": 1.275,
+      "best": "nethermind",
+      "valid": 1073,
+      "noise": 0.9,
+      "fixtures": "tests-benchmark@v0.0.9"
+    },
+    "nodebal": {
+      "mgas": 10357.9,
+      "ratio": 0.8,
+      "best": "nethermind",
+      "valid": 1161,
+      "noise": 0.3,
+      "fixtures": "glamsterdam-devnet@v8.1.4"
+    },
+    "note": "main 2026-11-27 0ae25bfbda; EVM x1.01, node x1.00, BAL-on x1.02; (*EVM).run moved from offset 0 to 32, so the code-layout-sensitive EVM rows shift both ways; node peers re-measured the same night, BAL-on peers on 11-28 with the glamsterdam-devnet-8 builds; no failed rows",
+    "shipped": [
+      "#25785 a run that reads an unfinished write stops and re-runs when its writer validates; #26904 shard the in-memory storage domain by address; #26839 and #26929 fastkeccak 2-round BMI2 kernel, v1.1.0; #26896 remove the duplicate block-start account cache; #26808 one irreversible block replaces FinalityContext; #26883 system calls get a header reader for BLOCKHASH; #26898 v3-native witnesses and proofs; the rest is CL, rpc, txpool, db and CI (#26947, #26942, #26794, #26926, #26753, #26924, #26877, #26948, #26828, #26879, #26880, #26844, #26919, #26925, #26933, #26915, #26927, #26815, #26814, #26902, #26653, #26918, #26856, #26882, #26869, #26868, #26852, #26897, #26793, #26894, #26716)"
+    ],
+    "better": [
+      "BAL-on deploy_then_interact x1.41 (5), parallel_execution_serial_chain x1.36 (1), mixed_dependency_graph x1.13 (9), create x1.15 (20), tstore x1.28 (4), tload x1.23 (4), storage_access_cold_benchmark x1.18 (3), likely #25785 or #26904; keccak_max_permutations x1.27 (1), keccak_diff_mem_msg_sizes x1.22 (16) in BAL-on and node x1.21, x1.21, likely #26839 (fastkeccak); comparison x1.20 BAL-on, x1.17 node; node calldataload x1.13 (8), point_evaluation x1.22 (1): one night, unconfirmed"
+    ],
+    "worse": [
+      "BAL-on: no CONFIRMED drop; selfdestruct_created x0.87, block_context_ops x0.87, iszero x0.89, jumpi_fallthrough x0.90, creates_collisions x0.91, bls12_pairing x0.91, jumpdests x0.92, pc_op x0.92 are night-to-night variance (re-run x0.95 to x1.13); alt_bn128_uncachable, jump_benchmark, block_full_data, selfdestruct_initcode, gas_op, shifts x0.93 to x0.95 had no re-run: unconfirmed",
+      "node codesize x0.91 (1) after x0.88 on 11-26: down a second night, lowest of 10 nights but x0.96 vs 11-24, not bisected; node jump_benchmark x0.86 (1), ripemd160 x0.87 (1), jumpi_fallthrough x0.88 (1), block_full_data x0.89 (2), clz_same x0.91 (1): one night, unconfirmed; EVM codesize x0.87, calldatasize x0.89, returndatasize_nonzero x0.92 are layout-sensitive rows"
+    ]
   }
 ]
